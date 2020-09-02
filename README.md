@@ -6,7 +6,7 @@
 
 Author(s) and maintainer(s): [Space Robotics Lab.](http://www.astro.mech.tohoku.ac.jp/e/index.html)
 
-[![srl-logo-original.jpg](./docs/media/srl-logo-original.jpg)]
+[![srl-logo-original.jpg](./docs/media/srl-logo-original.jpg)](http://www.astro.mech.tohoku.ac.jp/e/index.html)
 
 **This GitHub page is made based on the [original webpage of the Spacedyn](http://www.astro.mech.tohoku.ac.jp/spacedyn/) by current SRL member.** Please refer to the original webpage for more information.
 
@@ -37,6 +37,6 @@ We hope that you could find this toolbox useful.
 ## FAQ
 For bug reports or any questions, please contact us via e-mail :
 
-  spacedyn_support(at)astro.mech.tohoku.ac.jp
+    spacedyn_support(at)astro.mech.tohoku.ac.jp
 
 Please read the document for details, and [FAQ Page](http://www.astro.mech.tohoku.ac.jp/spacedyn/faq.html).
