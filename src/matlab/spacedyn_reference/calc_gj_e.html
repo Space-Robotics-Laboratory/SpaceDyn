@@ -1,0 +1,72 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 Reference </title>
+</head>
+
+<body>
+
+<h1>calc_gj</h1>
+
+<h3>Grammar</h3>
+GJ = calc_gj( R0, RR, A0, AA, q, num_e )
+
+<h3>Global variables</h3>
+BB, SE, J_type, Qe,<br>
+cc, ce,<br>
+m0, m, mass, inertia0, inertia,<br>
+num_q, Ez
+
+<h3>Explanation</h3>
+Function which calculates the generalized Jacobian matrix of the end point specified by num_e.<br>
+<br>
+<br>
+
+<b>"Generalized Jacobian Matrix"</b><br>
+The generalized Jacobian matrix is needed to realize the reactionless manipulation etc.<br>
+The dervation follows.<br>
+<br>
+
+First, momentum conservation is as follows.<br>
+<table>
+<tr><th rowspan="2" nowrap>[</th><td>P</td><th rowspan="2" nowrap>] = Hs*[</th><td>v0</td><th rowspan="2" nowrap>] + Hbm*qd</th><th rowspan="2"nowrap></th><th rowspan="2" nowrap>…(1)</th></tr>
+<tr><td>L</td><td>w0</td></tr>
+</table>
+P: Linear momentum，L：Angular momentum<br>
+Hs, Hbm: Inertia matrix of base and end point<br>
+<br>
+
+Rearranging the above equation in terms of base linear and angular velocities,
+<table frame="void">
+<tr><th rowspan="2" nowrap>[</th><td>v0</td><th rowspan="2" nowrap>] = Hs^(-1)*{ [</th><td>P</td><th rowspan="2" nowrap>] - Hbm*qd }</th><th rowspan="2" nowrap></th><th rowspan="2" nowrap>…(2)</th></tr>
+<tr><td>w0</td><td>L</td></tr>
+</table>
+<br>
+
+On the other hand, the linear and angualr velocities of the end point are determined from the following equation.<br>
+<table frame="void">
+<tr><th rowspan="2" nowrap>[</th><td>vh</td><th rowspan="2" nowrap>] = Js*[</th><td>v0</td><th rowspan="2" nowrap>] + Jbm*qd</th><th rowspan="2" nowrap></th><th rowspan="2" nowrap>…(3)</th></tr>
+<tr><td>wh</td><td>w0</td></tr>
+</table>
+Js,Jbm：Jacobian matrix of base and end point.<br>
+
+Substituting Eq.(2) to Eq.(3), one obtains Eq.(4)
+<br>
+<table frame="void">
+<tr><th rowspan="2" nowrap>[</th><td>vh</td><th rowspan="2" nowrap>] = ( Jbm - Js*Hs^(-1)*Hbm )*qd + Js*Hs^(-1)*[</th><td>P</td><th rowspan="2" nowrap>]</th><th rowspan="2" nowrap></th><th rowspan="2" nowrap>…(4)</th></tr>
+<tr><td>wh</td><td>L</td></tr>
+</table>
+The term, "<nobr>Jbm - Js*Hs^(-1)*Hbm</nobr>" is called the generalized Jacobian matrix<br>
+<br>
+<br>
+
+Since linear and angular momenta of a free-flying robot such as satellites,
+the change in the last term of Eq(4) can be negligible.
+Thus, the effect of the linear and angular velocities of each link 
+on the behavoir of end effector can be evaluated using the generalized Jacobian matrix.
+
+
+</body>
+
+</html>

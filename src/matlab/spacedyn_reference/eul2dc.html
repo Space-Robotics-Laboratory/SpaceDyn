@@ -1,0 +1,44 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 簡単リファレンス </title>
+</head>
+
+<body>
+<h1>eul2dc</h1>
+
+<h3>文法</h3>
+dc = eul2dc( euler )<br>
+dc = eul2dc( phi, theta, psi )
+
+<h3>global変数</h3>
+---
+
+<h3>解説</h3>
+3-1-3 オイラー変換のオイラー角から方向余弦行列を求める関数．<br>
+<br>
+<br>
+
+<b>SpaceDynにおける方向余弦行列</b><br>
+ベクトル R を 慣性座標系の x 軸周りに roll [rad] 回転させたベクトルを S とする．<br>
+あるベクトル X を慣性座標系で表したものを <font size="2">I</font>X とするとき，<br>
+ベクトル R，S，および方向余弦行列 C には以下の式の関係が成り立つ．<br>
+<font size="2">I</font>S = Cx( roll ) * <font size="2">I</font>R<br>
+<br>
+
+R を慣性座標系の z 軸周りに phi だけ回転，<br>
+その回転した座標系の x 軸周りに theta だけ回転，<br>
+さらにその座標系の z 軸周りに psi だけ回転させたものを T とする．<br>
+このときの方向余弦行列 C は，<br>
+C = Cz( psi ) * Cx( theta ) * Cz( phi )<br>
+となり，<br>
+<font size="2">I</font>T = C * <font size="2">I</font>R<br>
+が成り立つ．<br>
+<br>
+
+つまり，方向余弦行列を用いれば，同じ座標系内でベクトルを回転変換することができる．<br>
+
+</body>
+
+</html>

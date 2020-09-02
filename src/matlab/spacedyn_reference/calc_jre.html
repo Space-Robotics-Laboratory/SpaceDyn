@@ -1,0 +1,84 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 簡単リファレンス </title>
+</head>
+
+<body>
+<h1>calc_jre</h1>
+
+<h3>文法</h3>
+JJ_re = calc_jre( AA, joints )
+
+<h3>global変数</h3>
+J_type,<br>
+num_q, Ez
+
+<h3>解説</h3>
+joints で指定された手先に関するヤコビ行列のうち回転成分を計算する関数．<br>
+<br>
+<br>
+
+一般に手先の速度，角速度は以下の式から求めることができる．
+<table>
+   <tr>
+   <th rowspan="2" nowrap>[</th>
+   <td> </td><td>vh</td><td> </td>
+   <th rowspan="2" nowrap>] = Js*[</th>
+   <td> </td><td>v0</td><td> </td>
+   <th rowspan="2" nowrap>] + Jbm*qd</th>
+   </tr>
+
+   <tr>
+   <td> </td><td>wh</td><td> </td>
+   <td> </td><td>w0</td><td> </td>
+   </tr>
+</table>
+Js,Jbm：ベース，手先に関するヤコビ行列<br>
+<br>
+
+ヤコビ行列は並進に関する要素と回転を表す要素に分離することができる．<br>
+並進成分を JJ_te ，回転成分を JJ_re とすると，
+ヤコビ行列は以下のように表せる．
+<table>
+   <tr>
+   <th rowspan="2" nowrap>Jbm = [</th>
+   <td> </td><td>JJ_te</td><td> </td>
+   <th rowspan="2" nowrap>]</th>
+   </tr>
+
+   <tr>
+   <td> </td><td>JJ_re</td><td> </td>
+   </tr>
+</table>
+<br>
+<br>
+
+calc_jre.m は指定された手先に関する JJ_re を計算する．<br>
+JJ_re の大きさは 3×length(joints) であり，中身は，<br>
+joints = [ 1 2 4 6 7 ]<br>
+とすると，
+<table>
+<tr align="center">
+<th rowspan="2" nowrap>JJ_re = [</th>
+<td> </td><td>3×1</td><td> </td>
+<td> </td><td>3×1</td><td> </td>
+<td> </td><td>3×1</td><td> </td>
+<td> </td><td>3×1</td><td> </td>
+<td> </td><td>3×1</td><td> </td>
+<th rowspan="2" nowrap>]</th>
+</tr>
+
+<tr align="center">
+<td> </td><td>JJ_re<font size="2">1</font></td><td> </td>
+<td> </td><td>JJ_re<font size="2">2</font></td><td> </td>
+<td> </td><td>JJ_re<font size="2">4</font></td><td> </td>
+<td> </td><td>JJ_re<font size="2">6</font></td><td> </td>
+<td> </td><td>JJ_re<font size="2">7</font></td><td> </td>
+</tr>
+</table>
+
+</body>
+
+</html>

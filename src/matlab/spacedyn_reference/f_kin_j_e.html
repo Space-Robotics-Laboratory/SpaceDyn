@@ -1,0 +1,71 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 Reference </title>
+</head>
+
+<body>
+<h1>f_kin_j</h1>
+
+<h3>Grammar</h3>
+[ POS_j, ORI_j ] = f_kin_j( RR, AA, q, joints )
+
+<h3>Global variables</h3>
+J_type,<br>
+cc,<br>
+Ez
+
+<h3>Explanation</h3>
+Function which calculates the position and attitude of all joints specified by "joints."<br>
+<br>
+<br>
+
+Suppose that an end point is connected to its base through Joint 1, 2, 4, 5, 7 in sequence <br>
+( joints = [ 1 2 4 5 7 ] )<br>
+In this case, the return values are as follows.
+<table>
+   <tr align="center">
+      <th rowspan="2">POS_j = [</th>
+      <td></td><td>3×1</td><td></td>
+      <td></td><td>3×1</td><td></td>
+      <td></td><td>3×1</td><td></td>
+      <td></td><td>3×1</td><td></td>
+      <td></td><td>3×1</td><td></td>
+      <th rowspan="2">]</th>
+   </tr>
+
+   <tr align="center">
+      <td></td><td>POS_j<font size="2">1</font></td><td></td>
+      <td></td><td>POS_j<font size="2">2</font></td><td></td>
+      <td></td><td>POS_j<font size="2">4</font></td><td></td>
+      <td></td><td>POS_j<font size="2">5</font></td><td></td>
+      <td></td><td>POS_j<font size="2">7</font></td><td></td>
+   </tr>
+
+   <tr>
+   </tr>
+
+   <tr align="center">
+      <th rowspan="2">ORI_j = [</th>
+      <td></td><td>3×3</td><td></td>
+      <td></td><td>3×3</td><td></td>
+      <td></td><td>3×3</td><td></td>
+      <td></td><td>3×3</td><td></td>
+      <td></td><td>3×3</td><td></td>
+      <th rowspan="2">]</th>
+   </tr>
+
+   <tr align="center">
+      <td></td><td>ORI_j<font size="2">1</font></td><td></td>
+      <td></td><td>ORI_j<font size="2">2</font></td><td></td>
+      <td></td><td>ORI_j<font size="2">4</font></td><td></td>
+      <td></td><td>ORI_j<font size="2">5</font></td><td></td>
+      <td></td><td>ORI_j<font size="2">7</font></td><td></td>
+   </tr>
+
+</table>
+
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 簡単リファレンス </title>
+</head>
+
+<body>
+<h1>f_dyn</h1>
+
+<h3>文法</h3>
+[ vd0, wd0, qdd ] = f_dyn(R0, A0, v0, w0, q, qd, F0, T0, Fe, Te, tau)
+
+<h3>global変数</h3>
+BB, S0, SS, SE, J_type, Qi, Qe,<br>
+c0, cc, ce,<br>
+m0, m, mass, inertia0, inertia,<br>
+num_q, Ez, Gravity
+
+<h3>解説</h3>
+順動力学の計算．<br>
+<br>
+
+ロボットシステムの運動方程式は以下のとおりである．<br>
+<b>H*xdd + c = F + J^(-1)*Fe</b><br>
+H：システム全体の慣性行列<br>
+xdd：ロボット全体の加速度<br>
+F：一般化力<br>
+J：ヤコビ行列<br>
+Fe：手先に働く外力<br>
+c：速度依存項<br>
+<br>
+
+ここで，速度依存項 c を直接求めることは効率が悪い．<br>
+ロボットの加速度 xdd と外力 Fe を0とすれば，c は一般化力 F と一致する．<br>
+よって，加速度 xdd は以下のように表せる．<br>
+<b>xdd = H^(-1)*{ F - F|xdd,Fe=0 + J^(-T)*Fe }</b>
+
+</body>
+
+</html>

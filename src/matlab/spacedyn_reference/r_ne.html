@@ -1,0 +1,36 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 簡単リファレンス </title>
+</head>
+
+<body>
+<h1>r_ne</h1>
+
+<h3>文法</h3>
+Force = r_ne( R0, RR, A0, AA, v0, w0, vd0, wd0, q, qd, qdd, Fe, Te )
+
+<h3>global変数</h3>
+BB, S0, SS, SE, J_type, Qi,<br>
+c0, cc, ce,<br>
+m0, m, inertia0, inertia,<br>
+num_q, Ez, Gravity
+
+<h3>解説</h3>
+ニュートン・オイラー法による逆動力学の計算．<br>
+<br>
+<br>
+
+ベースのかかる力，モーメントをそれぞれ FF0(3×3)，TT0(3×3)，<br>
+関節トルクを tau(num_q×1) とすると，<br>
+返り値の Force の中身は以下のようになる．
+<table>
+<tr align="center"><th rowspan="3">Force = [</th><td>FF0</td><th rowspan="3">]</th></tr>
+<tr align="center"><td>TT0<td></tr>
+<tr align="center"><td>tau<td></tr>
+</table>
+
+</body>
+
+</html>

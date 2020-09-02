@@ -1,0 +1,31 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 簡単リファレンス </title>
+</head>
+
+<body>
+<h1>aw</h1>
+
+<h3>文法</h3>
+E0 = aw( w0 )
+
+<h3>global変数</h3>
+d_time
+
+<h3>解説</h3>
+ベースの角速度ベクトル w0 周りの回転座標変換行列を計算する関数．<br>
+<br>
+
+ベースが角速度 w0 で回転していたとする．<br>
+ある時刻 t = n での姿勢(座標変換行列)が 
+<font size="2">I</font>A0<font size="2">n</font> とすると，<br>
+t = n + d_time での姿勢の一次近似は，<br>
+<font size="2">I</font>A0<font size="2">n+d_time</font>
+ = aw( w0 ) * <font size="2">I</font>A0<font size="2">n</font><br>
+となる．<br>
+
+</body>
+
+</html>

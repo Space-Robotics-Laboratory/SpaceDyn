@@ -1,0 +1,68 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 Reference </title>
+</head>
+
+<body>
+<h1>calc_vel</h1>
+
+<h3>Grammar</h3>
+[ vv, ww ] = calc_vel( A0, AA, v0, w0, q, qd )
+
+<h3>Global variables</h3>
+BB, J_type,<br>
+c0, cc,<br>
+num_q, Ez
+
+<h3>Explanation</h3>
+Function which calculates hte linear velocity vv and angular velocity ww of the center of the mass of all links.<br>
+Return values are shown below.<br>
+<br>
+<table>
+   <tr align="center">
+   <th rowspan="2">vv = [</th>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><th rowspan="2">…</th><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <th rowspan="2">]</font>
+   </th>
+   </tr>
+
+   <tr>
+   <td> </td><td>vv<font size="2">1</font></td><td> </td>
+   <td> </td><td>vv<font size="2">2</font></td><td> </td>
+   <td> </td><td>vv<font size="2">3</font></td><td> </td>
+   <td> </td><td> </td>
+   <td> </td><td>vv<font size="2">n</font></td><td> </td>
+   </tr>
+
+   <tr>
+   </tr>
+
+   <tr align="center">
+   <th rowspan="2">ww = [</th>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><th rowspan="2">…</th><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <th rowspan="2">]</font>
+   </th>
+   </tr>
+
+   <tr>
+   <td> </td><td>ww<font size="2">1</font></td><td> </td>
+   <td> </td><td>ww<font size="2">2</font></td><td> </td>
+   <td> </td><td>ww<font size="2">3</font></td><td> </td>
+   <td> </td><td> </td>
+   <td> </td><td>ww<font size="2">n</font></td><td> </td>
+   </tr>
+</table>
+
+</body>
+
+</html>

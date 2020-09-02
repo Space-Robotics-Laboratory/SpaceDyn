@@ -1,0 +1,37 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 Reference </title>
+</head>
+
+<body>
+<h1>r_ne</h1>
+
+<h3>Grammar</h3>
+Force = r_ne( R0, RR, A0, AA, v0, w0, vd0, wd0, q, qd, qdd, Fe, Te )
+
+<h3>Global variables</h3>
+BB, S0, SS, SE, J_type, Qi,<br>
+c0, cc, ce,<br>
+m0, m, inertia0, inertia,<br>
+num_q, Ez, Gravity
+
+<h3>Explanation</h3>
+Function which computes inversed dynamics by Newton-Euler method.<br>
+<br>
+<br>
+
+<h3>Details</h3>
+Let FF0(3 by 3) and TT0(3 by 3) be a force and moment applied to the base, respectively,
+and tau(num_q by 1) be joint torques.<br>
+Return value of "Force" variable has the following form.<br>
+<table>
+<tr align="center"><th rowspan="3">Force = [</th><td>FF0</td><th rowspan="3">]</th></tr>
+<tr align="center"><td>TT0<td></tr>
+<tr align="center"><td>tau<td></tr>
+</table>
+
+</body>
+
+</html>

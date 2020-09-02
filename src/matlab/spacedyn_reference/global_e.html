@@ -1,0 +1,158 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 Reference </title>
+</head>
+
+<body>
+<h1>Global Variables</h1>
+In the SpaceDyn, many parameters essential for kinematics and dynamics are defined as global variables.<br>
+The following explains the meaning of each global variable and how to use them.<br>
+<br>
+
+<ul>
+<li><a name="BB">BB</a></li><br>
+Matrix describing how links are connected.<br>
+BB(i) indicates a link number where Link i is circumscribed.<br>
+(The number to which the link is connected when counting from the base)<br>
+Size: 1 by <a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="S0">S0</a></li><br>
+Matrix describing how the base and links are connected.<br>
+S0(i) is 1 if Link i is connected to base, or 0 otherwise.<br>
+Size: 1 by <a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="SS">SS</a></li><br>
+Matrix describing the relationships of link connections.<br>
+The diagonal elements are all set to -1.<br>
+<table>
+   <tr align="left">
+   <th rowspan="2">SS(i,j) = {</th>
+   <td>1</td><td></td><td>…</td><td></td><td>if <a href="#BB">BB(j)</a> = i</td>
+   </tr>
+   <tr align="left">
+   <td>0</td><td></td><td>…</td><td></td><td>else</td>
+   </tr>
+</table> 
+One can find out which link is circumscribed to Link i by looking at row i of SS.<br>
+Size: <a href="#num_q">num_q</a> by <a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="SE">SE</a></li><br>
+Matrix which indicats links having end points.<br>
+Since in ver.1 external forces can only be applied to end points,
+this matrix can be seen as the one indicating whether links are applicable of external forces. <br>
+Size: 1 by <a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="J_type">J_type</a></li><br>
+Matrix describing the types of joints.<br>
+"P" if the joint is prismatic,<br>
+"R" if the joint is revolute.<br>
+Size: 1 by <a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="c0">c0</a></li><br>
+Matrix that consists of vectors from the center of mass of the base to the joints that are  circumscribed to the base.<br>
+c0(1:3,i) is a vector from the center of mass of the base to Joint i.<br>
+Vectors are expressed in base reference frame.<br>
+[ 0 0 0 ]' if not circumscribed. <br>
+Size: 3 by <a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="cc">cc</a></li><br>
+Matrix that consists of vectors from the center of mass of the links to the joints to which the links connect. <br>
+cc(1:3,i,j) is a vector from the center of mass of Link i to Joint j.<br>
+Vectors are expressed in corresponding link reference frames.<br>
+[ 0 0 0 ]' if a joint is not connected to Link i.
+Size: 3 by <a href="#num_q">num_q</a> by <a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="ce">ce</a></li><br>
+Matrix that consists of vectors from the center of mass of the links to the points of application of external forces on the same links.<br>
+Vectors are expressed in corresponding link reference frame.<br>
+[ 0 0 0 ]' if the link does not have an end point.
+Size: 3 by <a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="Qi">Qi</a></li><br>
+Euler angles from Link <a href="#BB">BB</a>(i) reference frame to Link i reference frame.<br>
+Size: 3 by <a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="Qe">Qe</a></li><br>
+Euler angles from Link i reference frame to the one where the point of application of external forces on Link i is located.<br>
+[ 0 0 0 ]' if the link does not have an end point.<br>
+Size: 3 by <a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="m0">m0</a></li><br>
+Mass of the base<br>
+Size: Scalar<br>
+<br>
+
+<li><a name="m">m</a></li><br>
+Mass of each link.<br>
+Size: 1 by <a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="mass">mass</a></li><br>
+Total mass of the robot system.<br>
+Size: Scalar.<br>
+<br>
+
+<li><a name="inertia0">inertia0</a></li><br>
+Inertia matrix of the base.<br>
+Size: 3 by 3.<br>
+<br>
+
+<li><a name="inertia">inertia</a></li><br>
+Inertia Matrix of each link.<br>
+<table>
+   <tr align="center">
+   <th rowspan="2">inertia = [</th>
+   <td></td><td>3×3</td><td></td>
+   <td></td><td>3×3</td><td></td>
+   <td></td><td>3×3</td><td></td>
+   <td></td><th rowspan="2">…</th><td></td>
+   <td></td><td>3×3</td><td></td>
+   <th rowspan="2">]</th>
+   </tr>
+
+   <tr align="center">
+   <td></td><td>Link 1</td><td></td>
+   <td></td><td>Link 2</td><td></td>
+   <td></td><td>Link 3</td><td></td>
+   <td></td><td></td>
+   <td></td><td>Link n</td><td></td>
+   </tr>
+</table>
+Size: 3 by (3*<a href="#num_q">num_q</a>)．<br>
+<br>
+
+<li><a name="num_q">num_q</a></li><br>
+Total number of the links.<br>
+Size: Scalar.<br>
+<br>
+
+<li><a name="Ez">Ez</a></li><br>
+Unit vector indicating z-direction.<br>
+Size: 3 by 1.<br>
+<br>
+
+<li><a name="Gravity">Gravity</a></li><br>
+Gravitational acceleration.<br>
+Size: 3 by 1.<br>
+<br>
+
+<li><a name="d_time">d_time</a></li><br>
+Integration time step.<br>
+Size: Scalar.<br>
+
+</ul>
+</body>
+
+</html>

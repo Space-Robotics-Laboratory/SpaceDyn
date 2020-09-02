@@ -1,0 +1,157 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 簡単リファレンス </title>
+</head>
+
+<body>
+<h1>global変数の意味</h1>
+SpaceDynではglobal変数を用いて運動学や動力学の計算に必要なパラメータを定義します．<br>
+以下で各変数について説明します．<br>
+<br>
+
+<ul>
+<li><a name="BB">BB</a></li><br>
+リンクの繋がりを表す行列．<br>
+BB(i) はリンク i が外接している(リンク i から見てひとつベース寄りの)リンク番号を示す．<br>
+大きさは1×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="S0">S0</a></li><br>
+ベースとリンクの繋がりを表す行列．<br>
+S0(i) はリンク i がベースに接続されていれば 1 ，しなければ 0 ．<br>
+大きさは1×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="SS">SS</a></li><br>
+全リンクの接続関係を表す行列．<br>
+SS の対角成分は全て -1．<br>
+<table>
+   <tr align="left">
+   <th rowspan="2">SS(i,j) = {</th>
+   <td>1</td><td></td><td>…</td><td></td><td>if <a href="#BB">BB(j)</a> = i</td>
+   </tr>
+   <tr align="left">
+   <td>0</td><td></td><td>…</td><td></td><td>else</td>
+   </tr>
+</table> 
+SS の i 行を見れば，リンク i にどのリンクが外接しているかが分かる．<br>
+大きさは<a href="#num_q">num_q</a>×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="SE">SE</a></li><br>
+手先を持つ末端リンクであるかどうかを示す行列．<br>
+ver1 では外力は手先にしか作用しないので，<br>
+外力が作用するリンクかどうかを示す行列と考えることもできる．<br>
+大きさは1×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="J_type">J_type</a></li><br>
+関節の種類を表す行列．<br>
+直動関節であれば P，回転関節であれば R ．<br>
+大きさは1×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="c0">c0</a></li><br>
+ベース重心からベースに外接する関節へのベクトルをまとめた行列．<br>
+c0(1:3,i) はベース重心から関節 i へのベクトル．<br>
+ただし，ベクトルはベース座標系で表す．<br>
+また，ベースに外接しない場合は [ 0 0 0 ]'．<br>
+大きさは3×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="cc">cc</a></li><br>
+リンク重心からそのリンクが接する関節へのベクトルをまとめた行列．<br>
+cc(1:3,i,j) はリンク i の重心から関節 j へのベクトル．<br>
+ただし，ベクトルはリンク座標系で表す．<br>
+また，リンク i に接しない関節へのベクトルは [ 0 0 0 ]' とする．<br>
+大きさは3×<a href="#num_q">num_q</a>×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="ce">ce</a></li><br>
+リンク重心からそのリンク上にある外力作用点までのベクトルをまとめた行列．<br>
+ce(1:3,i) はリンク i の重心からリンク i 上にある外力作用点までのベクトル．<br>
+ただしベクトルはリンク座標系で表す．<br>
+また，末端リンクでない場合は [ 0 0 0 ]'．<br>
+大きさは3×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="Qi">Qi</a></li><br>
+リンク <a href="#BB">BB</a>(i) 座標系からリンク i 座標系へのオイラー角．<br>
+大きさは3×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="Qe">Qe</a></li><br>
+リンク i 座標系からリンク i 上にある外力作用点座標系へのオイラー角．<br>
+末端リンクでない場合は [ 0 0 0 ]'．<br>
+大きさは3×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="m0">m0</a></li><br>
+ベースの質量．<br>
+スカラー．<br>
+<br>
+
+<li><a name="m">m</a></li><br>
+リンクごとの質量．<br>
+大きさは1×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="mass">mass</a></li><br>
+ロボットシステムの全質量．<br>
+スカラー．<br>
+<br>
+
+<li><a name="inertia0">inertia0</a></li><br>
+ベースの慣性行列．<br>
+大きさは3×3．<br>
+<br>
+
+<li><a name="inertia">inertia</a></li><br>
+リンクごとの慣性行列．<br>
+<table>
+   <tr align="center">
+   <th rowspan="2">inertia = [</th>
+   <td></td><td>3×3</td><td></td>
+   <td></td><td>3×3</td><td></td>
+   <td></td><td>3×3</td><td></td>
+   <td></td><th rowspan="2">…</th><td></td>
+   <td></td><td>3×3</td><td></td>
+   <th rowspan="2">]</th>
+   </tr>
+
+   <tr align="center">
+   <td></td><td>リンク1</td><td></td>
+   <td></td><td>リンク2</td><td></td>
+   <td></td><td>リンク3</td><td></td>
+   <td></td><td></td>
+   <td></td><td>リンクn</td><td></td>
+   </tr>
+</table>
+大きさは3×(3*<a href="#num_q">num_q</a>)．<br>
+<br>
+
+<li><a name="num_q">num_q</a></li><br>
+全リンク数．<br>
+スカラー．<br>
+<br>
+
+<li><a name="Ez">Ez</a></li><br>
+z 軸方向の単位ベクトル．<br>
+大きさは3×1．<br>
+<br>
+
+<li><a name="Gravity">Gravity</a></li><br>
+重力加速度．<br>
+大きさは3×1．<br>
+<br>
+
+<li><a name="d_time">d_time</a></li><br>
+積分に用いる時間刻み．<br>
+スカラー．<br>
+
+</ul>
+</body>
+
+</html>

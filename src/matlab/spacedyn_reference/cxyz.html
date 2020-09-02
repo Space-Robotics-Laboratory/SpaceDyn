@@ -1,0 +1,45 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 簡単リファレンス </title>
+</head>
+
+<body>
+<h1>cx,cy,cz</h1>
+
+<h3>文法</h3>
+C = cx( roll )<br>
+C = cy( pitch )<br>
+C = cz( yaw )<br>
+
+<h3>global変数</h3>
+---
+
+<h3>解説</h3>
+回転主軸周りに回転したときの方向余弦行列を求める関数．<br>
+<br>
+<br>
+
+<b>SpaceDynにおける方向余弦行列</b><br>
+ベクトル R を 慣性座標系の x 軸周りに roll [rad] 回転させたベクトルを S とする．<br>
+あるベクトル X を慣性座標系で表したものを <font size="2">I</font>X とするとき，<br>
+ベクトル R，S，および方向余弦行列 C には以下の式の関係が成り立つ．<br>
+<font size="2">I</font>S = Cx( roll ) * <font size="2">I</font>R<br>
+<br>
+
+R を慣性座標系の x 軸周りに roll [rad] だけ回転，<br>
+その回転した座標系の y 軸周りに pitch [rad] だけ回転，<br>
+さらにその座標系の z 軸周りに yaw [rad] だけ回転させたものを T とする．<br>
+このときの方向余弦行列 C は，<br>
+C = Cz( yaw ) * Cy( pitch ) * Cx( roll )<br>
+となり，<br>
+<font size="2">I</font>T = C * <font size="2">I</font>R<br>
+が成り立つ．<br>
+<br>
+
+つまり，方向余弦行列を用いれば，同じ座標系内でベクトルを回転変換することができる．<br>
+
+</body>
+
+</html>

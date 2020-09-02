@@ -1,0 +1,221 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 簡単リファレンス </title>
+</head>
+
+<body>
+<h1>関数の階層構造</h1>
+
+<pre>
+<nobr>
+
+The SpaceDyn version1 release2
+
+
+f_dyn --------------------------------- calc_aa --------- rpy2dc --- cx,cy,cz
+(R0,A0,v0,w0,q,qd,F0,T0,Fe,Te,tau)  |   (A0,q)            (rpy)      (roll,pitch,yaw)
+[BB,S0,SS,SE,J_type,Qi,Qe]          |   [BB,J_type,Qi]    []         []
+[c0,cc,ce]                          |   [num_q]
+[m0,m,mass,inertia0,inertia]        |
+[num_q,Ez,Gravity]                  --- calc_pos
+                                    |   (R0,A0,AA,q)
+                                    |   [BB,J_type]
+                                    |   [c0,cc]
+                                    |   [num_q,Ez]
+                                    |
+                                    --- calc_hh ------------------------- calc_jt ------ cross
+                                    |   (R0,RR,A0,AA)                 |   (RR,AA)        (u,v)
+                                    |   [BB,J_type]                   |   [BB,J_type]    []
+                                    |   [cc]                          |   [cc]
+                                    |   [m0,m,mass,inertia0,inertia]  |   [num_q,Ez]
+                                    |   [num_q,Ez]                    |
+                                    |                                 --- calc_jr
+                                    |                                 |   (AA)
+                                    |                                 |   [BB,J_type]
+                                    |                                 |   [num_q.Ez]
+                                    |                                 |
+                                    |                                 --- tilde
+                                    |                                     (w0)
+                                    |                                     []
+                                    |
+                                    --- r_ne ------------------------------------------ calc_vel ------------ cross
+                                    |   (R0,RR,A0,AA,v0,w0,vd0,wd0,q,qd,qdd,Fe,Te)  |   (A0,AA,v0,w0,q,qd)    (u,v)
+                                    |   [BB,S0,SS,SE,J_type,Qi]                     |   [BB,J_type]           []
+                                    |   [c0,cc,ce]                                  |   [c0,cc]
+                                    |   [m0,m,inertia0,inertia]                     |   [num_q,Ez]
+                                    |   [num_q,Ez,Gravity]                          |
+                                    |                                               --- calc_acc ------------------------ cross
+                                    |                                               |   (A0,AA,w0,ww,vd0,wd0,q,qd,qdd)    (u,v)
+                                    |                                               |   [BB,J_type]                       []
+                                    |                                               |   [c0,cc]
+                                    |                                               |   [num_q,Ez]
+                                    |                                               |
+                                    |                                               ---cross
+                                    |                                                  (u,v)
+                                    |                                                  []
+                                    |
+                                    --- j_num
+                                    |   (num_e)
+                                    |   [BB,SE]
+                                    |
+                                    --- calc_je -------------- calc_jte ------------- f_kin_j
+                                    |   (RR,AA,q,joints)   |   (RR,AA,q,joints)   |   (RR,AA,q,joints)
+                                    |   [J_type,Qe]        |   [J_type,Qe]        |   [J_type]
+                                    |   [cc,ce]            |   [cc,ce]            |   [cc]
+                                    |   [num_q,Ez]         |   [num_q,Ez]         |   [Ez]
+                                    |                      |                      |
+                                    |                      |                      --- f_kin_e ----------- rpy2dc --- cx,cy,cz
+                                    |                      |                      |   (RR,AA,joints)      (rpy)      (roll,pitch,yaw)
+                                    |                      |                      |   [Qe]                []         []
+                                    |                      |                      |   [ce]
+                                    |                      |                      |
+                                    |                      |                      --- cross
+                                    |                      |                          (u,v)
+                                    |                      |                          []
+                                    |                      |
+                                    |                      --- calc_jre
+                                    |                          (AA,joints)
+                                    |                          [J_type]
+                                    |                          [num_q,Ez]
+                                    |
+                                    --- tilde
+                                        (w0)
+                                        []
+
+
+calc_gj ------------------------- calc_hh ------------------------- calc_jt ------ cross
+(R0,RR,A0,AA,q,num_q)         |   (R0,RR,A0,AA)                 |   (RR,AA)        (u,v)
+[BB,SE,J_type,Qe]             |   [BB,J_type]                   |   [BB,J_type]    []
+[cc,ce]                       |   [cc]                          |   [cc]
+[m0,m,mass,inertia0,inertia]  |   [m0,m,mass,inertia0,inertia]  |   [num_q,Ez]
+[num_q,Ez]                    |   [num_q,Ez]                    |
+                              |                                 --- calc_jr
+                              |                                 |   (AA)
+                              |                                 |   [BB,J_type]
+                              |                                 |   [num_q.Ez]
+                              |                                 |
+                              |                                 --- tilde
+                              |                                     (w0)
+                              |                                     []
+                              |
+                              --- j_num
+                              |   (num_e)
+                              |   [BB,SE]
+                              |
+                              --- calc_jte ------------- f_kin_j
+                              |   (RR,AA,q,joints)   |   (RR,AA,q,joints)
+                              |   [J_type,Qe]        |   [J_type]
+                              |   [cc,ce]            |   [cc]
+                              |   [num_q,Ez]         |   [Ez]
+                              |                      |
+                              |                      --- f_kin_e ----------- rpy2dc --- cx,cy,cz
+                              |                      |   (RR,AA,joints)      (rpy)      (roll,pitch,yaw)
+                              |                      |   [Qe]                []         []
+                              |                      |   [ce]
+                              |                      |
+                              |                      --- cross
+                              |                          (u,v)
+                              |                          []
+                              |
+                              --- calc_jre
+                              |   (AA,joints)
+                              |   [J_type]
+                              |   [num_q,Ez]
+                              |
+                              --- f_kin_e --------- rpy2dc --- cx,cy,cz
+                              |   (RR,AA,joints)    (rpy)      (roll,pitch,yaw)
+                              |   [Qe]              []         []
+                              |   [ce]
+                              |
+                              --- tilde
+                                  (w0)
+                                  []
+
+
+i_kine ------------------------------ calc_aa --------- rpy2dc --- cx,cy,cz
+(R0,A0,POS_e,ORI_e.q_init,num_e)  |   (A0,q)            (rpy)      (roll,pitch,yaw)
+[BB,SE,J_type,Qi,Qe]              |   [BB,J_type,Qi]    []         []
+[c0,cc,ce]                        |   [num_q]
+[num_q,Ez]                        |
+                                  --- calc_pos
+                                  |   (R0,A0,AA,q)
+                                  |   [BB,J_type]
+                                  |   [c0,cc]
+                                  |   [num_q,Ez]
+                                  |
+                                  --- j_num
+                                  |   (num_e)
+                                  |   [BB,SE]
+                                  |
+                                  --- f_kin_e --------- rpy2dc --- cx,cy,cz
+                                  |   (RR,AA,joints)    (rpy)      (roll,pitch,yaw)
+                                  |   [Qe]              []         []
+                                  |   [ce]              
+                                  |
+                                  --- tr2diff ---- cross
+                                  |   (tr1,tr2)    (u,v)
+                                  |   []           []
+                                  |
+                                  --- calc_je -------------- calc_jte ------------- f_kin_j
+                                      (RR,AA,q,joints)   |   (RR,AA,q,joints)   |   (RR,AA,q,joints)
+                                      [J_type,Qe]        |   [J_type,Qe]        |   [J_type]
+                                      [cc,ce]            |   [cc,ce]            |   [cc]
+                                      [num_q,Ez]         |   [num_q,Ez]         |   [Ez]
+                                                         |                      |
+                                                         |                      --- f_kin_e ----------- rpy2dc --- cx,cy,cz
+                                                         |                      |   (RR,AA,joints)      (rpy)      (roll,pitch,yaw)
+                                                         |                      |   [Qe]                []         []
+                                                         |                      |   [ce]
+                                                         |                      |
+                                                         |                      --- cross
+                                                         |                          (u,v)
+                                                         |                          []
+                                                         |
+                                                         --- calc_jre
+                                                             (AA,joints)
+                                                             [J_type]
+                                                             [num_q,Ez]
+
+
+eul2dc ----------- cx,cy,cz
+(phi,theta,psi)    (roll,pitch,yaw)
+[]                 []
+
+
+int_eu -------------------------- tilde
+(R0,A0,v0,w0,vd0,wd0,q,qd,qdd)    (w0)
+[num_q,d_time]                    []
+
+
+int_eu2 ------------------------- aw
+(R0,A0,v0,w0,vd0,wd0,q,qd,qdd)    (w0)
+[num_q,d_time]                    [d_time]
+
+
+aw
+(w0)
+[d_time]
+
+
+dc2eul
+(dc)
+[]
+
+
+dc2qtn
+(dc)
+[]
+
+
+dc2rpy
+(dc)
+[]
+
+</nobr>
+</pre>
+
+</body>
+
+</html>

@@ -1,0 +1,28 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 Reference (English Ver) </title>
+</head>
+
+<body>
+<h1>aw</h1>
+
+<h3>Grammar</h3>
+E0 = aw( w0 )
+
+<h3>global variable</h3>
+d_time
+
+<h3>Explanation</h3>
+Function which calculates a coordinate transform matrix around an angular velocity vector w0 of the base.<br>
+<br>
+Suppose the base rotates at a rate of w0. <br>
+If its attitude (coordinate transform matrix) at time t = n is 
+<font size="2">I</font>A0<font size="2">n</font> ,<br>
+a linear approximation of its attitude at t = n + d_time is 
+<font size="2">I</font>A0<font size="2">n+d_time</font>
+ = aw( w0 ) * <font size="2">I</font>A0<font size="2">n</font><br>
+</body>
+
+</html>

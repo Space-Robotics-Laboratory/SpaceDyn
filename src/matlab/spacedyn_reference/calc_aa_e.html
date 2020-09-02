@@ -1,0 +1,54 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 Reference </title>
+</head>
+
+<body>
+<h1>calc_aa</h1>
+
+<h3>Grammar</h3>
+AA = calc_aa( A0, q )
+
+<h3>Global variables</h3>
+BB, J_type, Qi<br>
+num_q<br>
+
+<h3>Explanation</h3>
+Function which calculates coordinate transform matrix <font size="2">I</font><font size="4">A</font><font size="2">i</font> of all joints.<br>
+Since joint and link reference frames coincides,this function can be seen as the one which calculates coordinate transform matrix of all the centers of mass of the links.<br>
+<br>
+<b>"Coordinate Transform Matrix"</b><br>
+In SpaceDyn, this means the transform matrix from joint reference frame to inertial reference frame.<br>
+<br>
+
+<font size="4"><font size="2">I </font>R = <font size="2">I </font>A<font size="2"> i</font> * <font size="2">i </font>R</font><br>
+<font size="2">I</font>R ： vector expressed in inertial reference frame R<br>
+<font size="2">i</font>R ： vector expressed in Joint i reference frame R<br>
+<font size="2">I</font>A<font size="2">i</font> ： coordinate transform matrix of Joint i<br>
+<br>
+
+AA consists of the following.<br>
+<table frame="void">
+   <tr align="center">
+   <th rowspan="2">AA = [</th>
+   <td> </td><td>3×3</td><td> </td>
+   <td> </td><td>3×3</td><td> </td>
+   <td> </td><td>3×3</td><td> </td>
+   <td> </td><th rowspan="2">…</th><td> </td>
+   <td> </td><td>3×3</td><td> </td>
+   <th rowspan="2"> ]</th></tr>
+
+   <tr align="center">
+   <td> </td><td><font size="2">I</font>A<font size="2">1</font></td><td> </td>
+   <td> </td><td><font size="2">I</font>A<font size="2">2</font></td><td> </td>
+   <td> </td><td><font size="2">I</font>A<font size="2">3</font></td><td> </td>
+   <td> </td><td> </td>
+   <td> </td><td><font size="2">I</font>A<font size="2">n</font></td><td> </td>
+   </tr>
+</table>
+
+</body>
+
+</html>

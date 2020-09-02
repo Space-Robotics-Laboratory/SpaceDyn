@@ -1,0 +1,68 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 簡単リファレンス </title>
+</head>
+
+<body>
+
+<h1>calc_gj</h1>
+
+<h3>文法</h3>
+GJ = calc_gj( R0, RR, A0, AA, q, num_e )
+
+<h3>global変数</h3>
+BB, SE, J_type, Qe,<br>
+cc, ce,<br>
+m0, m, mass, inertia0, inertia,<br>
+num_q, Ez
+
+<h3>解説</h3>
+num_e で指定された端点に関する一般化ヤコビ行列を求める関数．<br>
+<br>
+<br>
+
+一般化ヤコビ行列は無反動マニピュレーション等を考える際に必要となる行列であり，
+次のように求められる．<br>
+まず，運動量保存の式は以下のとおりである．
+<table>
+<tr><th rowspan="2" nowrap>[</th><td>P</td><th rowspan="2" nowrap>] = Hs*[</th><td>v0</td><th rowspan="2" nowrap>] + Hbm*qd</th><th rowspan="2"nowrap></th><th rowspan="2" nowrap>…(1)</th></tr>
+<tr><td>L</td><td>w0</td></tr>
+</table>
+P：運動量，L：角運動量<br>
+Hs，Hbm：ベース，手先に関する慣性行列<br>
+<br>
+
+これをベースの速度，角速度について整理すると以下のようになる．
+<table frame="void">
+<tr><th rowspan="2" nowrap>[</th><td>v0</td><th rowspan="2" nowrap>] = Hs^(-1)*{ [</th><td>P</td><th rowspan="2" nowrap>] - Hbm*qd }</th><th rowspan="2" nowrap></th><th rowspan="2" nowrap>…(2)</th></tr>
+<tr><td>w0</td><td>L</td></tr>
+</table>
+<br>
+
+一方，手先の速度，角速度は以下の式から求めることができる．
+<table frame="void">
+<tr><th rowspan="2" nowrap>[</th><td>vh</td><th rowspan="2" nowrap>] = Js*[</th><td>v0</td><th rowspan="2" nowrap>] + Jbm*qd</th><th rowspan="2" nowrap></th><th rowspan="2" nowrap>…(3)</th></tr>
+<tr><td>wh</td><td>w0</td></tr>
+</table>
+Js,Jbm：ベース，手先に関するヤコビ行列<br>
+<br>
+
+(3)式に(2)式を代入して(4)式を得る．
+<br>
+<table frame="void">
+<tr><th rowspan="2" nowrap>[</th><td>vh</td><th rowspan="2" nowrap>] = ( Jbm - Js*Hs^(-1)*Hbm )*qd + Js*Hs^(-1)*[</th><td>P</td><th rowspan="2" nowrap>]</th><th rowspan="2" nowrap></th><th rowspan="2" nowrap>…(4)</th></tr>
+<tr><td>wh</td><td>L</td></tr>
+</table>
+ここで，<nobr>Jbm - Js*Hs^(-1)*Hbm</nobr>を一般化ヤコビ行列と言う．<br>
+<br>
+<br>
+
+人工衛星などフリーフライングロボットでは運動量，角運動量が保存されるため，
+(4)式の末項の変化を無視することができる．そのため一般化ヤコビを用いれば，
+リンクの動きが手先の速度，角速度に与える影響を評価することができる．
+
+</body>
+
+</html>

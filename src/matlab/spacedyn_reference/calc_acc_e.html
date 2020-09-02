@@ -1,0 +1,68 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 Reference </title>
+</head>
+
+<body>
+<h1>calc_acc</h1>
+
+<h3>Grammar</h3>
+[ vd, wd ] = calc_acc( A0, AA, w0, ww, vd0, wd0, q, qd, qdd )
+
+<h3>Global variables</h3>
+BB, J_type, Qi,<br>
+c0, cc,<br>
+num_q, Ez
+
+<h3>Explanation</h3>
+Function which calculates linear and angular acceleration of each joint.<br>
+vd, wd are linear acceleration [m/s^2] and angular acceleration [rad/s^2].<br>
+<br>
+
+Return value consists of the following.<br>
+<table>
+   <tr align="center">
+   <th rowspan="2">vd = [</th>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><th rowspan="2">…</th><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <th rowspan="2">]</font></th>
+   </tr>
+
+   <tr align="center">
+   <td> </td><td><font size="4">vd</font><font size="2">1</font></td><td> </td>
+   <td> </td><td><font size="4">vd</font><font size="2">2</font></td><td> </td>
+   <td> </td><td><font size="4">vd</font><font size="2">3</font></td><td> </td>
+   <td> </td><td> </td>
+   <td> </td><td><font size="4">vd</font><font size="2">n</font></td><td> </td>
+   </tr>
+
+   <tr>
+   </tr>
+
+   <tr align="center">
+   <th rowspan="2">wd = [</th>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><th rowspan="2">…</th><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <th rowspan="2">]</font></th>
+   </tr>
+
+   <tr align="center">
+   <td> </td><td><font size="4">wd</font><font size="2">1</font></td><td> </td>
+   <td> </td><td><font size="4">wd</font><font size="2">2</font></td><td> </td>
+   <td> </td><td><font size="4">wd</font><font size="2">3</font></td><td> </td>
+   <td> </td><td> </td>
+   <td> </td><td><font size="4">wd</font><font size="2">n</font></td><td> </td>
+   </tr>
+</table>
+
+</body>
+
+</html>

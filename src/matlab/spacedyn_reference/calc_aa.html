@@ -1,0 +1,53 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 簡単リファレンス </title>
+</head>
+
+<body>
+<h1>calc_aa</h1>
+
+<h3>文法</h3>
+AA = calc_aa( A0, q )
+
+<h3>global変数</h3>
+BB, J_type, Qi<br>
+num_q<br>
+
+<h3>解説</h3>
+全関節の座標変換行列 <font size="2">I</font><font size="4">A</font><font size="2">i</font> を計算する関数．<br>
+関節座標系とリンク座標系は一致するので，
+全リンク重心の座標変換行列を計算する関数とも言える．<br>
+ただしここで言う座標変換行列は，関節座標系から慣性座標系への変換行列を意味する．<br>
+<br>
+
+<font size="4"><font size="2">I </font>R = <font size="2">I </font>A<font size="2"> i</font> * <font size="2">i </font>R</font><br>
+<font size="2">I</font>R ： 慣性座標系で表したベクトル R<br>
+<font size="2">i</font>R ： 関節 i 座標系で表したベクトル R<br>
+<font size="2">I</font>A<font size="2">i</font> ： 関節 i の座標変換行列<br>
+<br>
+
+AAの中身は次のとおりである．<br>
+<table frame="void">
+   <tr align="center">
+   <th rowspan="2">AA = [</th>
+   <td> </td><td>3×3</td><td> </td>
+   <td> </td><td>3×3</td><td> </td>
+   <td> </td><td>3×3</td><td> </td>
+   <td> </td><th rowspan="2">…</th><td> </td>
+   <td> </td><td>3×3</td><td> </td>
+   <th rowspan="2"> ]</th></tr>
+
+   <tr align="center">
+   <td> </td><td><font size="2">I</font>A<font size="2">1</font></td><td> </td>
+   <td> </td><td><font size="2">I</font>A<font size="2">2</font></td><td> </td>
+   <td> </td><td><font size="2">I</font>A<font size="2">3</font></td><td> </td>
+   <td> </td><td> </td>
+   <td> </td><td><font size="2">I</font>A<font size="2">n</font></td><td> </td>
+   </tr>
+</table>
+
+</body>
+
+</html>

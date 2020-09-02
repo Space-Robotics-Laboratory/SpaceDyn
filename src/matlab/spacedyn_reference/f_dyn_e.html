@@ -1,0 +1,45 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 Reference </title>
+</head>
+
+<body>
+<h1>f_dyn</h1>
+
+<h3>Grammar</h3>
+[ vd0, wd0, qdd ] = f_dyn(R0, A0, v0, w0, q, qd, F0, T0, Fe, Te, tau)
+
+<h3>Global variables</h3>
+BB, S0, SS, SE, J_type, Qi, Qe,<br>
+c0, cc, ce,<br>
+m0, m, mass, inertia0, inertia,<br>
+num_q, Ez, Gravity
+
+<h3>Explanation</h3>
+Function which computes forward dynamics.<br>
+<br>
+
+<h3>Details</h3>
+The equation of motion of a robot system is shown below.<br>
+<b>H*xdd + c = F + J^(-1)*Fe</b><br>
+H：Inertia matrix of the whole robot system<br>
+xdd：Acceleration of the whole robot system<br>
+F：Generalized forces<br>
+J：Jacobian matrix<br>
+Fe：External forces applied to an end point<br>
+c：Velocity-dependent term<br>
+<br>
+
+Directly determining the velocity-dependent term c is computationally expensive.<br>
+If the acceleration xdd of the robot and the external forces Fe are set to zero,<br>
+the velocity-dependent term c becomes equal to the generalized forces F.<br>
+Thus, the acceleration xdd of the robot can be expressed as follows.<br>
+
+
+<b>xdd = H^(-1)*{ F - F|xdd,Fe=0 + J^(-T)*Fe }</b>
+
+</body>
+
+</html>

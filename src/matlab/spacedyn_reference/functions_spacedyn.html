@@ -1,0 +1,1288 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 簡単リファレンス </title>
+</head>
+
+<body>
+<h1>The SpaceDyn ver1.2 簡単リファレンス</h1><br>
+<h1>global変数の意味</h1>
+SpaceDynではglobal変数を用いて運動学や動力学の計算に必要なパラメータを定義します．<br>
+以下で各変数について説明します．<br>
+<br>
+
+<ul>
+<li><a name="BB">BB</a></li><br>
+リンクの繋がりを表す行列．<br>
+BB(i) はリンク i が外接している(リンク i から見てひとつベース寄りの)リンク番号を示す．<br>
+大きさは1×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="S0">S0</a></li><br>
+ベースとリンクの繋がりを表す行列．<br>
+S0(i) はリンク i がベースに接続されていれば 1 ，しなければ 0 ．<br>
+大きさは1×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="SS">SS</a></li><br>
+全リンクの接続関係を表す行列．<br>
+SS の対角成分は全て -1．<br>
+<table>
+   <tr align="left">
+   <th rowspan="2">SS(i,j) = {</th>
+   <td>1</td><td></td><td>…</td><td></td><td>if <a href="#BB">BB(j)</a> = i</td>
+   </tr>
+   <tr align="left">
+   <td>0</td><td></td><td>…</td><td></td><td>else</td>
+   </tr>
+</table> 
+SS の i 行を見れば，リンク i にどのリンクが外接しているかが分かる．<br>
+大きさは<a href="#num_q">num_q</a>×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="SE">SE</a></li><br>
+手先を持つ末端リンクであるかどうかを示す行列．<br>
+ver1 では外力は手先にしか作用しないので，<br>
+外力が作用するリンクかどうかを示す行列と考えることもできる．<br>
+大きさは1×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="J_type">J_type</a></li><br>
+関節の種類を表す行列．<br>
+直動関節であれば P，回転関節であれば R ．<br>
+大きさは1×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="c0">c0</a></li><br>
+ベース重心からベースに外接する関節へのベクトルをまとめた行列．<br>
+c0(1:3,i) はベース重心から関節 i へのベクトル．<br>
+ただし，ベクトルはベース座標系で表す．<br>
+また，ベースに外接しない場合は [ 0 0 0 ]'．<br>
+大きさは3×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="cc">cc</a></li><br>
+リンク重心からそのリンクが接する関節へのベクトルをまとめた行列．<br>
+cc(1:3,i,j) はリンク i の重心から関節 j へのベクトル．<br>
+ただし，ベクトルはリンク座標系で表す．<br>
+また，リンク i に接しない関節へのベクトルは [ 0 0 0 ]' とする．<br>
+大きさは3×<a href="#num_q">num_q</a>×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="ce">ce</a></li><br>
+リンク重心からそのリンク上にある外力作用点までのベクトルをまとめた行列．<br>
+ce(1:3,i) はリンク i の重心からリンク i 上にある外力作用点までのベクトル．<br>
+ただしベクトルはリンク座標系で表す．<br>
+また，末端リンクでない場合は [ 0 0 0 ]'．<br>
+大きさは3×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="Qi">Qi</a></li><br>
+リンク <a href="#BB">BB</a>(i) 座標系からリンク i 座標系へのオイラー角．<br>
+大きさは3×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="Qe">Qe</a></li><br>
+リンク i 座標系からリンク i 上にある外力作用点座標系へのオイラー角．<br>
+末端リンクでない場合は [ 0 0 0 ]'．<br>
+大きさは3×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="m0">m0</a></li><br>
+ベースの質量．<br>
+スカラー．<br>
+<br>
+
+<li><a name="m">m</a></li><br>
+リンクごとの質量．<br>
+大きさは1×<a href="#num_q">num_q</a>．<br>
+<br>
+
+<li><a name="mass">mass</a></li><br>
+ロボットシステムの全質量．<br>
+スカラー．<br>
+<br>
+
+<li><a name="inertia0">inertia0</a></li><br>
+ベースの慣性行列．<br>
+大きさは3×3．<br>
+<br>
+
+<li><a name="inertia">inertia</a></li><br>
+リンクごとの慣性行列．<br>
+<table>
+   <tr align="center">
+   <th rowspan="2">inertia = [</th>
+   <td></td><td>3×3</td><td></td>
+   <td></td><td>3×3</td><td></td>
+   <td></td><td>3×3</td><td></td>
+   <td></td><th rowspan="2">…</th><td></td>
+   <td></td><td>3×3</td><td></td>
+   <th rowspan="2">]</th>
+   </tr>
+
+   <tr align="center">
+   <td></td><td>リンク1</td><td></td>
+   <td></td><td>リンク2</td><td></td>
+   <td></td><td>リンク3</td><td></td>
+   <td></td><td></td>
+   <td></td><td>リンクn</td><td></td>
+   </tr>
+</table>
+大きさは3×(3*<a href="#num_q">num_q</a>)．<br>
+<br>
+
+<li><a name="num_q">num_q</a></li><br>
+全リンク数．<br>
+スカラー．<br>
+<br>
+
+<li><a name="Ez">Ez</a></li><br>
+z 軸方向の単位ベクトル．<br>
+大きさは3×1．<br>
+<br>
+
+<li><a name="Gravity">Gravity</a></li><br>
+重力加速度．<br>
+大きさは3×1．<br>
+<br>
+
+<li><a name="d_time">d_time</a></li><br>
+積分に用いる時間刻み．<br>
+スカラー．<br>
+
+</ul>
+</body>
+
+<br><BR>
+
+<body>
+<h1>関数の説明</h1><br>
+
+<h1>aw</h1>
+
+<h3>文法</h3>
+E0 = aw( w0 )
+
+<h3>global変数</h3>
+d_time
+
+<h3>解説</h3>
+ベースの角速度ベクトル w0 周りの回転座標変換行列を計算する関数．<br>
+<br>
+
+ベースが角速度 w0 で回転していたとする．<br>
+ある時刻 t = n での姿勢(座標変換行列)が 
+<font size="2">I</font>A0<font size="2">n</font> とすると，<br>
+t = n + d_time での姿勢の一次近似は，<br>
+<font size="2">I</font>A0<font size="2">n+d_time</font>
+ = aw( w0 ) * <font size="2">I</font>A0<font size="2">n</font><br>
+となる．<br>
+
+</body>
+
+<body>
+<h1>calc_aa</h1>
+
+<h3>文法</h3>
+AA = calc_aa( A0, q )
+
+<h3>global変数</h3>
+BB, J_type, Qi<br>
+num_q<br>
+
+<h3>解説</h3>
+全関節の座標変換行列 <font size="2">I</font><font size="4">A</font><font size="2">i</font> を計算する関数．<br>
+関節座標系とリンク座標系は一致するので，
+全リンク重心の座標変換行列を計算する関数とも言える．<br>
+ただしここで言う座標変換行列は，関節座標系から慣性座標系への変換行列を意味する．<br>
+<br>
+
+<font size="4"><font size="2">I </font>R = <font size="2">I </font>A<font size="2"> i</font> * <font size="2">i </font>R</font><br>
+<font size="2">I</font>R ： 慣性座標系で表したベクトル R<br>
+<font size="2">i</font>R ： 関節 i 座標系で表したベクトル R<br>
+<font size="2">I</font>A<font size="2">i</font> ： 関節 i の座標変換行列<br>
+<br>
+
+AAの中身は次のとおりである．<br>
+<table frame="void">
+   <tr align="center">
+   <th rowspan="2">AA = [</th>
+   <td> </td><td>3×3</td><td> </td>
+   <td> </td><td>3×3</td><td> </td>
+   <td> </td><td>3×3</td><td> </td>
+   <td> </td><th rowspan="2">…</th><td> </td>
+   <td> </td><td>3×3</td><td> </td>
+   <th rowspan="2"> ]</th></tr>
+
+   <tr align="center">
+   <td> </td><td><font size="2">I</font>A<font size="2">1</font></td><td> </td>
+   <td> </td><td><font size="2">I</font>A<font size="2">2</font></td><td> </td>
+   <td> </td><td><font size="2">I</font>A<font size="2">3</font></td><td> </td>
+   <td> </td><td> </td>
+   <td> </td><td><font size="2">I</font>A<font size="2">n</font></td><td> </td>
+   </tr>
+</table>
+
+</body>
+
+<body>
+<h1>calc_acc</h1>
+
+<h3>文法</h3>
+[ vd, wd ] = calc_acc( A0, AA, w0, ww, vd0, wd0, q, qd, qdd )
+
+<h3>global変数</h3>
+BB, J_type, Qi,<br>
+c0, cc,<br>
+num_q, Ez
+
+<h3>解説</h3>
+関節の並進加速度，回転角加速度を求める関数．<br>
+vd，wd はそれぞれ並進加速度[m/s^2]，回転角加速度[rad/s^2]を表す．<br>
+<br>
+
+返り値の中身は以下のとおり．<br>
+<table>
+   <tr align="center">
+   <th rowspan="2">vd = [</th>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><th rowspan="2">…</th><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <th rowspan="2">]</th>
+   </tr>
+
+   <tr align="center">
+   <td> </td><td><font size="4">vd</font><font size="2">1</font></td><td> </td>
+   <td> </td><td><font size="4">vd</font><font size="2">2</font></td><td> </td>
+   <td> </td><td><font size="4">vd</font><font size="2">3</font></td><td> </td>
+   <td> </td><td> </td>
+   <td> </td><td><font size="4">vd</font><font size="2">n</font></td><td> </td>
+   </tr>
+
+   <tr>
+   </tr>
+
+   <tr align="center">
+   <th rowspan="2">wd = [</th>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><th rowspan="2">…</th><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <th rowspan="2">]</th>
+   </tr>
+
+   <tr align="center">
+   <td> </td><td><font size="4">wd</font><font size="2">1</font></td><td> </td>
+   <td> </td><td><font size="4">wd</font><font size="2">2</font></td><td> </td>
+   <td> </td><td><font size="4">wd</font><font size="2">3</font></td><td> </td>
+   <td> </td><td> </td>
+   <td> </td><td><font size="4">wd</font><font size="2">n</font></td><td> </td>
+   </tr>
+</table>
+
+</body>
+
+<body>
+
+<h1>calc_gj</h1>
+
+<h3>文法</h3>
+GJ = calc_gj( R0, RR, A0, AA, q, num_e )
+
+<h3>global変数</h3>
+BB, SE, J_type, Qe,<br>
+cc, ce,<br>
+m0, m, mass, inertia0, inertia,<br>
+num_q, Ez
+
+<h3>解説</h3>
+num_e で指定された端点に関する一般化ヤコビ行列を求める関数．<br>
+<br>
+<br>
+
+一般化ヤコビ行列は無反動マニピュレーション等を考える際に必要となる行列であり，
+次のように求められる．<br>
+まず，運動量保存の式は以下のとおりである．
+<table>
+<tr><th rowspan="2" nowrap>[</th><td>P</td><th rowspan="2" nowrap>] = Hs*[</th><td>v0</td><th rowspan="2" nowrap>] + Hbm*qd</th><th rowspan="2"nowrap></th><th rowspan="2" nowrap>…(1)</th></tr>
+<tr><td>L</td><td>w0</td></tr>
+</table>
+P：運動量，L：角運動量<br>
+Hs，Hbm：ベース，手先に関する慣性行列<br>
+<br>
+
+これをベースの速度，角速度について整理すると以下のようになる．
+<table frame="void">
+<tr><th rowspan="2" nowrap>[</th><td>v0</td><th rowspan="2" nowrap>] = Hs^(-1)*{ [</th><td>P</td><th rowspan="2" nowrap>] - Hbm*qd }</th><th rowspan="2" nowrap></th><th rowspan="2" nowrap>…(2)</th></tr>
+<tr><td>w0</td><td>L</td></tr>
+</table>
+<br>
+
+一方，手先の速度，角速度は以下の式から求めることができる．
+<table frame="void">
+<tr><th rowspan="2" nowrap>[</th><td>vh</td><th rowspan="2" nowrap>] = Js*[</th><td>v0</td><th rowspan="2" nowrap>] + Jbm*qd</th><th rowspan="2" nowrap></th><th rowspan="2" nowrap>…(3)</th></tr>
+<tr><td>wh</td><td>w0</td></tr>
+</table>
+Js,Jbm：ベース，手先に関するヤコビ行列<br>
+<br>
+
+(3)式に(2)式を代入して(4)式を得る．
+<br>
+<table frame="void">
+<tr><th rowspan="2" nowrap>[</th><td>vh</td><th rowspan="2" nowrap>] = ( Jbm - Js*Hs^(-1)*Hbm )*qd + Js*Hs^(-1)*[</th><td>P</td><th rowspan="2" nowrap>]</th><th rowspan="2" nowrap></th><th rowspan="2" nowrap>…(4)</th></tr>
+<tr><td>wh</td><td>L</td></tr>
+</table>
+ここで，<nobr>Jbm - Js*Hs^(-1)*Hbm</nobr>を一般化ヤコビ行列と言う．<br>
+<br>
+<br>
+
+人工衛星などフリーフライングロボットでは運動量，角運動量が保存されるため，
+(4)式の末項の変化を無視することができる．そのため一般化ヤコビを用いれば，
+リンクの動きが手先の速度，角速度に与える影響を評価することができる．
+
+</body>
+
+<body>
+<h1>calc_hh</h1>
+
+<h3>文法</h3>
+HH = calc_hh( R0, RR, A0, AA )
+
+<h3>global変数</h3>
+BB, J_type,<br>
+cc,<br>
+m0, m, mass, inertia0, inertia,<br>
+num_q, Ez
+
+<h3>解説</h3>
+ロボット全体の慣性行列を求める関数．<br>
+
+</body>
+
+<body>
+<h1>calc_je</h1>
+
+<h3>文法</h3>
+Jacobian = calc_je( RR, AA, q, joints )
+
+<h3>global変数</h3>
+J_type, Qe,<br>
+cc, ce,<br>
+num_q, Ez
+
+<h3>解説</h3>
+joints で指定された端点に関するヤコビ行列を計算する関数．<br>
+<br>
+<br>
+
+一般に手先の並進速度，回転角速度は次の式で求めることができる．<br>
+<table frame="void">
+<tr><th rowspan="2" nowrap>[</th><td>vh</td><th rowspan="2" nowrap>] = Js*[</th><td>v0</td><th rowspan="2" nowrap>] + Jbm*qd</th></tr>
+<tr><td>wh</td><td>w0</td></tr>
+</table>
+Js,Jbm：ベース，手先に関するヤコビ行列<br>
+<br>
+<br>
+
+calc_je.m で求めるのは Jbm である．<br>
+大きさは 6×num_q である．
+
+</body>
+
+<body>
+<h1>calc_jr</h1>
+
+<h3>文法</h3>
+JJ_r = calc_jr( AA )
+
+<h3>global変数</h3>
+BB, J_type,<br>
+num_q, Ez
+
+<h3>解説</h3>
+関節に関するヤコビ行列の回転成分を計算する関数．<br>
+<br>
+<br>
+
+注目する点に関するヤコビ行列は以下の式で求めることができる．
+<table>
+   <tr>
+   <th rowspan="2" nowrap>[</th>
+   <td> </td><td>vh</td><td> </td>
+   <th rowspan="2" nowrap>] = Js*[</th>
+   <td> </td><td>v0</td><td> </td>
+   <th rowspan="2" nowrap>] + Jbm*qd</th>
+   </tr>
+
+   <tr>
+   <td> </td><td>wh</td><td> </td>
+   <td> </td><td>w0</td><td> </td>
+   </tr>
+</table>
+Js,Jbm：ベース，手先に関するヤコビ行列<br>
+<br>
+
+ヤコビ行列は並進に関する要素と回転を表す要素に分離することができる．<br>
+並進成分を JJ_t ，回転成分を JJ_r とすると，
+ヤコビ行列は以下のように表せる．
+<table>
+   <tr>
+   <th rowspan="2" nowrap>JJ = [</th>
+   <td> </td><td>JJ_t</td><td> </td>
+   <th rowspan="2" nowrap>]</th>
+   </tr>
+
+   <tr>
+   <td> </td><td>JJ_r</td><td> </td>
+   </tr>
+</table>
+<br>
+<br>
+
+calc_jr.m は全関節分の JJ_r を計算する．<br>
+返り値の中身は以下のとおりである．
+<table>
+   <tr align="center">
+   <th rowspan="2">JJ_r = [</th>
+   <td> </td><td>3×num_q</td><td> </td>
+   <td> </td><td>3×num_q</td><td> </td>
+   <td> </td><td>3×num_q</td><td> </td>
+   <td> </td><th rowspan="2">…</th><td> </td>
+   <td> </td><td>3×num_q</td><td> </td>
+   <th rowspan="2">]</th>
+   </tr>
+
+   <tr align="center">
+   <td> </td><td>JJ_r1</td><td> </td>
+   <td> </td><td>JJ_r2</td><td> </td>
+   <td> </td><td>JJ_r3</td><td> </td>
+   <td> </td><td> </td>
+   <td> </td><td>JJ_rn</td><td> </td>
+   </tr>
+</table>
+
+</body>
+
+<body>
+<h1>calc_jre</h1>
+
+<h3>文法</h3>
+JJ_re = calc_jre( AA, joints )
+
+<h3>global変数</h3>
+J_type,<br>
+num_q, Ez
+
+<h3>解説</h3>
+joints で指定された手先に関するヤコビ行列のうち回転成分を計算する関数．<br>
+<br>
+<br>
+
+一般に手先の速度，角速度は以下の式から求めることができる．
+<table>
+   <tr>
+   <th rowspan="2" nowrap>[</th>
+   <td> </td><td>vh</td><td> </td>
+   <th rowspan="2" nowrap>] = Js*[</th>
+   <td> </td><td>v0</td><td> </td>
+   <th rowspan="2" nowrap>] + Jbm*qd</th>
+   </tr>
+
+   <tr>
+   <td> </td><td>wh</td><td> </td>
+   <td> </td><td>w0</td><td> </td>
+   </tr>
+</table>
+Js,Jbm：ベース，手先に関するヤコビ行列<br>
+<br>
+
+ヤコビ行列は並進に関する要素と回転を表す要素に分離することができる．<br>
+並進成分を JJ_te ，回転成分を JJ_re とすると，
+ヤコビ行列は以下のように表せる．
+<table>
+   <tr>
+   <th rowspan="2" nowrap>Jbm = [</th>
+   <td> </td><td>JJ_te</td><td> </td>
+   <th rowspan="2" nowrap>]</th>
+   </tr>
+
+   <tr>
+   <td> </td><td>JJ_re</td><td> </td>
+   </tr>
+</table>
+<br>
+<br>
+
+calc_jre.m は指定された手先に関する JJ_re を計算する．<br>
+JJ_re の大きさは 3×length(joints) であり，中身は，<br>
+joints = [ 1 2 4 6 7 ]<br>
+とすると，
+<table>
+<tr align="center">
+<th rowspan="2" nowrap>JJ_re = [</th>
+<td> </td><td>3×1</td><td> </td>
+<td> </td><td>3×1</td><td> </td>
+<td> </td><td>3×1</td><td> </td>
+<td> </td><td>3×1</td><td> </td>
+<td> </td><td>3×1</td><td> </td>
+<th rowspan="2" nowrap>]</th>
+</tr>
+
+<tr align="center">
+<td> </td><td>JJ_re<font size="2">1</font></td><td> </td>
+<td> </td><td>JJ_re<font size="2">2</font></td><td> </td>
+<td> </td><td>JJ_re<font size="2">4</font></td><td> </td>
+<td> </td><td>JJ_re<font size="2">6</font></td><td> </td>
+<td> </td><td>JJ_re<font size="2">7</font></td><td> </td>
+</tr>
+</table>
+
+</body>
+
+<body>
+<h1>calc_jt</h1>
+
+<h3>文法</h3>
+JJ_r = calc_jt( RR, AA )
+
+<h3>global変数</h3>
+BB, J_type,<br>
+cc,<br>
+num_q, Ez
+
+<h3>解説</h3>
+関節に関するヤコビ行列の並進成分を計算する関数．<br>
+<br>
+<br>
+
+注目する点に関するヤコビ行列は以下の式で求めることができる．
+<table>
+   <tr>
+   <th rowspan="2" nowrap>[</th>
+   <td> </td><td>vh</td><td> </td>
+   <th rowspan="2" nowrap>] = Js*[</th>
+   <td> </td><td>v0</td><td> </td>
+   <th rowspan="2" nowrap>] + Jbm*qd</th>
+   </tr>
+
+   <tr>
+   <td> </td><td>wh</td><td> </td>
+   <td> </td><td>w0</td><td> </td>
+   </tr>
+</table>
+Js,Jbm：ベース，手先に関するヤコビ行列<br>
+<br>
+
+ヤコビ行列は並進に関する要素と回転を表す要素に分離することができる．<br>
+並進成分を JJ_t ，回転成分を JJ_r とすると，
+ヤコビ行列は以下のように表せる．
+<table>
+   <tr>
+   <th rowspan="2" nowrap>JJ = [</th>
+   <td> </td><td>JJ_t</td><td> </td>
+   <th rowspan="2" nowrap>]</th>
+   </tr>
+
+   <tr>
+   <td> </td><td>JJ_r</td><td> </td>
+   </tr>
+</table>
+<br>
+<br>
+
+calc_jt.m は全関節分の JJ_t を計算する．<br>
+返り値の中身は以下のとおりである．
+<table>
+   <tr align="center">
+   <th rowspan="2"><b>JJ_t</b> = </th>
+   <th rowspan="2">[</th>
+   <td> </td><td>3×num_q</td><td> </td>
+   <td> </td><td>3×num_q</td><td> </td>
+   <td> </td><td>3×num_q</td><td> </td>
+   <td> </td><th rowspan="2">…</th><td> </td>
+   <td> </td><td>3×num_q</td><td> </td>
+   <th rowspan="2">]</th>
+   </tr>
+
+   <tr align="center">
+   <td> </td><td>JJ_t1</td><td> </td>
+   <td> </td><td>JJ_t2</td><td> </td>
+   <td> </td><td>JJ_t3</td><td> </td>
+   <td> </td><td> </td>
+   <td> </td><td>JJ_tn</td><td> </td>
+   </tr>
+</table>
+
+</body>
+
+<body>
+<h1>calc_jte</h1>
+
+<h3>文法</h3>
+JJ_te = calc_jte( RR, AA, q, joints )
+
+<h3>global変数</h3>
+J_type, Qe,<br>
+cc, ce,<br>
+num_q, Ez
+
+<h3>解説</h3>
+joints で指定された手先に関するヤコビ行列のうち並進成分を計算する関数．<br>
+<br>
+<br>
+
+一般に手先の速度，角速度は以下の式から求めることができる．
+<table>
+   <tr>
+   <th rowspan="2" nowrap>[</th>
+   <td> </td><td>vh</td><td> </td>
+   <th rowspan="2" nowrap>] = Js*[</th>
+   <td> </td><td>v0</td><td> </td>
+   <th rowspan="2" nowrap>] + Jbm*qd</th>
+   </tr>
+
+   <tr>
+   <td> </td><td>wh</td><td> </td>
+   <td> </td><td>w0</td><td> </td>
+   </tr>
+</table>
+Js,Jbm：ベース，手先に関するヤコビ行列<br>
+<br>
+
+ヤコビ行列は並進に関する要素と回転を表す要素に分離することができる．<br>
+並進成分を JJ_te ，回転成分を JJ_re とすると，
+ヤコビ行列は以下のように表せる．
+<table>
+   <tr>
+   <th rowspan="2" nowrap>Jbm = [</th>
+   <td> </td><td>JJ_te</td><td> </td>
+   <th rowspan="2" nowrap>]</th>
+   </tr>
+
+   <tr>
+   <td> </td><td>JJ_re</td><td> </td>
+   </tr>
+</table>
+<br>
+<br>
+
+calc_jte.m は指定された手先に関する JJ_te を計算する．<br>
+JJ_te の大きさは 3×length(joints) であり，中身は，<br>
+joints = [ 1 2 4 6 7 ]<br>
+とすると，
+<table>
+<tr align="center">
+<th rowspan="2" nowrap>JJ_te = [</th>
+<td> </td><td>3×1</td><td> </td>
+<td> </td><td>3×1</td><td> </td>
+<td> </td><td>3×1</td><td> </td>
+<td> </td><td>3×1</td><td> </td>
+<td> </td><td>3×1</td><td> </td>
+<th rowspan="2" nowrap>]</th>
+</tr>
+
+<tr align="center">
+<td> </td><td>JJ_te<font size="2">1</font></td><td> </td>
+<td> </td><td>JJ_te<font size="2">2</font></td><td> </td>
+<td> </td><td>JJ_te<font size="2">4</font></td><td> </td>
+<td> </td><td>JJ_te<font size="2">6</font></td><td> </td>
+<td> </td><td>JJ_te<font size="2">7</font></td><td> </td>
+</tr>
+</table>
+
+</body>
+
+<body>
+<h1>calc_pos</h1>
+
+<h3>文法</h3>
+RR = calc_pos( R0, A0, AA, q )
+
+<h3>global変数</h3>
+BB, J_type,<br>
+c0, cc,<br>
+num_q, Ez
+
+<h3>解説</h3>
+全リンク重心の位置ベクトルを計算する．<br>
+RRの中身は次のとおりである．<br>
+<br>
+
+<table>
+   <tr align="center">
+   <th rowspan="2">RR = [</th>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><th rowspan="2">…</th><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <th rowspan="2">]
+   </th>
+
+   </tr>
+   <tr align="center">
+   <td> </td><td>RR<font size="2">1</font></td><td> </td>
+   <td> </td><td>RR<font size="2">2</font></td><td> </td>
+   <td> </td><td>RR<font size="2">3</font></td><td> </td>
+   <td> </td><td> </td>
+   <td> </td><td>RR<font size="2">n</font></td><td> </td>
+</tr>
+</table>
+
+</body>
+
+<body>
+<h1>calc_vel</h1>
+
+<h3>文法</h3>
+[ vv, ww ] = calc_vel( A0, AA, v0, w0, q, qd )
+
+<h3>global変数</h3>
+BB, J_type,<br>
+c0, cc,<br>
+num_q, Ez
+
+<h3>解説</h3>
+全リンク重心の並進速度ベクトル vv，角速度ベクトル ww を計算する．<br>
+返り値の中身は次のとおりである．<br>
+<br>
+<table>
+   <tr align="center">
+   <th rowspan="2">vv = [</th>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><th rowspan="2">…</th><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <th rowspan="2">]
+   </th>
+   </tr>
+
+   <tr>
+   <td> </td><td>vv<font size="2">1</font></td><td> </td>
+   <td> </td><td>vv<font size="2">2</font></td><td> </td>
+   <td> </td><td>vv<font size="2">3</font></td><td> </td>
+   <td> </td><td> </td>
+   <td> </td><td>vv<font size="2">n</font></td><td> </td>
+   </tr>
+
+   <tr>
+   </tr>
+
+   <tr align="center">
+   <th rowspan="2">ww = [</th>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><th rowspan="2">…</th><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <th rowspan="2">]
+   </th>
+   </tr>
+
+   <tr>
+   <td> </td><td>ww<font size="2">1</font></td><td> </td>
+   <td> </td><td>ww<font size="2">2</font></td><td> </td>
+   <td> </td><td>ww<font size="2">3</font></td><td> </td>
+   <td> </td><td> </td>
+   <td> </td><td>ww<font size="2">n</font></td><td> </td>
+   </tr>
+</table>
+
+</body>
+
+
+<body>
+<h1>cross</h1>
+
+<h3>文法</h3>
+vector3 = cross( vector1, vector2 )
+
+<h3>global変数</h3>
+---
+
+<h3>解説</h3>
+2つのベクトル(大きさ3×1)の外積を求める関数．
+
+</body>
+
+<body>
+<h1>cx,cy,cz</h1>
+
+<h3>文法</h3>
+C = cx( roll )<br>
+C = cy( pitch )<br>
+C = cz( yaw )<br>
+
+<h3>global変数</h3>
+---
+
+<h3>解説</h3>
+回転主軸周りに回転したときの方向余弦行列を求める関数．<br>
+<br>
+<br>
+
+<b>SpaceDynにおける方向余弦行列</b><br>
+ベクトル R を 慣性座標系の x 軸周りに roll [rad] 回転させたベクトルを S とする．<br>
+あるベクトル X を慣性座標系で表したものを <font size="2">I</font>X とするとき，<br>
+ベクトル R，S，および方向余弦行列 C には以下の式の関係が成り立つ．<br>
+<font size="2">I</font>S = Cx( roll ) * <font size="2">I</font>R<br>
+<br>
+
+R を慣性座標系の x 軸周りに roll [rad] だけ回転，<br>
+その回転した座標系の y 軸周りに pitch [rad] だけ回転，<br>
+さらにその座標系の z 軸周りに yaw [rad] だけ回転させたものを T とする．<br>
+このときの方向余弦行列 C は，<br>
+C = Cz( yaw ) * Cy( pitch ) * Cx( roll )<br>
+となり，<br>
+<font size="2">I</font>T = C * <font size="2">I</font>R<br>
+が成り立つ．<br>
+<br>
+
+つまり，方向余弦行列を用いれば，同じ座標系内でベクトルを回転変換することができる．<br>
+
+</body>
+
+<body>
+<h1>dc2eul</h1>
+
+<h3>文法</h3>
+euler = dc2eul( dc )
+
+<h3>global変数</h3>
+---
+
+<h3>解説</h3>
+方向余弦行列から 3-1-3 オイラー変換のオイラー角を求める関数．<br>
+<br>
+
+
+</body>
+
+<body>
+<h1>dc2qtn</h1>
+
+<h3>文法</h3>
+qtn = dc2qtn( dc )
+
+<h3>global変数</h3>
+---
+
+<h3>解説</h3>
+方向余弦行列からクォータニオンを求める関数．<br>
+<br>
+
+I 座標系から J 座標系への座標変換を考える．<br>
+この座標変換はある軸周りの回転のみであらわすことができる．<br>
+回転軸ベクトルを R，回転角を th とすると，<br>
+クォータニオンは以下のように定義される．
+<table>
+<tr align="center"><th rowspan="2">qtn = [</th><td>th</td><th rowspan="2">]</th></tr>
+<tr align="center"><td>R</td></tr>
+</table>
+</body>
+
+<body>
+<h1>dc2rpy</h1>
+
+<h3>文法</h3>
+rpy = dc2rpy( dc )
+
+<h3>global変数</h3>
+---
+
+<h3>解説</h3>
+方向余弦行列から 3-2-1 オイラー変換のオイラー角を求める関数．
+
+
+</body>
+
+<body>
+<h1>eul2dc</h1>
+
+<h3>文法</h3>
+dc = eul2dc( euler )<br>
+dc = eul2dc( phi, theta, psi )
+
+<h3>global変数</h3>
+---
+
+<h3>解説</h3>
+3-1-3 オイラー変換のオイラー角から方向余弦行列を求める関数．<br>
+<br>
+<br>
+
+<b>SpaceDynにおける方向余弦行列</b><br>
+ベクトル R を 慣性座標系の x 軸周りに roll [rad] 回転させたベクトルを S とする．<br>
+あるベクトル X を慣性座標系で表したものを <font size="2">I</font>X とするとき，<br>
+ベクトル R，S，および方向余弦行列 C には以下の式の関係が成り立つ．<br>
+<font size="2">I</font>S = Cx( roll ) * <font size="2">I</font>R<br>
+<br>
+
+R を慣性座標系の z 軸周りに phi だけ回転，<br>
+その回転した座標系の x 軸周りに theta だけ回転，<br>
+さらにその座標系の z 軸周りに psi だけ回転させたものを T とする．<br>
+このときの方向余弦行列 C は，<br>
+C = Cz( psi ) * Cx( theta ) * Cz( phi )<br>
+となり，<br>
+<font size="2">I</font>T = C * <font size="2">I</font>R<br>
+が成り立つ．<br>
+<br>
+
+つまり，方向余弦行列を用いれば，同じ座標系内でベクトルを回転変換することができる．<br>
+
+</body>
+
+<body>
+<h1>f_dyn</h1>
+
+<h3>文法</h3>
+[ vd0, wd0, qdd ] = f_dyn(R0, A0, v0, w0, q, qd, F0, T0, Fe, Te, tau)
+
+<h3>global変数</h3>
+BB, S0, SS, SE, J_type, Qi, Qe,<br>
+c0, cc, ce,<br>
+m0, m, mass, inertia0, inertia,<br>
+num_q, Ez, Gravity
+
+<h3>解説</h3>
+順動力学の計算．<br>
+<br>
+
+ロボットシステムの運動方程式は以下のとおりである．<br>
+<b>H*xdd + c = F + J^(-1)*Fe</b><br>
+H：システム全体の慣性行列<br>
+xdd：ロボット全体の加速度<br>
+F：一般化力<br>
+J：ヤコビ行列<br>
+Fe：手先に働く外力<br>
+c：速度依存項<br>
+<br>
+
+ここで，速度依存項 c を直接求めることは効率が悪い．<br>
+ロボットの加速度 xdd と外力 Fe を0とすれば，c は一般化力 F と一致する．<br>
+よって，加速度 xdd は以下のように表せる．<br>
+<b>xdd = H^(-1)*{ F - F|xdd,Fe=0 + J^(-T)*Fe }</b>
+
+</body>
+
+<body>
+<h1>f_dyn_nb</h1>
+
+<h3>文法</h3>
+[ R0, A0, v0, w0, q, qd ] = f_dyn_nb( R0, A0, v0, w0, q, qd, F0, T0, Fe, Te, tau )
+
+<h3>global変数</h3>
+BB, S0, SS, SE, J_type, Qi, Qe,<br>
+c0, cc, ce,<br>
+m0, m, mass, inertia0, inertia,<br>
+num_q, Ez, Gravity, d_time
+
+
+<h3>解説</h3>
+ニューマーク･ベータ法を用いた数値積分を用いて，順動力学の計算を行う関数．<br>
+<br>
+<br>
+
+
+</body>
+
+<body>
+<h1>f_dyn_nb2</h1>
+
+<h3>文法</h3>
+[ R0, A0, v0, w0, q, qd ] = f_dyn_nb2( R0, A0, v0, w0, q, qd, F0, T0, Fe, Te, tau )
+
+<h3>global変数</h3>
+BB, S0, SS, SE, J_type, Qi, Qe,<br>
+c0, cc, ce,<br>
+m0, m, mass, inertia0, inertia,<br>
+num_q, Ez, Gravity, d_time
+
+
+<h3>解説</h3>
+ニューマーク･ベータ法を用いた数値積分を用いて，順動力学の計算を行う関数．<br>
+<br>
+<br>
+
+</body>
+
+<body>
+<h1>f_dyn_rk</h1>
+
+<h3>文法</h3>
+[ R0, A0, v0, w0, q, qd ] = f_dyn_rk( R0, A0, v0, w0, q, qd, F0, T0, Fe, Te, tau )
+
+<h3>global変数</h3>
+BB, S0, SS, SE, J_type, Qi, Qe,<br>
+c0, cc, ce,<br>
+m0, m, mass, inertia0, inertia,<br>
+num_q, Ez, Gravity, d_time
+
+<h3>解説</h3>
+ルンゲ･クッタ法を用いた数値積分を用いて，順動力学の計算を行う関数．<br>
+<br>
+<br>
+
+</body>
+
+<body>
+<h1>f_dyn_rk2</h1>
+
+<h3>文法</h3>
+[ R0, A0, v0, w0, q, qd ] = f_dyn_rk2( R0, A0, v0, w0, q, qd, F0, T0, Fe, Te, tau )
+
+<h3>global変数</h3>
+BB, S0, SS, SE, J_type, Qi, Qe,<br>
+c0, cc, ce,<br>
+m0, m, mass, inertia0, inertia,<br>
+num_q, Ez, Gravity, d_time
+
+<h3>解説</h3>
+ルンゲ･クッタ法を用いた数値積分を用いて，順動力学の計算を行う関数．<br>
+<br>
+<br>
+
+</body>
+
+<body>
+<h1>f_kin_e</h1>
+
+<h3>文法</h3>
+[ POS_e, ORI_e ] = f_kin_e( RR, AA, joints )
+
+<h3>global変数</h3>
+Qe,<br>
+ce
+
+<h3>解説</h3>
+joints で指定された手先の位置，姿勢を計算する関数．<br>
+<br>
+<br>
+
+返り値の大きさは以下のとおりである．<br>
+POS_e：3×1<br>
+ORI_e：3×3
+
+</body>
+
+<body>
+<h1>f_kin_j</h1>
+
+<h3>文法</h3>
+[ POS_j, ORI_j ] = f_kin_j( RR, AA, q, joints )
+
+<h3>global変数</h3>
+J_type,<br>
+cc,<br>
+Ez
+
+<h3>解説</h3>
+joints で指定された全関節の位置，姿勢を求める関数．<br>
+<br>
+<br>
+
+仮に，ベースからある手先までが 1, 2, 4, 5 ,7 番の関節で結ばれていたとする．<br>
+( joints = [ 1 2 4 5 7 ] )<br>
+このとき，返り値の中身は以下のようになる．
+<table>
+   <tr align="center">
+      <th rowspan="2">POS_j = [</th>
+      <td></td><td>3×1</td><td></td>
+      <td></td><td>3×1</td><td></td>
+      <td></td><td>3×1</td><td></td>
+      <td></td><td>3×1</td><td></td>
+      <td></td><td>3×1</td><td></td>
+      <th rowspan="2">]</th>
+   </tr>
+
+   <tr align="center">
+      <td></td><td>POS_j<font size="2">1</font></td><td></td>
+      <td></td><td>POS_j<font size="2">2</font></td><td></td>
+      <td></td><td>POS_j<font size="2">4</font></td><td></td>
+      <td></td><td>POS_j<font size="2">5</font></td><td></td>
+      <td></td><td>POS_j<font size="2">7</font></td><td></td>
+   </tr>
+
+   <tr>
+   </tr>
+
+   <tr align="center">
+      <th rowspan="2">ORI_j = [</th>
+      <td></td><td>3×3</td><td></td>
+      <td></td><td>3×3</td><td></td>
+      <td></td><td>3×3</td><td></td>
+      <td></td><td>3×3</td><td></td>
+      <td></td><td>3×3</td><td></td>
+      <th rowspan="2">]</th>
+   </tr>
+
+   <tr align="center">
+      <td></td><td>ORI_j<font size="2">1</font></td><td></td>
+      <td></td><td>ORI_j<font size="2">2</font></td><td></td>
+      <td></td><td>ORI_j<font size="2">4</font></td><td></td>
+      <td></td><td>ORI_j<font size="2">5</font></td><td></td>
+      <td></td><td>ORI_j<font size="2">7</font></td><td></td>
+   </tr>
+
+</table>
+
+</body>
+
+<body>
+<h1>i_kine</h1>
+
+<h3>文法</h3>
+q_sol = i_kine( R0, A0, POS_e, ORI_e, q_init, num_e )
+
+<h3>global変数</h3>
+BB, SE, J_type, Qe,<br>
+c0, cc, ce,<br>
+num_q, Ez
+
+<h3>解説</h3>
+num_e で指定された手先について，<br>
+目標手先位置，姿勢からそれを実現する関節角を求める関数．
+
+</body>
+
+<body>
+<h1>int_eu</h1>
+
+<h3>文法</h3>
+[ R0, A0, v0, w0, q, qd ] = int_eu( R0, A0, v0, w0, vd0, wd0, q, qd, qdd )
+
+<h3>global変数</h3>
+num_q, d_time
+
+<h3>解説</h3>
+オイラー法により数値積分を行う関数．
+
+</body>
+
+<body>
+<h1>int_eu2</h1>
+
+<h3>文法</h3>
+[ R0, A0, v0, w0, q, qd ] = int_eu2( R0, A0, v0, w0, vd0, wd0, q, qd, qdd )
+
+<h3>global変数</h3>
+num_q, d_time
+
+<h3>解説</h3>
+オイラー法により数値積分を行う関数．<br>
+角速度の計算にロドリゲスの公式を導入
+</body>
+
+<body>
+<h1>j_num</h1>
+
+<h3>文法</h3>
+joints = j_num( num_e )
+
+<h3>global変数</h3>
+BB, SE
+
+<h3>解説</h3>
+ベースから num_e で指定された手先までを結ぶ関節(リンク)を求める関数．
+
+</body>
+
+<body>
+<h1>r_ne</h1>
+
+<h3>文法</h3>
+Force = r_ne( R0, RR, A0, AA, v0, w0, vd0, wd0, q, qd, qdd, Fe, Te )
+
+<h3>global変数</h3>
+BB, S0, SS, SE, J_type, Qi,<br>
+c0, cc, ce,<br>
+m0, m, inertia0, inertia,<br>
+num_q, Ez, Gravity
+
+<h3>解説</h3>
+ニュートン・オイラー法による逆動力学の計算．<br>
+<br>
+<br>
+
+ベースのかかる力，モーメントをそれぞれ FF0(3×3)，TT0(3×3)，<br>
+関節トルクを tau(num_q×1) とすると，<br>
+返り値の Force の中身は以下のようになる．
+<table>
+<tr align="center"><th rowspan="3">Force = [</th><td>FF0</td><th rowspan="3">]</th></tr>
+<tr align="center"><td>TT0<td></tr>
+<tr align="center"><td>tau<td></tr>
+</table>
+
+</body>
+
+<body>
+<h1>rpy2dc</h1>
+
+<h3>文法</h3>
+dc = rpy2dc( rpy )<br>
+dc = rpy2dc( roll, pitch, yaw )
+
+<h3>global変数</h3>
+---
+
+<h3>解説</h3>
+3-2-1 オイラー変換のオイラー角から方向余弦行列を求める関数．<br>
+<br>
+<br>
+
+<b>SpaceDynにおける方向余弦行列</b><br>
+ベクトル R を 慣性座標系の x 軸周りに roll [rad] 回転させたベクトルを S とする．<br>
+あるベクトル X を慣性座標系で表したものを <font size="2">I</font>X とするとき，<br>
+ベクトル R，S，および方向余弦行列 C には以下の式の関係が成り立つ．<br>
+<font size="2">I</font>S = Cx( roll ) * <font size="2">I</font>R<br>
+<br>
+
+R を慣性座標系の x 軸周りに roll [rad] だけ回転，<br>
+その回転した座標系の y 軸周りに pitch [rad] だけ回転，<br>
+さらにその座標系の z 軸周りに yaw [rad] だけ回転させたものを T とする．<br>
+このときの方向余弦行列 C は，<br>
+C = Cz( yaw ) * Cy( pitch ) * Cx( roll )<br>
+となり，<br>
+<font size="2">I</font>T = C * <font size="2">I</font>R<br>
+が成り立つ．<br>
+<br>
+
+つまり，方向余弦行列を用いれば，同じ座標系内でベクトルを回転変換することができる．<br>
+
+</body>
+
+
+<body>
+<h1>tilde</h1>
+
+<h3>文法</h3>
+B = tilde( vector )
+
+<h3>global変数</h3>
+---
+
+<h3>解説</h3>
+ねじれ対称行列を求める関数．<br>
+<br>
+
+大きさ3のベクトル r，v の外積を考える．<br>
+a = r×v<br>
+ここで<br>
+a = B*v<br>
+となる 3×3 行列 B を r の歪対称行列と言う．<br>
+
+</body>
+
+
+
+
+
+
+
+</html>

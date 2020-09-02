@@ -1,0 +1,85 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 Reference </title>
+</head>
+
+<body>
+<h1>calc_jte</h1>
+
+<h3>Grammar</h3>
+JJ_te = calc_jte( RR, AA, q, joints )
+
+<h3>Global variables</h3>
+J_type, Qe,<br>
+cc, ce,<br>
+num_q, Ez
+
+<h3>Explanation</h3>
+Function which calculates the translational components of Jacobian matrix of end point specified by "joints".<br><br>
+<br>
+
+In general, the linear and angular velocities of an end point are obtained from the following equation.
+<table>
+   <tr>
+   <th rowspan="2" nowrap>[</th>
+   <td> </td><td>vh</td><td> </td>
+   <th rowspan="2" nowrap>] = Js*[</th>
+   <td> </td><td>v0</td><td> </td>
+   <th rowspan="2" nowrap>] + Jbm*qd</th>
+   </tr>
+
+   <tr>
+   <td> </td><td>wh</td><td> </td>
+   <td> </td><td>w0</td><td> </td>
+   </tr>
+</table>
+Js,Jbm：Jacobian matrices of the base and end point.<br>
+<br>
+
+Jacobian matrix can be devided into translational and rotational components.<br>
+Let translational components be JJ_te, and rotational components be JJ_re,<br>
+Jacobian is expressed as follows.
+<table>
+   <tr>
+   <th rowspan="2" nowrap>Jbm = [</th>
+   <td> </td><td>JJ_te</td><td> </td>
+   <th rowspan="2" nowrap>]</th>
+   </tr>
+
+   <tr>
+   <td> </td><td>JJ_re</td><td> </td>
+   </tr>
+</table>
+<br>
+<br>
+
+"calc_jte" calculates JJ_te of a specified end point .<br>
+The size of JJ_te is 3 by length(joints).<br>
+Suppose "joints" is set to the following.<br>
+joints = [ 1 2 4 6 7 ]<br>
+Then, JJ_te becomes
+<table>
+<tr align="center">
+<th rowspan="2" nowrap>JJ_te = [</th>
+<td> </td><td>3×1</td><td> </td>
+<td> </td><td>3×1</td><td> </td>
+<td> </td><td>3×1</td><td> </td>
+<td> </td><td>3×1</td><td> </td>
+<td> </td><td>3×1</td><td> </td>
+<th rowspan="2" nowrap>]</th>
+</tr>
+
+<tr align="center">
+<td> </td><td>JJ_te<font size="2">1</font></td><td> </td>
+<td> </td><td>JJ_te<font size="2">2</font></td><td> </td>
+<td> </td><td>JJ_te<font size="2">4</font></td><td> </td>
+<td> </td><td>JJ_te<font size="2">6</font></td><td> </td>
+<td> </td><td>JJ_te<font size="2">7</font></td><td> </td>
+</tr>
+</table>
+
+</body>
+
+</html>

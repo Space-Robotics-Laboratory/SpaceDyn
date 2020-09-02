@@ -1,0 +1,85 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 Reference </title>
+</head>
+
+<body>
+<h1>calc_jt</h1>
+
+<h3>Grammar</h3>
+JJ_r = calc_jt( RR, AA )
+
+<h3>Global variables</h3>
+BB, J_type,<br>
+cc,<br>
+num_q, Ez
+
+<h3>Explanation</h3>
+Function which calculates the translational components of Jacobian matrix of joints.<br>
+<br>
+<br>
+
+<h3>Details</h3>
+Jacobian matrix of a specific points can be obtained as follows.
+<table>
+   <tr>
+   <th rowspan="2" nowrap>[</th>
+   <td> </td><td>vh</td><td> </td>
+   <th rowspan="2" nowrap>] = Js*[</th>
+   <td> </td><td>v0</td><td> </td>
+   <th rowspan="2" nowrap>] + Jbm*qd</th>
+   </tr>
+
+   <tr>
+   <td> </td><td>wh</td><td> </td>
+   <td> </td><td>w0</td><td> </td>
+   </tr>
+</table>
+Js,Jbm：Jacobian matrices of the base and end point.<br>
+<br>
+
+Jacobian matrix can be devided into translational and rotational components.<br>
+Let translational components be JJ_t, and rotational components be JJ_r,<br>
+Jacobian is expressed as follows.
+<table>
+   <tr>
+   <th rowspan="2" nowrap>JJ = [</th>
+   <td> </td><td>JJ_t</td><td> </td>
+   <th rowspan="2" nowrap>]</th>
+   </tr>
+
+   <tr>
+   <td> </td><td>JJ_r</td><td> </td>
+   </tr>
+</table>
+<br>
+<br>
+
+"calc_jt" calculates JJ_t of all joints.<br>
+Return values are shown below.
+<table>
+   <tr align="center">
+   <th rowspan="2"><b>JJ_t</b> = </th>
+   <th rowspan="2">[</th>
+   <td> </td><td>3×num_q</td><td> </td>
+   <td> </td><td>3×num_q</td><td> </td>
+   <td> </td><td>3×num_q</td><td> </td>
+   <td> </td><th rowspan="2">…</th><td> </td>
+   <td> </td><td>3×num_q</td><td> </td>
+   <th rowspan="2">]</th>
+   </tr>
+
+   <tr align="center">
+   <td> </td><td>JJ_t1</td><td> </td>
+   <td> </td><td>JJ_t2</td><td> </td>
+   <td> </td><td>JJ_t3</td><td> </td>
+   <td> </td><td> </td>
+   <td> </td><td>JJ_tn</td><td> </td>
+   </tr>
+</table>
+
+</body>
+
+</html>

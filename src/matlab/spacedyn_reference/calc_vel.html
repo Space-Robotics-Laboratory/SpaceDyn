@@ -1,0 +1,68 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 簡単リファレンス </title>
+</head>
+
+<body>
+<h1>calc_vel</h1>
+
+<h3>文法</h3>
+[ vv, ww ] = calc_vel( A0, AA, v0, w0, q, qd )
+
+<h3>global変数</h3>
+BB, J_type,<br>
+c0, cc,<br>
+num_q, Ez
+
+<h3>解説</h3>
+全リンク重心の並進速度ベクトル vv，角速度ベクトル ww を計算する．<br>
+返り値の中身は次のとおりである．<br>
+<br>
+<table>
+   <tr align="center">
+   <th rowspan="2">vv = [</th>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><th rowspan="2">…</th><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <th rowspan="2">]</font>
+   </th>
+   </tr>
+
+   <tr>
+   <td> </td><td>vv<font size="2">1</font></td><td> </td>
+   <td> </td><td>vv<font size="2">2</font></td><td> </td>
+   <td> </td><td>vv<font size="2">3</font></td><td> </td>
+   <td> </td><td> </td>
+   <td> </td><td>vv<font size="2">n</font></td><td> </td>
+   </tr>
+
+   <tr>
+   </tr>
+
+   <tr align="center">
+   <th rowspan="2">ww = [</th>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <td> </td><th rowspan="2">…</th><td> </td>
+   <td> </td><td>3×1</td><td> </td>
+   <th rowspan="2">]</font>
+   </th>
+   </tr>
+
+   <tr>
+   <td> </td><td>ww<font size="2">1</font></td><td> </td>
+   <td> </td><td>ww<font size="2">2</font></td><td> </td>
+   <td> </td><td>ww<font size="2">3</font></td><td> </td>
+   <td> </td><td> </td>
+   <td> </td><td>ww<font size="2">n</font></td><td> </td>
+   </tr>
+</table>
+
+</body>
+
+</html>

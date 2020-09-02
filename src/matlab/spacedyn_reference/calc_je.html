@@ -1,0 +1,38 @@
+<html>
+
+<head>
+   <meta http-equiv="Contents-Type" content="text/html;charset=Shift_JIS">
+   <title> The SpaceDyn ver1.2 Reference </title>
+</head>
+
+<body>
+<h1>calc_je</h1>
+
+<h3>Grammer</h3>
+Jacobian = calc_je( RR, AA, q, joints )
+
+<h3>Global variables</h3>
+J_type, Qe,<br>
+cc, ce,<br>
+num_q, Ez
+
+<h3>Explanation</h3>
+Function which calculates a Jacobian matrix of an end point specified by "joints."<br>
+<br>
+<br>
+
+In general, the linear and angular velocities of an end point are determined as follows.<br>
+<table frame="void">
+<tr><th rowspan="2" nowrap>[</th><td>vh</td><th rowspan="2" nowrap>] = Js*[</th><td>v0</td><th rowspan="2" nowrap>] + Jbm*qd</th></tr>
+<tr><td>wh</td><td>w0</td></tr>
+</table>
+Js,Jbm：Jacobian matrix of base and end point<br>
+<br>
+<br>
+
+This function "calc_je" only calculates Jbm.<br>
+Size: 6 by num_q.<br>
+
+</body>
+
+</html>
