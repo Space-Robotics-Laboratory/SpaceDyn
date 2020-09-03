@@ -8,7 +8,7 @@ Author(s) and maintainer(s): [Space Robotics Lab.](http://www.astro.mech.tohoku.
 
 [![srl-logo-original.jpg](./docs/media/srl-logo-original.jpg)](http://www.astro.mech.tohoku.ac.jp/e/index.html)
 
-**This GitHub page is made based on the [original webpage of the Spacedyn](http://www.astro.mech.tohoku.ac.jp/spacedyn/) by current SRL member.** Please refer to the original webpage for more information.
+**This GitHub page is made based on the [original webpage of the Spacedyn](http://www.astro.mech.tohoku.ac.jp/spacedyn/) by current SRL member.** Please, always refer to the original webpage for more information.
 
 
 ## Overview
@@ -21,7 +21,7 @@ Some academic papers regarding this toolbox is published by Kazuya Yoshida and h
 We hope that you could find this toolbox useful.
 
 
-## Notice for user
+## Notice
 * Now, the Spacedyn is Version 2, Release 0.
 * The Spacedyn is a free software.
 * You can download and use it freely for your academic purpose.
