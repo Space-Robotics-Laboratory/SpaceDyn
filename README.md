@@ -1,6 +1,6 @@
 # SpaceDyn
 
-** MATLAB/C++ Libraries for the kinematic and dynamic analysis and simulation of space robots**
+**MATLAB/C++ Libraries for the kinematic and dynamic analysis and simulation of space robots**
 
 ![movx.gif](./docs/media/movx.gif) ![ets3x4.gif](./docs/media/ets3x4.gif)
 
