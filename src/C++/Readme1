@@ -1,0 +1,165 @@
+/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+/_/_/_/   How to create s-function with SpDyn   /_/_/_/
+
+/_/_/_/     (c) 20.04.2009. Satoko ABIKO@DLR    /_/_/_/
+/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+This document is for the Visual c++ user in Windows.
+/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/
+
+
+#### required library to use dynamic library "SpDyn" ###
+1) GSL library ( Free: GNU scientific library ), gsl.lib & gslcblas.lib
+2) SpDyn dynamic library (developed by Satoko), spdlib.lib
+
+#### install and setup the following libraries on your PC ####
+1) install GSL library (GNU scientific library)
+	i) download GSL_1.8__LCG_win32_vc71.tar.gz from 
+	   <http://service-spi.web.cern.ch/service-spi/external/distribution/GSL_1.8__LCG_win32_vc71.tar.gz>
+	ii) extract it in a suitable directory (this is a completion of the install of this library )
+
+2) install SpDyn library
+	i) obtain whole SpDyn sorce files from Satoko.
+	ii) build spdlib.lib in a suitable directory with Visual C++ compiler.		
+		<N.B.> In building the file, gsl.lib and gslcblas.lib should be linked.	
+		<N.B.> Set the code setting a Multithread library (DLL) (command /MD). 
+
+#### test GSL library on your PC ####
+1) open sample file <gsl_test.cpp> in visual c++
+2) set the proper paths of the gsl include file and gsl library file.
+3) set GSL_DLL in preprocessor.
+4) If the GSL library is installed properly and proper likage set up is done, 
+   it is possible to build and run the executrable file.
+
+#### test SpDyn library with Command Prompt on your PC ####
+1) open sample function (main.cpp) in visual c++.
+2) add gsl.lib gslcblas.lib spdlib.lib in object/library module in the setting.
+3) set GSL_DLL in preprocessor.
+4) If the GSL library is installed properly and proper likage is set up, 
+   it is possible to build and run the executrable file.
+
+#### create s-function with SpDyn ####
+1) Use simulink builder to define the size and type of input and output.
+2) Compile it to create basic files of s-function (filename.c) and wrapper (filename_wrapper.c).
+3) Rename them to *.cpp.
+
+4) Wrap the body of the *.cpp with the following code to use cpp commands.
+	#ifdef __cplusplus
+	extern "C" { // use the C fcn-call standard for all functions  
+	#endif       // defined within this scope                     
+
+	// ****	MAIN CODE WILL BE HERE    **** //
+	 
+	// define MODEL class for SpDyn, and Gravity
+	static MODEL m;
+	double *Gravity;    
+
+	#ifdef __cplusplus
+	} // end of extern "C" scope
+	#endif
+
+
+5) Add the following headerfiles in the *.cpp files,
+	#include <iostream>
+	using namespace std;
+	
+	// header files to use SpDyn
+	#include "spd.h"
+	#include "rot.h"
+	#include "spn.h"
+	#include "matrix.h"
+	#include "vector.h"
+
+
+6) In "filename.cpp"
+
+// definition of the wrapper file
+extern void filename_Outputs_wrapper(const real_T *pos0, const real_T *A0, const real_T *q,
+                          		   real_T *pos_e, real_T *ori_e, SimStruct *S, MODEL &m);
+
+// function to initialize system 
+static void mdlStart(SimStruct *S)
+  {	
+	// model initialization, which is called once in the simulation //
+	Gravity = matrix_get(6, 1);
+  	matrix_Z(6, 1, Gravity); // set the gravity
+ 	
+	model("TECSAS.def", m ); // call the dynamic model
+	model_init( m ); // initiarize the state values
+	
+	// ---- code what you need for initialitaion ----
+	// *****
+
+  }                                 
+  
+// function for output
+  static void mdlOutputs(SimStruct *S, int_T tid)
+{
+    const real_T   *pos0  = (const real_T*) ssGetInputPortSignal(S,0);
+    const real_T   *A0  = (const real_T*) ssGetInputPortSignal(S,1);
+    const real_T   *q  = (const real_T*) ssGetInputPortSignal(S,2);
+    real_T        *pos_e  = (real_T *)ssGetOutputPortRealSignal(S,0);
+    real_T        *ori_e  = (real_T *)ssGetOutputPortRealSignal(S,1);
+ 
+    filename_Outputs_wrapper(pos0, A0, q, pos_e, ori_e, S, m);    
+}
+
+// function for termination
+static void mdlTerminate(SimStruct *S)
+{    
+  m.destructor();
+  m.destruct_ee();
+  delete [] Gravity;
+}
+
+
+7) In "filename_wrapper.cpp", code as general .cpp
+
+void test2_Outputs_wrapper(const real_T *pos0, const real_T *A0, const real_T *q, 
+				real_T *pos_e, real_T *ori_e, SimStruct *S, MODEL &m)
+
+{
+	{ 
+
+ int i, j;
+ for(i=0;i<3;i++){
+ 	m.POS0[i] = pos0[i];	
+	for(j=0;j<3;j++){
+		m.A0[3*i+j] = A0[3*i+j];
+	}
+ }
+ //cout << " LINKNUM = " << m.LINKNUM << endl;
+ for(i=1;i<m.LINKNUM;i++){
+     m.q[i] = (double)q[i-1];
+ }
+
+ calc_SP( m ); // calculate the spatial notation for each link
+ f_kin_e( m, 1 );
+ 	
+  for(i=0;i<3;i++){
+ 	pos_e[i] = m.POS_e[1][i];	
+	for(j=0;j<3;j++){
+		ori_e[3*i+j] = m.ORI_e[1][3*i+j];
+	}
+ }
+
+8) *** The most important part is here ***
+Compile those files in Matlab command line with proper linkage for library as follows.
+
+mex -lm -L../spd/lib -lspd -L../../DYNLIB/gsl -lgsl -lgslcblas -lg2c -lstdc++ filename.cpp filename_wrapper.cpp (in Linux)
+
+or
+
+mex OPTIMFLAGS="/MD -O2 -DNDEBUG" COMPFLAGS="$COMPFLAGS -GX /verbose:lib" ...
+    LINKFLAGS="$LINKFLAGS /LIBPATH:"C:\cygwin\home\abiko\Project\SpDyn_Win\spd\lib" spdlib.lib /LIBPATH:"C:\MyResearch\GSL_WIN\GSL\1.8\win32_vc71\lib" gsl.lib gslcblas.lib" ...
+    -I'C:\MyResearch\GSL_WIN\GSL\1.8\win32_vc71\include' ...
+    -I'C:\cygwin\home\abiko\Project\SpDyn_Win\spd\include' ...
+    -I'C:\cygwin\home\abiko\Project\SpDyn_Win\spd\matrix' ...
+    filename.cpp filename_wrapper.cpp 
+
+
+
+
+******** Trouble Shooting ***************
+If you encounter the abortion of Simulink and Matlab when you start the simulation,
+check the size and index of the values you substitute from the input to MODEL m or from MODEL m to the
+output in wrappter file.

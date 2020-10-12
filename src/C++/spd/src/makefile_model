@@ -1,0 +1,22 @@
+# Makefile
+#
+# s.abiko [2007.5]
+CC = g++
+
+CFLAG = -O3 -Wall
+
+INLIBS = -I/usr/local/include -I../include
+LDLIBS = -lm -L../matrix -lmatrix -L../spn -lspn -lgsl -lgslcblas -lstdc++ 
+
+SRC = model.cpp
+OBJ = model.o
+
+TARGET = test
+
+$(TARGET) : $(SRC)
+	$(CC) $(CFLAG) -o $@ $^ $(INLIBS) $(LDLIBS)
+
+clean :
+	-@rm *.o $(TARGET)
+
+# --- EOF ---

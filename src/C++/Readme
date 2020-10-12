@@ -1,0 +1,33 @@
+./DynLib/
+
+	main.cpp - main file to compute dynamic motion etc.
+	Makefile - to compile main.cpp
+	readme   - it's ME!! ;)
+
+	/spd/Makefile - to build up the library "libspd.a" under /lib
+            /include  - directory for header files
+	    /lib      - directory for the library of functions
+ 	    /matrix   - directory for the functions of matrix and vector operator
+            /model_sample - system model definition by user
+	    /spn	  - directory for the functions of spatial notation
+	    /src	  - main functions for the dynamic library
+
+	/dopri5	- directory for DOPRI5 integrator library
+
+****
+/model_sample - you can see how to model the system.
+/include/model.h - the definition of the model for dynamic parameters and state values etc.
+
+****
+Setup
+1) install GSL (The GNU Scientific Library)
+URL : http://www.gnu.org/software/gsl/
+	a) download gsl-*.*.tar.gz or use attached file
+
+	b) install under a certain directory ( ex. /usr/local/share ).
+	$ cd /usr/local/share
+	$ tar zxvf gsl-*.*.tar.gz
+	$ cd gsl-*.*
+	$ ./configure
+	$ make 
+	$ make install
