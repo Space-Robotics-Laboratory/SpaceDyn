@@ -36,12 +36,13 @@ We hope that you could find this toolbox useful.
 
 
 ## Acknowledgement
-SpaceDyn is developed and released by [alumini of SRL](http://www.astro.mech.tohoku.ac.jp/spacedyn/doc.pdf). C++ version is developed by Ms. A, Mr. B, and Mr. C. 
+* SpaceDyn is originally developed and released by alumini of SRL listed in the [original dcument](http://www.astro.mech.tohoku.ac.jp/spacedyn/doc.pdf). 
+* C++ version is developed by Dr. Satoko Abiko and Dr. Yoichiro Sato.
 
 
 ## Release Note
-* Sept. 17th, 2020, SpaceDyn version 2 release 0 is released in GitHub.
-* Mmmm. Dddd, 2020, SpaceDyn version 2 release 1 is released (C++ library is added. Minor issue is improved in MATLAB.)
+* Sep. 17th, 2020, SpaceDyn version 2 release 0 is released in GitHub.
+* Oct. 16th, 2020, SpaceDyn C++ is released.
 
 
 ## FAQ
