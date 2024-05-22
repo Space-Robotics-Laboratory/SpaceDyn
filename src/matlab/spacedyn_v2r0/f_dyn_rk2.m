@@ -35,7 +35,7 @@ global Ez Gravity d_time
 
 
 % 1st Step
-SV.Qtn0 = dc2qtn_2(SV.A0');
+SV.Qtn0 = dc2qtn(SV.A0');
 SV.dQtn0 = w2dQtn(SV.w0, SV.Qtn0);
 SVt = f_dyn(LP, SV);
 
