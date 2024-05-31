@@ -22,7 +22,7 @@
 function C0 = qtn2dc( qtn )
 
 % input check-out
-if ~all(size( qtn ) ~= [4, 1])
+if ~all(size( qtn ) == [4, 1])
     error('Cannot compute the rotation matrix\n');
 end
 
