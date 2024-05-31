@@ -43,7 +43,7 @@ We hope that you could find this toolbox useful.
 ## Release Note
 * Sep. 17th, 2020, SpaceDyn version 2 release 0 is released in GitHub.
 * Oct. 16th, 2020, SpaceDyn C++ is released.
-* May. 23th, 2024, SpaceDyn version 2 release 1 is released in GitHub.
+* May. 31th, 2024, SpaceDyn version 2 release 1 is released in GitHub.
     * Debug integral of base orientation (fixed `f_dyn_rk2` and `dc2qtn`, added `qtn2dc` and `w2dQtn`)
 
 
