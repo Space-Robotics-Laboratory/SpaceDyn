@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>4. Simulation Architecture - ClimbLab Manuals</title>
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link href="../css/custom.css" rel="stylesheet" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "4. Simulation Architecture";
+    var mkdocs_page_input_path = "4_how_to_execute_simulation.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> ClimbLab Manuals</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../top/">Top</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../1_ClimbLab/">1. ClimbLab</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../2_ClimbLab_simulation_flow/">2. Simulation</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../3_other_main_functions/">3. Functions/Algorithms</a>
+                    </li>
+                </ul>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">4. Simulation Architecture</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#41-how-to-execute-main_simm">4.1 How to execute main_sim.m</a>
+    </li>
+    </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../5_folder_tree/">5. How to Contribute</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../6_development_policy/">6. Appendix</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">Documentation using MkDocs</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">ClimbLab Manuals</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>4. Simulation Architecture</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="4-how-to-execute-simulation">4. How to Execute Simulation</h2>
+<p>ClimbLabはMATLABで記述されており，実行にはMATALBを使用する必要がある．動作確認がおこなわれているMATLABのバージョンは，本論文執筆時(2022年2月1日)において，MATLAB R2019bである．よって，実行にはR2019b以降のMATLABがインストールされている環境が必要である．また，MATLAB Toolboxについては，基本的に必要としないが，ごく一部の機能について以下のToolbox：</p>
+<ul>
+<li>Optimization Toolbox</li>
+<li>Robotics Toolbox</li>
+<li>Signal Processing Toolbox</li>
+<li>Reinforcement Learning Toolbox</li>
+<li>Deep Learning Toolbox</li>
+</ul>
+<p>が使用されるため，必要な場合は適宜インストールする必要がある．</p>
+<h3 id="41-how-to-execute-main_simm">4.1 How to execute <code>main_sim.m</code></h3>
+<p><code>main_sim.m</code>を実行し，歩行シミュレーションをおこなう手順について述べる．なお，先に述べたMATLABがインストールされている環境を前提とする．</p>
+<p>まず基本設定である"default"で実行する場合は，</p>
+<ol>
+<li>GitHubやBitBucketからClimbLabをダウンロードする．</li>
+<li>MATLABを開く．</li>
+<li>フォルダ/climblab/src下におかれている<code>main_sim.m</code>を開く．</li>
+<li><code>main_sim.m</code>内で使用するconfigが"default"に設定されていることを確認する．</li>
+<li>MATLAB内の「現在のフォルダ」を<code>/climblab</code>にする．</li>
+<li><code>main\_sim.m</code>を実行する．</li>
+<li>実行後，「main_sim.mは現在のフォルダーやMATLABパス上で見つかりません．」というエラーが出た場合は，「パスに追加」を選択する．</li>
+</ol>
+<p>という手順によって歩行シミュレーションが開始される．
+<br></p>
+<p>またこの"default"から自分用に新たにシミュレーション設定を変更して試す場合には，</p>
+<ol>
+<li>フォルダ<code>/climblab/config/USER</code>下におかれている<code>config\_USER\_param\_template.m</code>をコピーし，同じフォルダに，<code>config_USER_param.m</code>と名前を変えて作成する．</li>
+<li><code>config_USER_param.m</code>内に，defaultから変更したいシミュレーション設定を書き加える．</li>
+<li><code>main_sim.m</code>内で使用するconfigを"default"から"USER"に変更する．</li>
+<li><code>main_sim.m</code>を実行する．</li>
+</ol>
+<p>という手順で設定を変更してシミュレーションをすることができる．変更できる設定は，フォルダ<code>config/default</code>に置かれている各classの初期設定用の関数の中身を見ることで確認できる．
+<br>
+また，自分が開発を進める中で，設定を半永続的に保存しておきたいconfigファイルがある場合は，presetとしてファイルを作成する．一方で，自分が開発したわけではない既存のpresetについては基本的に編集してはいけない．これらのpresetには論文などで対外的に示した結果を保存しておくべきものもあるので，編集する際は開発者やチームと話し合う必要がある．presetの作成手順を以下に示す．</p>
+<ol>
+<li><code>config/preset</code>下に，<code>config_xxx_param.m</code>という自分のconfigファイルを作る．<strong>xxx</strong>は任意だが，<code>config_</code>で始まり，<code>_param</code>で終わるように命名する．</li>
+<li><code>config_xxx_param.m</code>の内部に自分のパラメータを設定する．</li>
+<li>main_sim内で
+`config = ‘xxx’;
+と設定する．</li>
+<li>config_simulation内で一番下に，
+<code>if strcmp(config, ‘xxx’)</code>
+<code>[... ] = config_xxx_param(....);</code>
+<code>end</code>
+と新しく記述して，作成したconfigファイルをloadできるようにする．</li>
+<li><code>main_sim.m</code>内で使用するconfigを"xxx"に変更する．</li>
+<li><code>main_sim</code>を<code>/climblab</code>下で実行する．</li>
+</ol>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../5_folder_tree/" class="btn btn-neutral float-right" title="5. How to Contribute">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../3_other_main_functions/" class="btn btn-neutral" title="3. Functions/Algorithms"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../3_other_main_functions/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../5_folder_tree/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

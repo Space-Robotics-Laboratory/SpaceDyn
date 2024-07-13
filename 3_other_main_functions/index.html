@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>3. Functions/Algorithms - ClimbLab Manuals</title>
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link href="../css/custom.css" rel="stylesheet" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "3. Functions/Algorithms";
+    var mkdocs_page_input_path = "3_other_main_functions.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> ClimbLab Manuals</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../top/">Top</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../1_ClimbLab/">1. ClimbLab</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../2_ClimbLab_simulation_flow/">2. Simulation</a>
+                    </li>
+                </ul>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">3. Functions/Algorithms</a>
+    <ul class="current">
+    </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../4_how_to_execute_simulation/">4. Simulation Architecture</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../5_folder_tree/">5. How to Contribute</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../6_development_policy/">6. Appendix</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">Documentation using MkDocs</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">ClimbLab Manuals</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>3. Functions/Algorithms</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="3-other-main-functions">3. Other Main Functions</h2>
+<p>前章で<code>main_sim.m</code>とその内部で実行される5つの種類の関数について述べた．歩行シミュレーションの実行に用られるMain関数は<code>main_sim.m</code>ただ一つである．その代わりに使用するユーザーがそれぞれConfiguration関数を独自に設定することで様々なシミュレーションを同時に開発することができ，これがClimbLabがシミュレーションプラットフォームである所以である．しかし，<code>main_sim.m</code>以外にも，ClimbLabのフォルダ内には単独で実行できる関数が存在する．これらの関数には接頭辞に<code>main_</code>が付けられており，以下の5つのMain関数が存在する．</p>
+<ul>
+<li>
+<p><code>main_iterative_sim.m</code></p>
+</li>
+<li>
+<p><code>main_LP_2D_analysis.m</code></p>
+</li>
+<li>
+<p><code>main_LP_3D_analysis.m</code></p>
+</li>
+<li>
+<p><code>main_target_detection.m</code></p>
+</li>
+<li>
+<p><code>main_iterative_target_detection.m</code></p>
+</li>
+<li>
+<p><code>main_grid_map_designer.m</code></p>
+</li>
+</ul>
+<p>上記の5つの関数の役割について以下で説明する．なお，これらのファイルを実行するためには，実行する際のMATLABの「現在のフォルダ」や，MATLABのパスに注意する必要がある．</p>
+<p><code>main_iterative_sim.m</code>は，宇野らによって実装された，脚型ロボットの関節配置の違いによるトルク消費の比較をおこなうための実行コードである．このコード内では<code>main_sim.m</code>に相当するコードがループによって繰り返し実行されるようになっている．ループ内では，ある指定した姿勢で一定時間ロボットの姿勢を保ち，その間のロボットのトルク消費を計算する．姿勢を少しずつ移動させながらループを繰り返して検証していくことで，様々な姿勢におけるロボットのトルク消費を分析することができる．<code>main_iterative_sim.m</code>は，フォルダ<code>/climblab/src/script</code>下に置かれている．</p>
+<p><code>main_LP_2D_analysis.m</code>および<code>main_LP_3D_analysis.m</code>はロボットのリンクパラメータ(LP)から，ロボットの脚先可動範囲をそれぞれ2次元的と3次元的に描画する関数である．ロボットモデルをアップデートして新たなリンクパラメータへと変更する際などに，これらの関数を使うことで広い脚先可動範囲を持つロボットの設計を進めることができる．これらの関数はフォルダ<code>/climblab/src/robot/LP_analysis</code>下に置かれている．</p>
+<p><code>main_target_detection.m</code>は，地形情報データに対して把持可能点検出をおこなう実行ファイルである．<code>main_sim.m</code>内でも<code>target_detection.m</code>を実行して把持可能点検出をおこなうこともできるが，予めこのMain関数を用いて，<code>main_sim.m</code>内で実行されるコードと同一のコードによって把持可能点検出だけを試行することができる．この関数を用いて，把持可能点検出の結果を予め確かめたりパラメータを調整したりすることで，地形内の把持点の分布を予め把握してから，実際の歩行シミュレーションに取り組むことができる．<code>main_target_detection.m</code>では，Configuration関数として，<code>config_target_detection_testing_param.m</code>を読み込んでいるため，このConfig関数に書いたのと同じパラメータを歩行シミュレーションのConfig関数にも記述すれば，同じ把持可能点の出力結果が<code>main_sim</code>でも得られることになる．また把持可能点検出は処理に時間がかかるため，何度も同じ地形マップでの歩行シミュレーションを繰り返して検証する場合，予め<code>main_target_detection.m</code>を実行して得られた把持点の分布を保存し，<code>main_sim.m</code>では把持可能点検出アルゴリズムを実行するのではなく保存した把持点分布を読み込むようにすれば，歩行シミュレーションにかかる時間を節約することができる．<code>main_target_detection.m</code>は，フォルダ<code>/climblab/lib/target_detection</code>下に置かれている．</p>
+<p>また，<code>main_iterative_target_detection.m</code>は，<code>main_target_detection.m</code>を繰り返し実行するように書かれた関数である．把持可能点検出では，地形情報をボクセル化し，一つの巨大な三次元配列に変換する．そのため，高低差が激しいマップや奥行の広い地形マップの場合，三次元配列の要素数がMATLABで扱えるサイズを超えてしまい，計算できなくなってしまう．この問題を避けるために，ロードした地形情報をxy方向に小さな「セクション」に切り分け，切り分けたセクションをz方向に「ステージ」としてさらに切り分ける．この切り分けた狭い範囲に対して把持可能点検出をおこなっていくことで，広大な地形マップに対しても地形内全体の把持可能点を一気に検出することができる．</p>
+<p>最後の<code>main_grid_map_designer.m</code>は，格子状に把持点を配置したグリッドマップを作成する実行ファイルである．マップのサイズとグリッド幅を指定することで，グリッド状に把持点を配置してマップを生成する．さらに，指定した割合だけ把持点をランダムに間引いたり，指定したエリア内に存在する把持点を消去したりすることで，疎密さを有するようなマップやゴール到達のために迂回を要するようなマップなどを自由に設計することができる．<code>main_grid_map_designer.m</code>はフォルダ<code>/climblab/src/environment/grid_map</code>下に置かれた関数である．</p>
+<p>以上が，main_sim.m以外に実行ファイルとしてClimbLabに存在しているMain関数である．</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../4_how_to_execute_simulation/" class="btn btn-neutral float-right" title="4. Simulation Architecture">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../2_ClimbLab_simulation_flow/" class="btn btn-neutral" title="2. Simulation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../2_ClimbLab_simulation_flow/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../4_how_to_execute_simulation/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
