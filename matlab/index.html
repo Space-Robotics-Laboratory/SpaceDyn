@@ -57,6 +57,8 @@
                 <ul class="current">
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">MATLAB</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#quick-reference-for-spacedyn-matlab-toolbox">Quick Reference for SpaceDyn MATLAB toolbox</a>
+    </li>
     </ul>
                     </li>
                 </ul>
@@ -105,8 +107,23 @@
             <div class="section">
               
                 <h1 id="spacedyn-as-a-matlab-toolbox">SpaceDyn as a MATLAB toolbox</h1>
-<p>SpaceDyn was originally created as MATLAB toolbox to handle the dynamics of space robotics such as free-flying robots and mobile vehecles for planetary exploration. </p>
-<p>The interactive quick start guide written in html is already available in our <a href="https://github.com/Space-Robotics-Laboratory/SpaceDyn/tree/main/src/matlab/spacedyn_reference">GitHub directory</a>. </p>
+<!-- 
+SpaceDyn was originally created as MATLAB toolbox to handle the kinematic and dynamic analysis and simulation of articulated multi-body system with a free-floating base. Example of such systems include a satellite with mechanical appendages, a free-flying space robot, a wheeled mobile robot, and a walking robot, all of which makes motions in the environment with of without gravity. 
+
+This toolbox can handle open chain systems with topological tree configuration. A parallel manipulator, for example, then cannot be supported directly. A walking robot contacting on the ground with more than two legs or limbs at a time seems to form a closed chain including the ground, however, we can handle such a system with a proper model of ground contact at each contact point. Parallel manipulators can be treated with virtual cut of a kinematic chain and corresponding virtual force model. 
+
+Some academic papers regarding this toolbox is published by Kazuya Yoshida and his co-authors. For the technical points of this software, please consult with those publications as well as the following chapters of this document. 
+
+We hope that you could find this toolbox useful for your application. 
+-->
+
+<p>SpaceDyn was originally created as MATLAB toolbox. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The MATLAB toolbox of Spacedyn requires MATLAB 5.0 or higher. ( It uses functions that are not supported in 4.0 or lower.)</p>
+</div>
+<h2 id="quick-reference-for-spacedyn-matlab-toolbox">Quick Reference for SpaceDyn MATLAB toolbox</h2>
+<p>The interactive quick reference guide written in html is already available in our <a href="https://github.com/Space-Robotics-Laboratory/SpaceDyn/tree/main/src/matlab/spacedyn_reference">GitHub directory</a>. </p>
 <p>Please download the repository <code>spacedyn_reference</code> and open <code>index.html</code> in web browser to get started. </p>
               
             </div>
