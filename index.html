@@ -17,7 +17,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Documentation using MkDocs";
+    var mkdocs_page_name = "Top";
     var mkdocs_page_input_path = "index.md";
     var mkdocs_page_url = null;
   </script>
@@ -46,8 +46,14 @@
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="top/">Top</a>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href=".">Top</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#reference">Reference</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#release-note">Release note</a>
+    </li>
+    </ul>
                     </li>
                 </ul>
                 <ul>
@@ -74,22 +80,6 @@
                     <li class="toctree-l1"><a class="reference internal" href="6_development_policy/">6. Appendix</a>
                     </li>
                 </ul>
-                <ul class="current">
-                    <li class="toctree-l1 current"><a class="reference internal current" href=".">Documentation using MkDocs</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#commands">Commands</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#project-layout">Project layout</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#important-note">Important Note</a>
-    </li>
-        </ul>
-    </li>
-    </ul>
-                    </li>
-                </ul>
       </div>
     </div>
     </nav>
@@ -111,7 +101,7 @@
     
       
     
-    <li>Documentation using MkDocs</li>
+    <li>Top</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -122,47 +112,54 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="welcome-to-mkdocs">Welcome to MkDocs</h1>
-<p>For full documentation visit <a href="https://mkdocs.org">mkdocs.org</a>.</p>
-<h2 id="commands">Commands</h2>
+                <hr />
+<h1 id="spacedyn-user-manual">SpaceDyn User Manual</h1>
+<hr />
+<p>Author(s) and maintainer(s): <a href="http://www.astro.mech.tohoku.ac.jp/e/index.html">Space Robotics Lab.</a></p>
+<p>Contact email: srl-orbital@grp.tohoku.ac.jp</p>
+<p><img alt="ex4_uneven_terrain_dynamic_Non-perioidc-gait-planning.gif" src="img/media/ex4_uneven_terrain_dynamic_Non-perioidc-gait-planning.gif" /></p>
+<p><a href="http://www.astro.mech.tohoku.ac.jp/e/index.html"><img alt="srl-logo-original.jpg" src="img/media/srl-logo-original.jpg" /></a><img alt="crt_color_logo_a_hi-reso.png" src="./img/media/crt_color_logo_a_hi-reso.png" /></p>
 <ul>
-<li><code>mkdocs new [dir-name]</code> - Create a new project.</li>
-<li><code>mkdocs serve</code> - Start the live-reloading docs server.</li>
-<li><code>mkdocs build</code> - Build the documentation site.</li>
-<li><code>mkdocs help</code> - Print this help message.</li>
+<li>
+<p>The climbing simulator is being developed by the Climbing Robotics Team in <a href="http://www.astro.mech.tohoku.ac.jp/e/index.html">Space Robotics Laboratory</a> at Tohoku University, Japan.</p>
+</li>
+<li>
+<p>The source code is released under a <a href="../../../LICENSE">BSD 3-Clause license</a>.</p>
+</li>
+<li>
+<p>This developpers manual is originally written in <a href="https://docs.google.com/document/d/1wEOPXYscMYN4q2eXLOezcdTmEGJEJ6Ts37xntVeIqJo/edit">Google Document and maintained in SRL-Limb's shared drive</a>.</p>
+</li>
 </ul>
-<h2 id="project-layout">Project layout</h2>
+<h2 id="reference">Reference</h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you use this simulator in an academic context, please put the following citation.</p>
+</div>
+<blockquote>
+<p>Uno K. et al. (2022) ClimbLab: MATLAB Simulation Platform for Legged Climbing Robotics. In: Chugo D., Tokhi M.O., Silva M.F., Nakamura T., Goher K. (eds) Robotics for Sustainable Future. CLAWAR 2021. Lecture Notes in Networks and Systems, vol 324. Springer, Cham. https://doi.org/10.1007/978-3-030-86294-7_20</p>
+</blockquote>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>mkdocs.yml    # The configuration file.
-docs/
-    index.md  # The documentation homepage.
-    ...       # Other markdown pages, images and other files.
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code><span class="nv">@inproceedings</span><span class="err">{</span><span class="n">uno2021climblab</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">title</span><span class="o">=</span><span class="err">{</span><span class="nl">ClimbLab</span><span class="p">:</span><span class="w"> </span><span class="n">MATLAB</span><span class="w"> </span><span class="n">Simulation</span><span class="w"> </span><span class="n">Platform</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Legged</span><span class="w"> </span><span class="n">Climbing</span><span class="w"> </span><span class="n">Robotics</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">author</span><span class="o">=</span><span class="err">{</span><span class="n">Kentaro</span><span class="w"> </span><span class="n">Uno</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">Warley</span><span class="w"> </span><span class="n">F</span><span class="p">.</span><span class="w"> </span><span class="n">R</span><span class="p">.</span><span class="w"> </span><span class="n">Ribeiro</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">Yusuke</span><span class="w"> </span><span class="n">Koizumi</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">Keigo</span><span class="w"> </span><span class="n">Haji</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">Koki</span><span class="w"> </span><span class="n">Kurihara</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">William</span><span class="w"> </span><span class="n">Jones</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">Kazuya</span><span class="w"> </span><span class="n">Yoshida</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">booktitle</span><span class="o">=</span><span class="err">{</span><span class="n">Robotics</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Sustainable</span><span class="w"> </span><span class="n">Future</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">pages</span><span class="o">=</span><span class="err">{</span><span class="mi">229</span><span class="o">--</span><span class="mi">241</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nf">year</span><span class="o">=</span><span class="err">{</span><span class="mi">2022</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">publisher</span><span class="o">=</span><span class="ss">&quot;Springer International Publishing&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
 </code></pre></div>
 </td></tr></table>
-<h2 id="examples">Examples</h2>
-<h4 id="important-note">Important Note</h4>
+<h2 id="release-note">Release note</h2>
+<p>The version of this manual is synchronized with the version of ClimbLab simulator. Since this online manual is deployed since the v4.0, the oldest version is v4.0.</p>
 <ul>
-<li>We installed <code>admonition</code> for the important message such as cautions, note, and remarks.</li>
+<li>v4.0: released on 2021. First released version. </li>
 </ul>
-<p>E.g.)</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This is an important message.</p>
-</div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>ヒントです。</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>これは警告です</p>
-</div>
-<div class="admonition danger">
-<p class="admonition-title">Danger</p>
-<p>これは危険です。</p>
-</div>
               
             </div>
           </div>
@@ -170,8 +167,8 @@ docs/
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="1_ClimbLab/" class="btn btn-neutral float-right" title="1. ClimbLab">Next <span class="icon icon-circle-arrow-right"></span></a>
       
-        <a href="6_development_policy/" class="btn btn-neutral" title="6. Appendix"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -197,8 +194,8 @@ docs/
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="6_development_policy/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
+        <span style="margin-left: 15px"><a href="1_ClimbLab/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
@@ -217,5 +214,5 @@ docs/
 
 <!--
 MkDocs version : 1.1.2
-Build Date UTC : 2024-07-14 02:54:27.316696+00:00
+Build Date UTC : 2024-07-14 02:57:00.670794+00:00
 -->
