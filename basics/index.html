@@ -57,6 +57,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#generalized-jacobian-2">Generalized Jacobian [2]</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#basic-knowledge-for-spacedyn-user">Basic Knowledge for SpaceDyn User</a>
+    </li>
     </ul>
                     </li>
                 </ul>
@@ -108,7 +110,19 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="basics-for-spacedyn">Basics for SpaceDyn</h1>
+                <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+Markdown記法内でLaTeX数式表現をおこなうためのプリアンブル
+</script>
+<script type="text/x-mathjax-config">
+ MathJax.Hub.Config({
+ tex2jax: {
+ inlineMath: [['$', '$'] ],
+ displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+ }
+ });
+</script>
+
+<h1 id="basics-for-spacedyn">Basics for SpaceDyn</h1>
 <h2 id="equation-of-motion-eom-for-floating-based-system">Equation of motion (EOM) for floating-based system</h2>
 <p>To be added...</p>
 <h2 id="generalized-jacobian-2">Generalized Jacobian [2]</h2>
@@ -139,6 +153,19 @@
 <span class="err">}</span><span class="w"></span>
 </code></pre></div>
 </td></tr></table>
+<h2 id="basic-knowledge-for-spacedyn-user">Basic Knowledge for SpaceDyn User</h2>
+<ul>
+<li>
+<p>We assume the system composed of <em>n+1</em> bodies and connected by <em>n</em> joints. Let the body 0 be a <em>reference body</em>. Multiple branches can attach on any single <em>body</em>, as far as the system keeps a topological tree configuration. There must be a single <em>joint</em> between two bodies. We call a terminal point or the point of interest such as manipulator hand as endpoint. Each body, except body 0, can have one endpoint at maximum. In this document, the terms <em>body</em> and <em>link</em> are the same.</p>
+</li>
+<li>
+<p>The SpaceDyn allows force/torque input on (i) the centroid of the reference body, (ii) each endpoint, and (iii) each joint. The toolbox computes the position, velocity and acceleration of (1) the centroid of the reference body, (2) the centroid of each body, (3) each endopoint, and (4) each joint.</p>
+</li>
+<li>
+<p>Computation of input force/torque are open to user programming. You can arbitrary decide each joint as either active or passive one. If you give always zero torque, such as $\tau_0 = 0$, the corresponding joint behaves as a free joint. Or if you give such a torque as:</p>
+</li>
+</ul>
+<p>$$ M \ddot{x} = F + F_\text{ext} + F_\text{f} ~~~~~~~~(1.0) $$</p>
               
             </div>
           </div>

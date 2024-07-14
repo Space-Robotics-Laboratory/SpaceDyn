@@ -129,7 +129,7 @@ We hope that you could find this toolbox useful for your application.
 <p>The MATLAB toolbox of Spacedyn requires MATLAB 5.0 or higher. (It uses functions that are not supported in 4.0 or lower.)</p>
 </div>
 <h2 id="usage">Usage</h2>
-<p>Just clone the repository, and copy all the MATLAB functions in <code>SpaceDyn/src/matlab</code>, and use them to model your robot and calculate its kinematics and dynamics. Each-by-each usage is detailed in the following quick reference.</p>
+<p>Just clone the repository, and copy all the MATLAB functions in <code>SpaceDyn/src/matlab</code> to your workspace, and use them to model your robot and calculate its kinematics and dynamics. Each-by-each m-file usage is detailed in the following <strong>quick reference</strong> shown later.</p>
 <h2 id="technical-note">Technical Note</h2>
 <ul>
 <li>
@@ -141,13 +141,11 @@ We hope that you could find this toolbox useful for your application.
 <li>
 <p>We use both the input variables and the global variables to pass the values to m-file functions. The input variables inside the braces are the variables changing time to time, such as joint angles, positions, orientations, and so on. The global variables are the ones holding constant once the model is given, such as topological description matrices, kinematics and dynamic parameters. </p>
 </li>
-<li>
-<p>We assume the system composed of <em>n+1</em> bodies and connected by <em>n</em> joints. Let the body 0 be a <em>reference body</em>. Multiple branches can attach on any single <em>body</em>, as far as the system keeps a topological tree configuration. There must be a single <em>joint</em> between two bodies. We call a terminal point or the point of interest such as manipulator hand as endpoint. Each body, except body 0, can have one endpoint at maximum. In this document, the terms <em>body</em> and <em>link</em> are the same. </p>
-</li>
-<li>
-<p>The toolbox allows force/torque input on (i) the centroid of the reference body, (ii) each endpoint, and (iii) each joint. The toolbox computes the position, velocity and acceleration of (1) the centroid of the reference body, (2) the centroid of each body, (3) each endopoint, and (4) each joint.</p>
-</li>
 </ul>
+<!-- * We assume the system composed of _n+1_ bodies and connected by _n_ joints. Let the body 0 be a _reference body_. Multiple branches can attach on any single _body_, as far as the system keeps a topological tree configuration. There must be a single _joint_ between two bodies. We call a terminal point or the point of interest such as manipulator hand as endpoint. Each body, except body 0, can have one endpoint at maximum. In this document, the terms _body_ and _link_ are the same.-->
+
+<!-- * The toolbox allows force/torque input on (i) the centroid of the reference body, (ii) each endpoint, and (iii) each joint. The toolbox computes the position, velocity and acceleration of (1) the centroid of the reference body, (2) the centroid of each body, (3) each endopoint, and (4) each joint. -->
+
 <h2 id="quick-reference">Quick Reference</h2>
 <p>The interactive quick reference guide written in html is already available in our <a href="https://github.com/Space-Robotics-Laboratory/SpaceDyn/tree/main/src/matlab/spacedyn_reference">GitHub directory</a>. </p>
 <p>Please download the repository <code>spacedyn_reference</code> and open <code>index.html</code> in web browser to get started. </p>
