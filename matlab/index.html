@@ -9,7 +9,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>2 ClimbLab simulation flow - SpaceDyn User Manual</title>
+  <title>MATLAB - SpaceDyn User Manual</title>
   <link rel="stylesheet" href="../css/theme.css" />
   <link rel="stylesheet" href="../css/theme_extra.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
@@ -17,8 +17,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "2 ClimbLab simulation flow";
-    var mkdocs_page_input_path = "2_ClimbLab_simulation_flow.md";
+    var mkdocs_page_name = "MATLAB";
+    var mkdocs_page_input_path = "matlab.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -51,11 +51,51 @@
                     </li>
                 </ul>
                 <ul>
-                    <li class="toctree-l1"><a class="" href="../basics.md">Basics</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../basics/">Basics</a>
                     </li>
                 </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="" href="../matlab.md">MATLAB</a>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">MATLAB</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#21-overview-of-main-function-main_simm">2.1. Overview of main function: main_sim.m</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#22-matlab-class">2.2. MATLAB class</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#23-spacedyn">2.3. SpaceDyn</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#24-configuration-functions">2.4. Configuration Functions</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#25-initialize-functions">2.5. Initialize Functions</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#26-update-functions">2.6. Update Functions</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#sensing">Sensing</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#global-path-planning">Global Path Planning</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#local-path-planning">Local Path Planning</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#gait-planning">Gait Planning</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#motion-planning"> Motion Planning </a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#equilibrium-evaluation">Equilibrium Evaluation </a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#robot-controller">Robot Controller</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#kinematics-and-dynamics">Kinematics and Dynamics</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#variables-saving">Variables Saving</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#simulation-stopper">Simulation Stopper</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#27-visualize-functions">2.7. Visualize Functions</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#28-save-function">2.8. Save Function</a>
+    </li>
+    </ul>
                     </li>
                 </ul>
                 <ul>
@@ -63,11 +103,11 @@
                     </li>
                 </ul>
                 <ul>
-                    <li class="toctree-l1"><a class="" href="../ros.md">ROS</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../ros/">ROS</a>
                     </li>
                 </ul>
                 <ul>
-                    <li class="toctree-l1"><a class="" href="../appendix.md">Appendix</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../appendix/">Appendix</a>
                     </li>
                 </ul>
       </div>
@@ -91,7 +131,7 @@
     
       
     
-    <li>2 ClimbLab simulation flow</li>
+    <li>MATLAB</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -346,6 +386,15 @@ Config関数で指定されたロボットモデルを読み込んでLPを定義
           </div>
           <footer>
   
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../ros/" class="btn btn-neutral float-right" title="ROS">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../basics/" class="btn btn-neutral" title="Basics"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
 
   <hr/>
 
@@ -368,6 +417,10 @@ Config関数で指定されたロボットモデルを読み込んでLPを定義
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
+        <span><a href="../basics/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../ros/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
