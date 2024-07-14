@@ -1,0 +1,38 @@
+site_name: SpaceDyn User Manual
+
+nav:
+    - Top: index.md
+    - 1. ClimbLab: 1_ClimbLab.md
+    - 2. Simulation: 2_ClimbLab_simulation_flow.md
+    - 3. Functions/Algorithms: 3_other_main_functions.md
+    - 4. Simulation Architecture: 4_how_to_execute_simulation.md
+    - 5. How to Contribute: 5_folder_tree.md
+    - 6. Appendix: 6_development_policy.md
+
+theme:
+    name: readthedocs
+    language: 'ja'
+
+extra:
+    search:
+        language: 'jp'
+
+extra_css:
+    - "css/custom.css"
+
+markdown_extensions:
+    - meta
+#    - pymdownx.mark  # build error
+#    - pymdownx.magiclink  # build error
+#    - pymdownx.emoji  # build error
+#    - fontawesome_markdown  # build error
+#    - pymdownx.keys  # build error
+#    - python-markdown-math
+    - def_list
+    - admonition
+    - codehilite:
+        linenums: true
+        use_pygments: true
+
+extra_javascript:
+    - http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
