@@ -57,6 +57,10 @@
                 <ul class="current">
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">MATLAB</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#technical-note">Technical Note</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#quick-reference">Quick Reference</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#original-user-manual">Original User Manual</a>
@@ -119,11 +123,31 @@ Some academic papers regarding this toolbox is published by Kazuya Yoshida and h
 We hope that you could find this toolbox useful for your application. 
 -->
 
-<p>SpaceDyn was originally created as MATLAB toolbox [1]. </p>
+<p>SpaceDyn was originally created as MATLAB toolbox [1]. We developed this toolbox motivated and inspired by <a href="https://petercorke.com/toolboxes/robotics-toolbox/">Robotics toolbox</a> developed by Peter I. Corke. We took one m-file (<code>cross.m</code>) and use it as the original is, but SpaceDyn as a whole, does not have compatibility with the Peter's Robotics toolbox unfortunately.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The MATLAB toolbox of Spacedyn requires MATLAB 5.0 or higher. ( It uses functions that are not supported in 4.0 or lower.)</p>
+<p>The MATLAB toolbox of Spacedyn requires MATLAB 5.0 or higher. (It uses functions that are not supported in 4.0 or lower.)</p>
 </div>
+<h2 id="usage">Usage</h2>
+<p>Just clone the repository, and copy all the MATLAB functions in <code>SpaceDyn/src/matlab</code>, and use them to model your robot and calculate its kinematics and dynamics. Each-by-each usage is detailed in the following quick reference.</p>
+<h2 id="technical-note">Technical Note</h2>
+<ul>
+<li>
+<p>For mathematical symbols, we give the name of variables with more than two letters. For example, vector <em>r</em> and <em>c</em> are coded by <code>RR</code> and <code>cc</code>, respectively This is to avoid the confusion with control variables such as <em>i</em>, <em>j</em>, <em>k</em>, or <em>l</em>, <em>m</em>, <em>n</em>, etc, which are frequently used as iteration or array counters. However, there is an exeption: the symbol <code>q</code> is used for the joint variable vector <em>q</em>.</p>
+</li>
+<li>
+<p>Since MATLAB doesn't allo 0 for array index, we use <code>R0</code> and <code>c0</code> instead of <code>RR[0]</code> and <code>cc[0]</code>, for example. </p>
+</li>
+<li>
+<p>We use both the input variables and the global variables to pass the values to m-file functions. The input variables inside the braces are the variables changing time to time, such as joint angles, positions, orientations, and so on. The global variables are the ones holding constant once the model is given, such as topological description matrices, kinematics and dynamic parameters. </p>
+</li>
+<li>
+<p>We assume the system composed of <em>n+1</em> bodies and connected by <em>n</em> joints. Let the body 0 be a <em>reference body</em>. Multiple branches can attach on any single <em>body</em>, as far as the system keeps a topological tree configuration. There must be a single <em>joint</em> between two bodies. We call a terminal point or the point of interest such as manipulator hand as endpoint. Each body, except body 0, can have one endpoint at maximum. In this document, the terms <em>body</em> and <em>link</em> are the same. </p>
+</li>
+<li>
+<p>The toolbox allows force/torque input on (i) the centroid of the reference body, (ii) each endpoint, and (iii) each joint. The toolbox computes the position, velocity and acceleration of (1) the centroid of the reference body, (2) the centroid of each body, (3) each endopoint, and (4) each joint.</p>
+</li>
+</ul>
 <h2 id="quick-reference">Quick Reference</h2>
 <p>The interactive quick reference guide written in html is already available in our <a href="https://github.com/Space-Robotics-Laboratory/SpaceDyn/tree/main/src/matlab/spacedyn_reference">GitHub directory</a>. </p>
 <p>Please download the repository <code>spacedyn_reference</code> and open <code>index.html</code> in web browser to get started. </p>
