@@ -49,9 +49,17 @@
                 <ul class="current">
                     <li class="toctree-l1 current"><a class="reference internal current" href=".">Top</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#notice">Notice</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#reference">Reference</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#release-note">Release note</a>
+    <li class="toctree-l2"><a class="reference internal" href="#acknowledgement">Acknowledgement</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#release-note">Release Note</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#faq">FAQ</a>
     </li>
     </ul>
                     </li>
@@ -118,48 +126,64 @@
 <p><img alt="movx.gif" src="img/media/movx.gif" /> <img alt="ets3x4.gif" src="img/media/ets3x4.gif" /></p>
 <p>Author(s) and maintainer(s): <a href="http://www.astro.mech.tohoku.ac.jp/e/index.html">Space Robotics Lab.</a></p>
 <p><a href="http://www.astro.mech.tohoku.ac.jp/e/index.html"><img alt="srl-logo-original.jpg" src="img/media/srl-logo-original.jpg" /></a></p>
-<p>Contact email: srl-orbital@grp.tohoku.ac.jp</p>
+<p>Contact email: srl-orbital(at)grp.tohoku.ac.jp</p>
+<h2 id="overview">Overview</h2>
 <ul>
 <li>
-<p>The climbing simulator is being developed by the Climbing Robotics Team in <a href="http://www.astro.mech.tohoku.ac.jp/e/index.html">Space Robotics Laboratory</a> at Tohoku University, Japan.</p>
+<p>The SpaceDyn is a MATLAB/C++ library for the kinematic and dynamic analysis and simulation of articulated multi-body systems with a moving base. Examples of such systems are a satellite with mechanical appendages, a free-flying space robot, a wheeled mobile robot, and a walking robot, all of which makes motions in the environment with or without gravity.</p>
 </li>
 <li>
-<p>The source code is released under a <a href="../../../LICENSE">BSD 3-Clause license</a>.</p>
+<p>This toolbox can handle open chain systems with topological tree configuration. A parallel manipulator, for example, then cannot be supported directly. A walking robot contacting on the ground with more than two legs or limbs at a time seems to form a closed chain including the ground, however, we can handle such a system with a proper model of ground contact at each contact point. Parallel manipulators can be treated with virtual cut of a kinematic chain and a corresponding virtual force model.</p>
 </li>
 <li>
-<p>This developpers manual is originally written in <a href="https://docs.google.com/document/d/1wEOPXYscMYN4q2eXLOezcdTmEGJEJ6Ts37xntVeIqJo/edit">Google Document and maintained in SRL-Limb's shared drive</a>.</p>
+<p>Some academic papers regarding this toolbox is published by Kazuya Yoshida and his co-author(s) [1]. For the technical points of this software, please consult these papers as well as the following chapters of the document.</p>
 </li>
+</ul>
+<p>We hope that you could find this toolbox useful.</p>
+<h2 id="notice">Notice</h2>
+<ul>
+<li>Now, the Spacedyn is Version 2, Release 0.</li>
+<li>The Spacedyn is a free software.</li>
+<li>You can download and use it freely for your academic purpose.</li>
+<li>Any of commercial use is kindly refused.</li>
+<li>There is no warranty for any damages caused by this software.</li>
+<li>If you intend to modify and re-distribute the Spacedyn, please consult us.</li>
+<li>The MATLAB toolbox of Spacedyn requires MATLAB 5.0 or higher. ( It uses functions that are not supported in 4.0 or lower.)</li>
 </ul>
 <h2 id="reference">Reference</h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you use this simulator in an academic context, please put the following citation.</p>
+<p>@inproceedings{spacedyn,
+  title={The SpaceDyn: a MATLAB toolbox for space and mobile robots},
+  author={Kazuya Yoshida},
+  booktitle={Proceedings 1999 IEEE/RSJ International Conference on Intelligent Robots and Systems},
+  volume={3},
+  pages={1633--1638},
+  year={1999},
+  doi={10.1109/IROS.1999.811712},
+}</p>
 </div>
-<blockquote>
-<p>Uno K. et al. (2022) ClimbLab: MATLAB Simulation Platform for Legged Climbing Robotics. In: Chugo D., Tokhi M.O., Silva M.F., Nakamura T., Goher K. (eds) Robotics for Sustainable Future. CLAWAR 2021. Lecture Notes in Networks and Systems, vol 324. Springer, Cham. https://doi.org/10.1007/978-3-030-86294-7_20</p>
-</blockquote>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span>
-<span class="normal">7</span>
-<span class="normal">8</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code><span class="nv">@inproceedings</span><span class="err">{</span><span class="n">uno2021climblab</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">title</span><span class="o">=</span><span class="err">{</span><span class="nl">ClimbLab</span><span class="p">:</span><span class="w"> </span><span class="n">MATLAB</span><span class="w"> </span><span class="n">Simulation</span><span class="w"> </span><span class="n">Platform</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Legged</span><span class="w"> </span><span class="n">Climbing</span><span class="w"> </span><span class="n">Robotics</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">author</span><span class="o">=</span><span class="err">{</span><span class="n">Kentaro</span><span class="w"> </span><span class="n">Uno</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">Warley</span><span class="w"> </span><span class="n">F</span><span class="p">.</span><span class="w"> </span><span class="n">R</span><span class="p">.</span><span class="w"> </span><span class="n">Ribeiro</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">Yusuke</span><span class="w"> </span><span class="n">Koizumi</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">Keigo</span><span class="w"> </span><span class="n">Haji</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">Koki</span><span class="w"> </span><span class="n">Kurihara</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">William</span><span class="w"> </span><span class="n">Jones</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">Kazuya</span><span class="w"> </span><span class="n">Yoshida</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">booktitle</span><span class="o">=</span><span class="err">{</span><span class="n">Robotics</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Sustainable</span><span class="w"> </span><span class="n">Future</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">pages</span><span class="o">=</span><span class="err">{</span><span class="mi">229</span><span class="o">--</span><span class="mi">241</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nf">year</span><span class="o">=</span><span class="err">{</span><span class="mi">2022</span><span class="err">}</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">publisher</span><span class="o">=</span><span class="ss">&quot;Springer International Publishing&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="err">}</span><span class="w"></span>
+<h2 id="acknowledgement">Acknowledgement</h2>
+<ul>
+<li>SpaceDyn is originally developed and released by alumini of SRL listed in the <a href="http://www.astro.mech.tohoku.ac.jp/spacedyn/doc.pdf">original dcument</a>. </li>
+<li>C++ version is developed by Dr. Satoko Abiko and Dr. Yoichiro Sato.</li>
+</ul>
+<h2 id="release-note">Release Note</h2>
+<ul>
+<li>Sep. 17th, 2020, SpaceDyn version 2 release 0 is released in GitHub.</li>
+<li>Oct. 16th, 2020, SpaceDyn C++ is released.</li>
+<li>May. 31th, 2024, SpaceDyn version 2 release 1 is released in GitHub.<ul>
+<li>Debug integral of base orientation (fixed <code>f_dyn_rk2</code> and <code>dc2qtn</code>, added <code>qtn2dc</code> and <code>w2dQtn</code>)</li>
+</ul>
+</li>
+</ul>
+<h2 id="faq">FAQ</h2>
+<p>For bug reports or any questions, please contact us via e-mail :</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>spacedyn_support(at)astro.mech.tohoku.ac.jp and srl-orbital(at)grp.tohoku.ac.jp
 </code></pre></div>
 </td></tr></table>
-<h2 id="release-note">Release note</h2>
-<p>The version of this manual is synchronized with the version of ClimbLab simulator. Since this online manual is deployed since the v4.0, the oldest version is v4.0.</p>
-<ul>
-<li>v4.0: released on 2021. First released version. </li>
-</ul>
+<p>Please read the document for details, and <a href="http://www.astro.mech.tohoku.ac.jp/spacedyn/faq.html">FAQ Page</a>.</p>
               
             </div>
           </div>
@@ -214,5 +238,5 @@
 
 <!--
 MkDocs version : 1.1.2
-Build Date UTC : 2024-07-14 03:08:37.458776+00:00
+Build Date UTC : 2024-07-14 03:19:50.651661+00:00
 -->
