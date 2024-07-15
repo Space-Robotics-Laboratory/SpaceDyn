@@ -124,6 +124,12 @@ We hope that you could find this toolbox useful for your application.
 <p>Since MATLAB doesn't allo 0 for array index, we use <code>R0</code> and <code>c0</code> instead of <code>RR[0]</code> and <code>cc[0]</code>, for example. </p>
 </li>
 <li>
+<p>For the representation of attitude or orientation, we use 3 by 3 direction cosine matrices, coded with a symbol <code>A</code>. For example, <code>A0</code> is the direction cosines to represent the attitude of the body 0. For the other bodies, a matrix <code>AA</code> is used. </p>
+</li>
+<li>
+<p>For Roll-Pitch-Yaw (RPY) angles, we use the symbol <code>Q</code>. For example, in order to express the twisting angles between two coordinate systems, we consider $<code>\alpha</code>$ (roll) around $<code>x</code>$-axis, $<code>\beta</code>$ (pitch) around $<code>y</code>$-axis, then $<code>\gumma</code>$ (yaw) around $<code>z</code>$-axis. The set of these angles are coded by <code>Qi</code>.</p>
+</li>
+<li>
 <p>We use both the input variables and the global variables to pass the values to m-file functions. The input variables inside the braces are the variables changing time to time, such as joint angles, positions, orientations, and so on. The global variables are the ones holding constant once the model is given, such as topological description matrices, kinematics and dynamic parameters. </p>
 </li>
 </ul>
