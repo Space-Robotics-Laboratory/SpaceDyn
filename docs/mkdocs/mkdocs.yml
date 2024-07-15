@@ -2,12 +2,11 @@ site_name: SpaceDyn User Manual
 
 nav:
     - Top: index.md
-    - 1. ClimbLab: 1_ClimbLab.md
-    - 2. Simulation: 2_ClimbLab_simulation_flow.md
-    - 3. Functions/Algorithms: 3_other_main_functions.md
-    - 4. Simulation Architecture: 4_how_to_execute_simulation.md
-    - 5. How to Contribute: 5_folder_tree.md
-    - 6. Appendix: 6_development_policy.md
+    - Basics: basics.md
+    - MATLAB: matlab.md
+    - C++: c++.md
+    - ROS: ros.md
+    - Appendix: appendix.md
 
 theme:
     name: readthedocs
@@ -22,6 +21,8 @@ extra_css:
 
 markdown_extensions:
     - meta
+    - mdx_math
+    - markdown_katex
 #    - pymdownx.mark  # build error
 #    - pymdownx.magiclink  # build error
 #    - pymdownx.emoji  # build error

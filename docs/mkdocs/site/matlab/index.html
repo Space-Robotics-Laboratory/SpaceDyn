@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>MATLAB - SpaceDyn User Manual</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../css/custom.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "MATLAB";
+        var mkdocs_page_input_path = "matlab.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> SpaceDyn User Manual
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Top</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../basics/">Basics</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">MATLAB</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#technical-note">Technical Note</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#quick-reference">Quick Reference</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#original-user-manual">Original User Manual</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#the-spacedyn-a-matlab-toolbox-for-space-and-mobile-robots">The Spacedyn - a MATLAB Toolbox for Space and Mobile Robots</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../c%2B%2B/">C++</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../ros/">ROS</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../appendix/">Appendix</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">SpaceDyn User Manual</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">MATLAB</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="spacedyn-as-a-matlab-toolbox">SpaceDyn as a MATLAB toolbox</h1>
+<!-- 
+SpaceDyn was originally created as MATLAB toolbox to handle the kinematic and dynamic analysis and simulation of articulated multi-body system with a free-floating base. Example of such systems include a satellite with mechanical appendages, a free-flying space robot, a wheeled mobile robot, and a walking robot, all of which makes motions in the environment with of without gravity. 
+
+This toolbox can handle open chain systems with topological tree configuration. A parallel manipulator, for example, then cannot be supported directly. A walking robot contacting on the ground with more than two legs or limbs at a time seems to form a closed chain including the ground, however, we can handle such a system with a proper model of ground contact at each contact point. Parallel manipulators can be treated with virtual cut of a kinematic chain and corresponding virtual force model. 
+
+Some academic papers regarding this toolbox is published by Kazuya Yoshida and his co-authors. For the technical points of this software, please consult with those publications as well as the following chapters of this document. 
+
+We hope that you could find this toolbox useful for your application. 
+-->
+
+<p>SpaceDyn was originally created as MATLAB toolbox [1]. We developed this toolbox motivated and inspired by <a href="https://petercorke.com/toolboxes/robotics-toolbox/">Robotics toolbox</a> developed by Peter I. Corke. We took one m-file (<code>cross.m</code>) and use it as the original is, but SpaceDyn as a whole, does not have compatibility with the Peter's Robotics toolbox unfortunately.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The MATLAB toolbox of Spacedyn requires MATLAB 5.0 or higher. (It uses functions that are not supported in 4.0 or lower.)</p>
+</div>
+<h2 id="usage">Usage</h2>
+<p>Just clone the repository, and copy all the MATLAB functions in <code>SpaceDyn/src/matlab</code> to your workspace, and use them to model your robot and calculate its kinematics and dynamics. Each-by-each m-file usage is detailed in the following <strong>quick reference</strong> shown later.</p>
+<h2 id="technical-note">Technical Note</h2>
+<ul>
+<li>
+<p>For mathematical symbols, we give the name of variables with more than two letters. For example, vector <em>r</em> and <em>c</em> are coded by <code>RR</code> and <code>cc</code>, respectively This is to avoid the confusion with control variables such as <em>i</em>, <em>j</em>, <em>k</em>, or <em>l</em>, <em>m</em>, <em>n</em>, etc, which are frequently used as iteration or array counters. However, there is an exeption: the symbol <code>q</code> is used for the joint variable vector <em>q</em>.</p>
+</li>
+<li>
+<p>Since MATLAB doesn't allow 0 for array index, we use <code>R0</code> and <code>c0</code> instead of <code>RR[0]</code> and <code>cc[0]</code>, for example. </p>
+</li>
+<li>
+<p>For the representation of attitude or orientation, we use 3 by 3 direction cosine matrices, coded with a symbol <code>A</code>. For example, <code>A0</code> is the direction cosines to represent the attitude of the body 0. For the other bodies, a matrix <code>AA</code> is used. </p>
+</li>
+<li>
+<p>For Roll-Pitch-Yaw (RPY) angles, we use the symbol <code>Q</code>. For example, in order to express the twisting angles between two coordinate systems, we consider $<code>\alpha</code>$ (roll) around $<code>x</code>$-axis, $<code>\beta</code>$ (pitch) around $<code>y</code>$-axis, then $<code>\gumma</code>$ (yaw) around $<code>z</code>$-axis. The set of these angles are coded by <code>Qi</code>.</p>
+</li>
+<li>
+<p>We use both the input variables and the global variables to pass the values to m-file functions. The input variables inside the braces are the variables changing time to time, such as joint angles, positions, orientations, and so on. The global variables are the ones holding constant once the model is given, such as topological description matrices, kinematics and dynamic parameters. </p>
+</li>
+</ul>
+<!-- * We assume the system composed of _n+1_ bodies and connected by _n_ joints. Let the body 0 be a _reference body_. Multiple branches can attach on any single _body_, as far as the system keeps a topological tree configuration. There must be a single _joint_ between two bodies. We call a terminal point or the point of interest such as manipulator hand as endpoint. Each body, except body 0, can have one endpoint at maximum. In this document, the terms _body_ and _link_ are the same.-->
+
+<!-- * The toolbox allows force/torque input on (i) the centroid of the reference body, (ii) each endpoint, and (iii) each joint. The toolbox computes the position, velocity and acceleration of (1) the centroid of the reference body, (2) the centroid of each body, (3) each endopoint, and (4) each joint. -->
+
+<h2 id="quick-reference">Quick Reference</h2>
+<p>The interactive quick reference guide written in html is already available in our <a href="https://github.com/Space-Robotics-Laboratory/SpaceDyn/tree/main/src/matlab/spacedyn_reference">GitHub directory</a>. </p>
+<p>Please download the repository <code>spacedyn_reference</code> and open <code>index.html</code> in web browser to get started. </p>
+<h2 id="original-user-manual">Original User Manual</h2>
+<p>The original user manual is also avaliable.</p>
+<h4 id="the-spacedyn-a-matlab-toolbox-for-space-and-mobile-robots"><a href="http://www.astro.mech.tohoku.ac.jp/spacedyn/doc.pdf"><strong>The Spacedyn - a MATLAB Toolbox for Space and Mobile Robots</strong></a></h4>
+<p>We heavily recommend the user to read this manual, which describe the development philosophy and programing rules, to understand the code, deeply.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../basics/" class="btn btn-neutral float-left" title="Basics"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../c%2B%2B/" class="btn btn-neutral float-right" title="C++">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../basics/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../c%2B%2B/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

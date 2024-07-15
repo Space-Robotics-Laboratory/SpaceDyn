@@ -3,12 +3,38 @@ body {
     --themecolor: #002060;
 }
 
+.justify{
+  text-align: justify;
+}
+
 h1, h2, h3, h4, h5, h6 {
     font-family: "Arial";
     color: #000000;
     display: block;
 }
 
+h1.justify{
+  text-align: justify;
+}
+
+h2.justify{
+  text-align: justify;
+}
+
+h3.justify{
+  text-align: justify;
+}
+
+.scale-img {
+  // width: 250px; /*画像の幅*/
+  // height: 175px; /*画像の高さ*/
+  transition-duration: 0.5s; /*変化の時間*/
+  }
+  .scale-img:hover {
+  transform: scale(1.1,1.1); /*画像の拡大*/
+  cursor: pointer; /*カーソルをポインターにする*/
+  }
+  
 .wy-side-nav-search {
   background-color: var(--themecolor);
 }
