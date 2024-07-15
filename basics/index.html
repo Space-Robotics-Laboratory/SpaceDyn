@@ -157,7 +157,25 @@
 the joint behaves as a passive visco-elastic joint. You can treat even a flexible link, by modeling it as a discrete successive chain of rigid links connected by elastic joints. Of course, you can give any arbitrary control torque determined by your own control law, on all or arbitrary selected joints. </p>
 </li>
 <li>
-<p>We know that the Denavit-Hartenberg notation is commonly ....</p>
+<p>We know that the Denavit-Hartenberg (DH) notation is commonly used in the field of manipulator kinematics with the advantage of unique allocation of coordinate systems with minimum parameters, but we know that the DH sometimes locates the coordinate ofitin away from the location of an actual joint. From the dynamics point of view, the angular velocity and the inertia tensor should be defined around the corresponding joint axis or body centroid. We then do NOT use the DH notation but introduce a rule to define the coordinate system with more flexibility. </p>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We do NOT use the DH notation in SpaceDyn.</p>
+</div>
+<ul>
+<li>
+<p>Our rule locates the origin of the coordinate systems with more flexibility. Our rule locates the origin of the frame on each joint and orients the primary axes so that the inertia tensor should be simpler, but admits three position and three orientation parameters among two successive coordinate systems.</p>
+</li>
+<li>
+<p>For the representation of attitude or orientation, we use 3 by 3 direction cosine matrices, coded with a symbol <code>A</code>. For example, <code>A0</code> is the direction cosines to represent the attitude of the body 0. For the other bodies, a matrix <code>AA</code> is used. The advantage of direction cosine is (1) singularity free, (2) we can easily defive Roll-Pitch-Yaw angles, Euler angles, or quartanions, and (3) it is easy to find the mathematical relationship with angular velocity. </p>
+</li>
+<li>
+<p>On the other hand, we frequently need Roll-Pitch-Yaw (RPY) replresentation also. For RPY angles, we use the symbol <code>Q</code>. For example, in order to express the twisting angles between two coordinate systems, we consider $<code>\alpha</code>$ (roll) around $<code>x</code>$-axis, $<code>\beta</code>$ (pitch) around $<code>y</code>$-axis, then $<code>\gumma</code>$ (yaw) around $<code>z</code>$-axis. The set of these angles are coded by <code>Qi</code>.</p>
+</li>
+<li>
+<p>Weak points: The SpaceDyn is not good at dealing with kinematic constraints other than joint axes. It is also weak at dealing with the problems in which a contact point is dynamically changing. For those problems, a good user programming is required to model the constraint forces. </p>
 </li>
 </ul>
               
