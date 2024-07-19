@@ -172,105 +172,168 @@
 </li>
 </ul>
 <p>である．以下に記述例を示す．</p>
-<pre class="codehilite"><code class="linenums">%%%%%% Configuration
-%%%%%% config_save_settings
-%%%%%% 
-%%%%%% Configure default saving settings
-%%%%%% 
-%%%%%% Created 2020-07-08
-%%%%%% Warley Ribeiro
-%%%%%% Last update: 2021-03-31
-%%%%%% Keigo Haji
-%
-%
-% Load default configurations for saving
-%
-% Function variables:
-%
-%     OUTPUT
-%         save_settings: Data saving settings (struct)
-%     INPUT
-%         -
-</code></pre>
-
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code><span class="o">%%%%%%</span><span class="w"> </span><span class="n">Configuration</span><span class="w"></span>
+<span class="o">%%%%%%</span><span class="w"> </span><span class="n">config_save_settings</span><span class="w"></span>
+<span class="o">%%%%%%</span><span class="w"> </span>
+<span class="o">%%%%%%</span><span class="w"> </span><span class="n">Configure</span><span class="w"> </span><span class="n">default</span><span class="w"> </span><span class="n">saving</span><span class="w"> </span><span class="n">settings</span><span class="w"></span>
+<span class="o">%%%%%%</span><span class="w"> </span>
+<span class="o">%%%%%%</span><span class="w"> </span><span class="n">Created</span><span class="w"> </span><span class="mi">2020</span><span class="o">-</span><span class="mi">07</span><span class="o">-</span><span class="mi">08</span><span class="w"></span>
+<span class="o">%%%%%%</span><span class="w"> </span><span class="n">Warley</span><span class="w"> </span><span class="n">Ribeiro</span><span class="w"></span>
+<span class="o">%%%%%%</span><span class="w"> </span><span class="n">Last</span><span class="w"> </span><span class="n">update</span><span class="p">:</span><span class="w"> </span><span class="mi">2021</span><span class="o">-</span><span class="mi">03</span><span class="o">-</span><span class="mi">31</span><span class="w"></span>
+<span class="o">%%%%%%</span><span class="w"> </span><span class="n">Keigo</span><span class="w"> </span><span class="n">Haji</span><span class="w"></span>
+<span class="o">%</span><span class="w"></span>
+<span class="o">%</span><span class="w"></span>
+<span class="o">%</span><span class="w"> </span><span class="n">Load</span><span class="w"> </span><span class="n">default</span><span class="w"> </span><span class="n">configurations</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">saving</span><span class="w"></span>
+<span class="o">%</span><span class="w"></span>
+<span class="o">%</span><span class="w"> </span><span class="n">Function</span><span class="w"> </span><span class="n">variables</span><span class="p">:</span><span class="w"></span>
+<span class="o">%</span><span class="w"></span>
+<span class="o">%</span><span class="w">     </span><span class="n">OUTPUT</span><span class="w"></span>
+<span class="o">%</span><span class="w">         </span><span class="n">save_settings</span><span class="p">:</span><span class="w"> </span><span class="n">Data</span><span class="w"> </span><span class="n">saving</span><span class="w"> </span><span class="n">settings</span><span class="w"> </span><span class="p">(</span><span class="n">struct</span><span class="p">)</span><span class="w"></span>
+<span class="o">%</span><span class="w">     </span><span class="n">INPUT</span><span class="w"></span>
+<span class="o">%</span><span class="w">         </span><span class="o">-</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
 <p><br></p>
 <h5 id="2-main_simmain_sim">2. むやみにmain_sim内に新たな関数の記述を増やさず，main_sim内で実行されている既存の関数内に組み込む形で新たな機能を実装する．</h5>
 <p>これは，ClimbLabがシミュレーションプラットフォームとして機能していくためにmain_simの一般性を担保するためである．また，同時にmain_simを複数人が編集するとGitのmergeの際にconflictが発生しやすくなるので，その問題を避けるという目的もある．
 悪い例）main_sim内に直接実装</p>
-<pre class="codehilite"><code class="language-MATLAB linenums">MAIN_FILE.m
-...
-disp(time);
-if gait_param.type = ‘new_gait’
-new_gait(...)
-else
-path_planning_param = upd_path_planning(...);
-end
-[motion_planning_param, des_SV] = upd_motion_planning(...);
-...
-</code></pre>
-
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code><span class="n">MAIN_FILE</span><span class="p">.</span><span class="n">m</span><span class="w"></span>
+<span class="k">...</span><span class="w"></span>
+<span class="nb">disp</span><span class="p">(</span><span class="nb">time</span><span class="p">);</span><span class="w"></span>
+<span class="k">if</span><span class="w"> </span><span class="n">gait_param</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="p">=</span><span class="w"> </span>‘<span class="n">new_gait</span>’<span class="w"></span>
+<span class="n">new_gait</span><span class="p">(</span><span class="k">...</span><span class="c">)</span><span class="w"></span>
+<span class="k">else</span><span class="w"></span>
+<span class="n">path_planning_param</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">upd_path_planning</span><span class="p">(</span><span class="k">...</span><span class="c">);</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
+<span class="p">[</span><span class="n">motion_planning_param</span><span class="p">,</span><span class="w"> </span><span class="n">des_SV</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">upd_motion_planning</span><span class="p">(</span><span class="k">...</span><span class="c">);</span><span class="w"></span>
+<span class="k">...</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
 <p>良い例）main_simはそのままに，upd関数内で場合分けをおこなっている</p>
-<pre class="codehilite"><code class="language-MATLAB linenums">MAIN_FILE.m
-...
-disp(time);
-path_planning_param = upd_path_planning(...);
-[motion_planning_param, des_SV] = upd_motion_planning(...);
-...
-FUNCTION_FILE.m 
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code><span class="n">MAIN_FILE</span><span class="p">.</span><span class="n">m</span><span class="w"></span>
+<span class="k">...</span><span class="w"></span>
+<span class="nb">disp</span><span class="p">(</span><span class="nb">time</span><span class="p">);</span><span class="w"></span>
+<span class="n">path_planning_param</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">upd_path_planning</span><span class="p">(</span><span class="k">...</span><span class="c">);</span><span class="w"></span>
+<span class="p">[</span><span class="n">motion_planning_param</span><span class="p">,</span><span class="w"> </span><span class="n">des_SV</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">upd_motion_planning</span><span class="p">(</span><span class="k">...</span><span class="c">);</span><span class="w"></span>
+<span class="k">...</span><span class="w"></span>
+<span class="n">FUNCTION_FILE</span><span class="p">.</span><span class="n">m</span><span class="w"> </span>
 
-function path_planning_param = upd_path_planning(...)
+<span class="k">function</span><span class="w"> </span>path_planning_param<span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nf">upd_path_planning</span><span class="p">(</span>...<span class="p">)</span><span class="w"></span>
 
-switch gait_param.type
-case ‘new_gait’
-new_gait(...);
-case ‘old_gait’
-...
-</code></pre>
-
+<span class="k">switch</span><span class="w"> </span><span class="n">gait_param</span><span class="p">.</span><span class="n">type</span><span class="w"></span>
+<span class="k">case</span><span class="w"> </span>‘<span class="n">new_gait</span>’<span class="w"></span>
+<span class="n">new_gait</span><span class="p">(</span><span class="k">...</span><span class="c">);</span><span class="w"></span>
+<span class="k">case</span><span class="w"> </span>‘<span class="n">old_gait</span>’<span class="w"></span>
+<span class="k">...</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
 <p><br></p>
 <h5 id="3-class">3. 変数はなるべくclassに収容する</h5>
 <p>大量のローカル変数を関数内でなるべく扱わないようにする．これはMATLABワークスペース内での変数の把握が難しくなるためである．変数の"くくり"を考えて，既存のclassにあてはまる場合は既存のclass(<code>gait_planning_param</code>,<code>motion_planning_param</code>等)に収容し，ない場合は自分の機能にあった新たなclassを作成すること．
 悪い例）local変数が多い．</p>
-<pre class="codehilite"><code class="language-MATLAB linenums">...
-leg1_des_pos = …
-leg2_des_pos = …
-leg3_des_pos = …
-leg4_des_pos = …
-base_des_pos = ...
-generate_trajectory(leg1_des_pos, leg2_des_pos, leg3_des_pos, leg4_des_pos, base_des_pos);
-...
-</code></pre>
-
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code><span class="k">...</span><span class="w"></span>
+<span class="n">leg1_des_pos</span><span class="w"> </span><span class="p">=</span><span class="w"> </span>…<span class="w"></span>
+<span class="n">leg2_des_pos</span><span class="w"> </span><span class="p">=</span><span class="w"> </span>…<span class="w"></span>
+<span class="n">leg3_des_pos</span><span class="w"> </span><span class="p">=</span><span class="w"> </span>…<span class="w"></span>
+<span class="n">leg4_des_pos</span><span class="w"> </span><span class="p">=</span><span class="w"> </span>…<span class="w"></span>
+<span class="n">base_des_pos</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="n">generate_trajectory</span><span class="p">(</span><span class="n">leg1_des_pos</span><span class="p">,</span><span class="w"> </span><span class="n">leg2_des_pos</span><span class="p">,</span><span class="w"> </span><span class="n">leg3_des_pos</span><span class="p">,</span><span class="w"> </span><span class="n">leg4_des_pos</span><span class="p">,</span><span class="w"> </span><span class="n">base_des_pos</span><span class="p">);</span><span class="w"></span>
+<span class="k">...</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
 <p>いい例）変数がclassに分類されている</p>
-<pre class="codehilite"><code class="language-MATLAB linenums">...
-path_planning_param.leg_des_pos = …
-path_planning_param.base_des_pos = …
-generate_trajectory(path_planning_param);
-...
-</code></pre>
-
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code><span class="k">...</span><span class="w"></span>
+<span class="n">path_planning_param</span><span class="p">.</span><span class="n">leg_des_pos</span><span class="w"> </span><span class="p">=</span><span class="w"> </span>…<span class="w"></span>
+<span class="n">path_planning_param</span><span class="p">.</span><span class="n">base_des_pos</span><span class="w"> </span><span class="p">=</span><span class="w"> </span>…<span class="w"></span>
+<span class="n">generate_trajectory</span><span class="p">(</span><span class="n">path_planning_param</span><span class="p">);</span><span class="w"></span>
+<span class="k">...</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
 <p><br></p>
 <h5 id="4">4. 変数名をわかりやすくつける</h5>
 <p>変数名はどんなに長くなってもいいので，誰にでもわかるように付ける．変数名の付け方は関数と同じく，snake_caseで統一し，camelCaseは使わない．また，その変数がどういう値を収容し，その単位(次元)はなんなのかをコメントで明記する．
 悪い例）人が読んでも何の略称かわからない</p>
-<pre class="codehilite"><code class="language-MATLAB linenums">...
-L1 = …
-WP.T = …
-GPM = ...
-...
-</code></pre>
-
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code><span class="k">...</span><span class="w"></span>
+<span class="n">L1</span><span class="w"> </span><span class="p">=</span><span class="w"> </span>…<span class="w"></span>
+<span class="n">WP</span><span class="p">.</span><span class="n">T</span><span class="w"> </span><span class="p">=</span><span class="w"> </span>…<span class="w"></span>
+<span class="n">GPM</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="k">...</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
 <p>いい例）コメントや変数名から何の値がどういう単位次元で収容されているか分かる</p>
-<pre class="codehilite"><code class="language-MATLAB linenums">…
-% Desired position of a leg [m]
-motion_planning_param.des_leg_pos = …
-% Period for crawl gait [s]
-gait_parameter.T = …
-% Grippable points [m]
-surface_param.grippable_points = ...
-...
-</code></pre>
-
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="codehilite"><pre><span></span><code>…<span class="w"></span>
+<span class="c">% Desired position of a leg [m]</span><span class="w"></span>
+<span class="n">motion_planning_param</span><span class="p">.</span><span class="n">des_leg_pos</span><span class="w"> </span><span class="p">=</span><span class="w"> </span>…<span class="w"></span>
+<span class="c">% Period for crawl gait [s]</span><span class="w"></span>
+<span class="n">gait_parameter</span><span class="p">.</span><span class="n">T</span><span class="w"> </span><span class="p">=</span><span class="w"> </span>…<span class="w"></span>
+<span class="c">% Grippable points [m]</span><span class="w"></span>
+<span class="n">surface_param</span><span class="p">.</span><span class="n">grippable_points</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">...</span><span class="w"></span>
+<span class="k">...</span><span class="w"></span>
+</code></pre></div>
+</td></tr></table>
 <p><br></p>
 <h5 id="5">5. 新しい機能の実装後は，必ず繰り返しテストをおこなう</h5>
 <p>新しい機能を実装した後は，パラメータや設定を変えてテストを繰り返し，バグが発生しないことを確かめてから上級生にReviewをお願いする．</p>
