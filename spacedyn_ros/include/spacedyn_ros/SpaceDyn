@@ -1,0 +1,28 @@
+#ifndef SPACEDYN_ROS_SPACEDYN_ROS_HPP_
+#define SPACEDYN_ROS_SPACEDYN_ROS_HPP_
+
+#include "eigen3/Eigen/Cholesky"
+#include "eigen3/Eigen/Core"
+
+#include "spacedyn_ros/geometry/accel.hpp"
+#include "spacedyn_ros/geometry/inertia.hpp"
+#include "spacedyn_ros/geometry/pose.hpp"
+#include "spacedyn_ros/geometry/transform.hpp"
+#include "spacedyn_ros/geometry/twist.hpp"
+#include "spacedyn_ros/geometry/wrench.hpp"
+
+#include "spacedyn_ros/linkage/connection.hpp"
+#include "spacedyn_ros/linkage/joint.hpp"
+#include "spacedyn_ros/linkage/joint_state.hpp"
+#include "spacedyn_ros/linkage/link.hpp"
+#include "spacedyn_ros/linkage/link_state.hpp"
+#include "spacedyn_ros/linkage/linkage.hpp"
+
+#include "spacedyn_ros/motion/dynamics.hpp"
+#include "spacedyn_ros/motion/kinematics.hpp"
+
+#include "spacedyn_ros/robot/model.hpp"
+#include "spacedyn_ros/robot/robot.hpp"
+#include "spacedyn_ros/robot/state_variable.hpp"
+
+#endif // SPACEDYN_ROS_SPACEDYN_ROS_HPP_

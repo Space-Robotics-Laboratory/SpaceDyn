@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<robot name="my_robot">
+
+  <link name="link1">
+    <visual>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <box size="0.5 0.1 0.1"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name="joint1" type="revolute">
+    <parent link="link1"/>
+    <child link="link2"/>
+    <origin xyz="0.5 0 0.1"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1" upper="1" effort="1" velocity="1"/>
+  </joint>
+
+  <link name="link2">
+    <visual>
+      <origin xyz="1 0 0"/>
+      <geometry>
+        <box size="0.5 0.1 0.1"/>
+      </geometry>
+    </visual>
+  </link>
+
+</robot>
