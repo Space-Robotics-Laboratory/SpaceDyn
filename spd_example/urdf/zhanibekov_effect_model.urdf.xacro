@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<robot name="t_model">
+
+  <!-- Define the links -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="-0.25 -0.08 -0.075" rpy="0 0 0"/>
+      <geometry>
+        <!-- <box size="0.1 0.1 0.1"/> -->
+        <mesh filename="file://$(find spd_example)/urdf/zhanibekov_effect_model.STL" scale="5 5 5"/>
+      </geometry>
+    </visual>
+      <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="0.5" iyz="0.0" izz="0.1"/>
+    </inertial>
+  </link>
+
+</robot>
