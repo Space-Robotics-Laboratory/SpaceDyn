@@ -1,8 +1,8 @@
 #ifndef SPACEDYN_ROS_MODEL_HPP_
 #define SPACEDYN_ROS_MODEL_HPP_
 
-#include "eigen3/Eigen/Core"
 #include "spacedyn_ros/linkage/linkage.hpp"
+#include <eigen3/Eigen/Core>
 
 namespace spacedyn_ros {
 class Model {
@@ -31,8 +31,12 @@ public:
    */
   const Linkage &getLinkage() const;
   double getTotalMass() const;
+
+  int getDof() const;
   int getLinkNumber() const;
   int getJointNumber() const;
+  int getActuatorNumber() const;
+  int getEndEffectorNumber() const;
 
   double getDeltaTimeSec() const;
   double getDeltaTimeMilliSec() const;

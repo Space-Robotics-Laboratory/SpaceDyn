@@ -1,5 +1,6 @@
 #ifndef SPACEDYN_ROS_INTEGRAL_HPP_
 #define SPACEDYN_ROS_INTEGRAL_HPP_
+
 #include "spacedyn_ros/robot/robot.hpp"
 #include "spacedyn_ros/robot/state_variable.hpp"
 

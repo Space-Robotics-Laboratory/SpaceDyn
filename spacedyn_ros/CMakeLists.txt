@@ -47,15 +47,15 @@ set(SPD_ROS_INCLUDE_DIRS
 )
 
 # Source directory
-set(SPD_ROS_GEOMETRY_DIR 
+set(SPD_ROS_GEOMETRY_DIR
   ${CMAKE_CURRENT_SOURCE_DIR}/src/geometry)
-set(SPD_ROS_LINKAGE_DIR 
+set(SPD_ROS_LINKAGE_DIR
   ${CMAKE_CURRENT_SOURCE_DIR}/src/linkage)
-set(SPD_ROS_MOTION_DIR 
+set(SPD_ROS_MOTION_DIR
   ${CMAKE_CURRENT_SOURCE_DIR}/src/motion)
-set(SPD_ROS_ROBOT_DIR 
+set(SPD_ROS_ROBOT_DIR
   ${CMAKE_CURRENT_SOURCE_DIR}/src/robot)
-set(SPD_ROS_UTIL_DIR 
+set(SPD_ROS_UTIL_DIR
   ${CMAKE_CURRENT_SOURCE_DIR}/src/util)
 
 # Source files
@@ -71,7 +71,8 @@ set(SPD_ROS_LINKAGE
   ${SPD_ROS_LINKAGE_DIR}/joint.cpp
   ${SPD_ROS_LINKAGE_DIR}/link_state.cpp
   ${SPD_ROS_LINKAGE_DIR}/link.cpp
-  ${SPD_ROS_LINKAGE_DIR}/linkage.cpp)
+  ${SPD_ROS_LINKAGE_DIR}/linkage.cpp
+  ${SPD_ROS_LINKAGE_DIR}/connection.cpp)
 set(SPD_ROS_MOTION
   ${SPD_ROS_MOTION_DIR}/kinematics.cpp
   ${SPD_ROS_MOTION_DIR}/integral.cpp
@@ -108,8 +109,8 @@ install(DIRECTORY
 
 # Link libraries used in spacedyn_ros
 # And export dependencies
-target_link_libraries(${PACKAGE_NAME} 
-  ament_index_cpp::ament_index_cpp 
+target_link_libraries(${PACKAGE_NAME}
+  ament_index_cpp::ament_index_cpp
   Eigen3::Eigen)
 ament_target_dependencies(${PACKAGE_NAME}
   ${THIS_PACKAGE_INCLUDE_DEPENDS}

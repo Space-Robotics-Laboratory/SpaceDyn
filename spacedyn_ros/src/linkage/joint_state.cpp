@@ -1,9 +1,9 @@
 #include "spacedyn_ros/linkage/joint_state.hpp"
-#include "eigen3/Eigen/Core"
-#include "iostream"
 #include "spacedyn_ros/geometry/accel.hpp"
 #include "spacedyn_ros/geometry/pose.hpp"
 #include "spacedyn_ros/geometry/twist.hpp"
+#include <eigen3/Eigen/Core>
+#include <iostream>
 
 namespace spacedyn_ros {
 
@@ -22,23 +22,32 @@ JointState::JointState() {
 
 const Pose &JointState::getPoseInWorldFrame() const { return this->pose_in_world_frame_; }
 const Twist &JointState::getTwistInWorldFrame() const { return this->twist_in_world_frame_; }
+Twist JointState::getTwistInLocalFrame() const {
+  auto twist = getTwistInWorldFrame().getTwistInFrame(Frame::kLocal, getPoseInWorldFrame());
+  return twist;
+}
 const Accel &JointState::getAccelInWorldFrame() const { return this->accel_in_world_frame_; }
+Accel JointState::getAccelInLocalFrame() const {
+  auto accel = getAccelInWorldFrame().getAccelInFrame(Frame::kLocal, getPoseInWorldFrame());
+  return accel;
+}
 const Wrench &JointState::getWrenchToChildInWorldFrame() const {
   return this->wrench_to_child_in_world_frame_;
+}
+
+bool JointState::hasNonZeroPosition() const { return this->position_ != 0; }
+bool JointState::hasNonZeroVelocity() const { return this->velocity_ != 0; }
+bool JointState::hasNonZeroAcceleration() const { return this->acceleration_ != 0; }
+bool JointState::hasNonZeroEffort() const { return this->effort_ != 0; }
+bool JointState::hasNonZeroState() const {
+  return hasNonZeroPosition() || hasNonZeroVelocity() || hasNonZeroAcceleration() ||
+         hasNonZeroEffort();
 }
 
 double JointState::getPosition() const { return this->position_; }
 double JointState::getVelocity() const { return this->velocity_; }
 double JointState::getAcceleration() const { return this->acceleration_; }
 double JointState::getEffort() const { return this->effort_; }
-
-Eigen::Vector3d JointState::getAxisInWorldFrame() const {
-  return this->pose_in_world_frame_.getOriginPose().linear().col(2);
-}
-
-Eigen::Vector3d JointState::getAxisDerivativeInWorldFrame() const {
-  return this->twist_in_world_frame_.getOriginAngularVelocity().cross(this->getAxisInWorldFrame());
-}
 
 void JointState::setPoseInWorldFrame(const Pose &pose) { this->pose_in_world_frame_ = pose; }
 void JointState::setTwistInWorldFrame(const Twist &twist) {

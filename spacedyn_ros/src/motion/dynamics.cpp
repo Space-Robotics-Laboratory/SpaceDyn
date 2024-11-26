@@ -11,14 +11,13 @@ LinkState Dynamics::inverseLinkWrench(const Link &link, const LinkState &link_st
   Inertia link_inertia = link.computeInertiaInWorldFrame(link_state.getPoseInWorldFrame());
   Accel link_accel = link_state.getAccelInWorldFrame();
   Twist link_twist = link_state.getTwistInWorldFrame();
-  Eigen::VectorXd wrench(6);
+  Eigen::Vector6d wrench;
   // Compute wrench from Newton-Euler equation
-  wrench.head(3) = link_inertia.getMass() * (link_accel.getOriginLinierAcceleration()); // F = ma
+  wrench.head(3) = link_inertia.getMass() * (link_accel.getLinearAcceleration()); // F = ma
   wrench.tail(3) =
-      link_inertia.getOriginInertiaTensor() * link_accel.getOriginAngularAcceleration() +
-      link_twist.getOriginAngularVelocity().cross(
-          link_inertia.getOriginInertiaTensor() *
-          link_twist.getOriginAngularVelocity()); // T = I*dw + w x I*w
+      link_inertia.getInertiaTensor() * link_accel.getAngularAcceleration() +
+      link_twist.getAngularVelocity().cross(link_inertia.getInertiaTensor() *
+                                            link_twist.getAngularVelocity()); // T = I*dw + w x I*w
   LinkState output = link_state;
   output.setTotalWrenchOnLinkInWorldFrame(Wrench(Frame::kWorld, wrench));
   return output;
@@ -30,20 +29,20 @@ JointState Dynamics::inverseJointWrench(const Joint &joint, const JointState &jo
                                         const Eigen::Vector3d &gravity) {
   Eigen::Vector3d trans_from_parent_joint_to_link_com =
       joint_state.getPoseInWorldFrame().computeTranslationToPoint(
-          link_state.getPoseInWorldFrame().getOriginPose());
+          link_state.getPoseInWorldFrame().getPoseInWorldFrame());
 
   // Compute the required wrench at CoM applied by the joint.
   // Wrench at link CoM: (link total) = (joint)      + (children joints) + (gravity) + (external)
   //                 <=> (joint)      = (link total) - (children joints) - (gravity) - (external)
   Wrench gravity_wrench(Frame::kWorld, link.getInertiaInLocalFrame().getMass() * gravity,
                         Eigen::Vector3d::Zero());
-
+  // TODO: Check Joint wrench and effort direction
   Wrench joint_wrench_at_link_com = link_state.getTotalWrenchOnLinkInWorldFrame() -
                                     summed_wrench_by_children_joints_at_link - gravity_wrench -
                                     link_state.getExternallyAppliedWrenchInWorldFrame();
 
   // Ta = Pab x Fb
-  Wrench joint_wrench = joint_wrench_at_link_com.computeOriginWrenchFromPointWrench(
+  Wrench joint_wrench = joint_wrench_at_link_com.computeWrenchByInvertingPointWrench(
       trans_from_parent_joint_to_link_com);
 
   JointState output = joint_state;
@@ -86,21 +85,21 @@ StateVariable Dynamics::computeForward(const Robot &robot) {
   robot_no_acc.setStateVariable(Kinematics::computeForward(robot_no_acc, false, false, true));
   robot_no_acc.clearAllLinkExternallyAppliedWrench(); // F_ext = 0
   robot_no_acc.setStateVariable(computeInverse(robot_no_acc));
-  Eigen::VectorXd non_linier_plus_gravity_term = robot_no_acc.getGeneralizedForce();
+  Eigen::VectorXd non_linear_plus_gravity_term = robot_no_acc.getGeneralizedForce();
 
-  Eigen::VectorXd inertia_force = robot.getGeneralizedForce() - non_linier_plus_gravity_term;
+  Eigen::VectorXd inertia_force = robot.getGeneralizedForce() - non_linear_plus_gravity_term;
   Eigen::VectorXd generalized_acceleration = H.inverse() * inertia_force;
 
   // TODO: Replace this part with setGeneralizedAcceleration()
   const int SPACE_DIM = 6;
   result_sv.setLinkAccelInWorldFrame(Link::ID::kBase, generalized_acceleration.head(SPACE_DIM));
-  result_sv.setJointAcceleration(generalized_acceleration.tail(robot.getJointNumber()));
+  result_sv.setJointAcceleration(generalized_acceleration.tail(robot.getActuatorNumber()));
 
   return result_sv;
 }
 
 StateVariable Dynamics::computeInverse(const Robot &robot) {
-  StateVariable state_variable = robot.getStateVariable();
+  StateVariable result_sv = robot.getStateVariable();
   Eigen::Vector3d gravity = robot.getModel().getGravity();
 
   // Start recursive computation from the first end-effector
@@ -121,8 +120,8 @@ StateVariable Dynamics::computeInverse(const Robot &robot) {
     int link_id = link.getId();
     int joint_id = link.getParentJointId();
     Joint joint = robot.getJoint(joint_id);
-    LinkState link_state = state_variable.getLinkState(link_id);
-    JointState joint_state = state_variable.getJointState(joint_id);
+    LinkState link_state = result_sv.getLinkState(link_id);
+    JointState joint_state = result_sv.getJointState(joint_id);
     LinkState link_state_idyn_done = inverseLinkWrench(link, link_state);
 
     // Compute inverse dynamics on link and joint
@@ -131,13 +130,13 @@ StateVariable Dynamics::computeInverse(const Robot &robot) {
                            summed_wrench_by_children_joints_at_link.at(link_id), gravity);
 
     // Set the output state
-    state_variable.setLinkState(link_id, link_state_idyn_done);
-    state_variable.setJointState(joint_id, joint_state_idyn_done);
+    result_sv.setLinkState(link_id, link_state_idyn_done);
+    result_sv.setJointState(joint_id, joint_state_idyn_done);
 
     // Handle link order to compute and sum-up children joints wrench
     int parent_link_id = link.getParentId();
     Link parent_link = robot.getLink(parent_link_id);
-    LinkState parent_link_state = state_variable.getLinkState(parent_link_id);
+    LinkState parent_link_state = result_sv.getLinkState(parent_link_id);
 
     Eigen::Vector3d trans_parent_link_to_joint =
         parent_link_state.getPoseInWorldFrame().computeTranslationToPoint(
@@ -147,7 +146,7 @@ StateVariable Dynamics::computeInverse(const Robot &robot) {
     // Sum of them is wrench from all children
     auto wrench_by_child_joint = -joint_state_idyn_done.getWrenchToChildInWorldFrame();
     summed_wrench_by_children_joints_at_link.at(parent_link_id) +=
-        wrench_by_child_joint.computeOriginWrenchFromPointWrench(trans_parent_link_to_joint);
+        wrench_by_child_joint.computeWrenchByInvertingPointWrench(trans_parent_link_to_joint);
 
     // If parent link has other child, stash the link and jump to the next end effector to compute
     // summed wrench by children before compute the parent wrench.
@@ -165,7 +164,7 @@ StateVariable Dynamics::computeInverse(const Robot &robot) {
 
     // For safety to avoid infinite loop
     loop_count++;
-    if (loop_count >= state_variable.getLinkNumber()) {
+    if (loop_count >= result_sv.getLinkNumber()) {
       throw std::logic_error("Error: Unexpected error. Loop count is over link number");
       break;
     }
@@ -173,13 +172,23 @@ StateVariable Dynamics::computeInverse(const Robot &robot) {
 
   // Compute base link's external wrench
   // link == base here
-  LinkState link_state_link_idyn_done = state_variable.getLinkState(Link::ID::kBase);
+  LinkState link_state_link_idyn_done = result_sv.getLinkState(Link::ID::kBase);
   LinkState link_state_base_idyn_done = inverseLinkWrench(link, link_state_link_idyn_done);
   LinkState link_state_base_external_idyn_done =
       inverseBaseExtWrench(link, link_state_base_idyn_done,
                            summed_wrench_by_children_joints_at_link.at(Link::ID::kBase), gravity);
-  state_variable.setLinkState(Link::ID::kBase, link_state_base_external_idyn_done);
-  return state_variable;
+  result_sv.setLinkState(Link::ID::kBase, link_state_base_external_idyn_done);
+  return result_sv;
+}
+
+Eigen::VectorXd Dynamics::computeInverseInJointSpace(const Robot &robot) {
+  // TODO: External wrench is not considered in this function currently
+  auto GH = computeRobotGeneralizedInertiaMatrix(robot);
+  auto GC = computeGeneralizedNonlinearVelocityTerm(robot);
+  auto GG = computeGeneralizedGravityTerm(robot);
+  auto des_acc = robot.getJointAcceleration();
+  auto des_effort = GH * des_acc + GC + GG;
+  return des_effort;
 }
 
 Eigen::Vector3d Dynamics::computeCenterOfMassInWorldFrame(const Robot &robot) {
@@ -189,31 +198,31 @@ Eigen::Vector3d Dynamics::computeCenterOfMassInWorldFrame(const Robot &robot) {
     Link link = robot.getLink(i);
     LinkState link_state = robot.getLinkState(i);
     double mass = link.getInertiaInLocalFrame().getMass();
-    com += link_state.getPoseInWorldFrame().getOriginPosition() * mass;
+    com += link_state.getPoseInWorldFrame().getPositionInWorldFrame() * mass;
   }
   return com / total_mass;
 }
 
 Eigen::Vector3d Dynamics::computeVelocityOfCenterOfMassInWorldFrame(const Robot &robot) {
-  Eigen::VectorXd velocity = Eigen::VectorXd::Zero(3);
+  Eigen::Vector3d velocity = Eigen::Vector3d::Zero();
   double total_mass = robot.getTotalMass();
   for (int i = 0; i < robot.getLinkNumber(); i++) {
     Link link = robot.getLink(i);
     LinkState link_state = robot.getLinkState(i);
     double mass = link.getInertiaInLocalFrame().getMass();
-    velocity += link_state.getTwistInWorldFrame().getOriginLinierVelocity() * mass;
+    velocity += link_state.getTwistInWorldFrame().getLinearVelocity() * mass;
   }
   return velocity / total_mass;
 }
 
 Eigen::Vector3d Dynamics::computeAccelerationOfCenterOfMassInWorldFrame(const Robot &robot) {
-  Eigen::VectorXd acceleration = Eigen::VectorXd::Zero(3);
+  Eigen::Vector3d acceleration = Eigen::Vector3d::Zero();
   double total_mass = robot.getTotalMass();
   for (int i = 0; i < robot.getLinkNumber(); i++) {
     Link link = robot.getLink(i);
     LinkState link_state = robot.getLinkState(i);
     double mass = link.getInertiaInLocalFrame().getMass();
-    acceleration += link_state.getAccelInWorldFrame().getOriginLinierAcceleration() * mass;
+    acceleration += link_state.getAccelInWorldFrame().getLinearAcceleration() * mass;
   }
   return acceleration / total_mass;
 }
@@ -223,7 +232,7 @@ Eigen::MatrixXd Dynamics::computeInertiaMatrixForBaseMotion(const Robot &robot) 
   double total_mass = robot.getTotalMass();
   Pose base_pose = robot.getBasePoseInWorldFrame();
   Eigen::Matrix3d base_to_com_skew_symmetric_matrix =
-      skewSymmetric(computeCenterOfMassInWorldFrame(robot) - base_pose.getOriginPosition());
+      skewSymmetric(computeCenterOfMassInWorldFrame(robot) - base_pose.getPositionInWorldFrame());
 
   Eigen::Matrix3d link_inertia_to_base_rot = Eigen::Matrix3d::Zero();
 
@@ -231,10 +240,10 @@ Eigen::MatrixXd Dynamics::computeInertiaMatrixForBaseMotion(const Robot &robot) 
     Link link = robot.getLink(link_id);
     Pose link_pose = robot.getLinkState(link_id).getPoseInWorldFrame();
     Eigen::Matrix3d base_to_link_skew_symmetric_matrix =
-        skewSymmetric(link_pose.getOriginPosition() - base_pose.getOriginPosition());
+        skewSymmetric(link_pose.getPositionInWorldFrame() - base_pose.getPositionInWorldFrame());
 
     link_inertia_to_base_rot +=
-        link.computeInertiaInWorldFrame(link_pose).getOriginInertiaTensor() -
+        link.computeInertiaInWorldFrame(link_pose).getInertiaTensor() -
         link.getMass() * base_to_link_skew_symmetric_matrix * base_to_link_skew_symmetric_matrix;
   }
 
@@ -248,13 +257,13 @@ Eigen::MatrixXd Dynamics::computeInertiaMatrixForBaseMotion(const Robot &robot) 
 
 Eigen::MatrixXd Dynamics::computeInertiaMatrixForJointMotion(const Robot &robot) {
   Eigen::MatrixXd inertia_matrix =
-      Eigen::MatrixXd::Zero(robot.getJointNumber(), robot.getJointNumber());
+      Eigen::MatrixXd::Zero(robot.getActuatorNumber(), robot.getActuatorNumber());
   for (int link_id = 0; link_id < robot.getLinkNumber(); link_id++) {
     Link link = robot.getLink(link_id);
     Eigen::MatrixXd jacobian = robot.computeJointToLinkJacobian(link_id);
     inertia_matrix += jacobian.bottomRows(3).transpose() *
                           link.computeInertiaInWorldFrame(robot.getLinkPoseInWorldFrame(link_id))
-                              .getOriginInertiaTensor() *
+                              .getInertiaTensor() *
                           jacobian.bottomRows(3) +
                       link.getMass() * jacobian.topRows(3).transpose() * jacobian.topRows(3);
   }
@@ -262,25 +271,25 @@ Eigen::MatrixXd Dynamics::computeInertiaMatrixForJointMotion(const Robot &robot)
 }
 
 Eigen::MatrixXd Dynamics::computeCouplingInertiaMatrix(const Robot &robot) {
-  const int DOF = 6;
-  Eigen::MatrixXd coupling_inertia_matrix = Eigen::MatrixXd::Zero(DOF, robot.getJointNumber());
+  const int CARTESIAN_DIM = 6;
+  Eigen::MatrixXd coupling_inertia_matrix =
+      Eigen::MatrixXd::Zero(CARTESIAN_DIM, robot.getActuatorNumber());
   Pose base_pose = robot.getBasePoseInWorldFrame();
 
   for (int link_id = 0; link_id < robot.getLinkNumber(); link_id++) {
     Eigen::MatrixXd coupling_inertia_matrix_link =
-        Eigen::MatrixXd::Zero(DOF, robot.getJointNumber());
+        Eigen::MatrixXd::Zero(CARTESIAN_DIM, robot.getActuatorNumber());
 
     Link link = robot.getLink(link_id);
     Pose link_pose = robot.getLinkState(link_id).getPoseInWorldFrame();
     Eigen::MatrixXd jacobian = robot.computeJointToLinkJacobian(link_id);
 
     Eigen::Matrix3d base_to_link_skew_symmetric_matrix =
-        skewSymmetric(link_pose.getOriginPosition() - base_pose.getOriginPosition());
+        skewSymmetric(link_pose.getPositionInWorldFrame() - base_pose.getPositionInWorldFrame());
 
     coupling_inertia_matrix_link.topRows(3) = link.getMass() * jacobian.topRows(3);
     coupling_inertia_matrix_link.bottomRows(3) =
-        link.computeInertiaInWorldFrame(link_pose).getOriginInertiaTensor() *
-            jacobian.bottomRows(3) +
+        link.computeInertiaInWorldFrame(link_pose).getInertiaTensor() * jacobian.bottomRows(3) +
         link.getMass() * base_to_link_skew_symmetric_matrix * jacobian.topRows(3);
 
     coupling_inertia_matrix += coupling_inertia_matrix_link;
@@ -289,17 +298,17 @@ Eigen::MatrixXd Dynamics::computeCouplingInertiaMatrix(const Robot &robot) {
 }
 
 Eigen::MatrixXd Dynamics::computeRobotInertiaMatrix(const Robot &robot) {
-  const int DOF = 6;
-  const int joint_number = robot.getJointNumber();
-  Eigen::MatrixXd H = Eigen::MatrixXd::Zero(joint_number + DOF, joint_number + DOF);
+  const int CARTESIAN_DIM = 6;
+  const int actuator_number = robot.getActuatorNumber();
+  Eigen::MatrixXd H = Eigen::MatrixXd::Zero(robot.getDof(), robot.getDof());
   auto Hb = computeInertiaMatrixForBaseMotion(robot);
   auto Hm = computeInertiaMatrixForJointMotion(robot);
   auto Hbm = computeCouplingInertiaMatrix(robot);
 
-  H.topLeftCorner(DOF, DOF) = Hb;
-  H.bottomRightCorner(joint_number, joint_number) = Hm;
-  H.topRightCorner(DOF, joint_number) = Hbm;
-  H.bottomLeftCorner(joint_number, DOF) = Hbm.transpose();
+  H.topLeftCorner(CARTESIAN_DIM, CARTESIAN_DIM) = Hb;
+  H.bottomRightCorner(actuator_number, actuator_number) = Hm;
+  H.topRightCorner(CARTESIAN_DIM, actuator_number) = Hbm;
+  H.bottomLeftCorner(actuator_number, CARTESIAN_DIM) = Hbm.transpose();
   return H;
 }
 
@@ -310,16 +319,17 @@ Eigen::MatrixXd Dynamics::computeRobotGeneralizedInertiaMatrix(const Robot &robo
   return Hm - Hbm.transpose() * Hb.inverse() * Hbm;
 }
 
-// TODO: This function is not tested yet
 Eigen::VectorXd Dynamics::computeNonlinearVelocityTerm(const Robot &robot) {
+  // Compute the non-linear velocity term using the inverse dynamics
+  // C(q, q_dot) = F' (q_ddot = 0, F_ext = 0, g = 0)
   Model zeroG_model = robot.getModel();
-  zeroG_model.setGravity(Eigen::Vector3d::Zero());
+  zeroG_model.setGravity(Eigen::Vector3d::Zero()); // g = 0
   Robot robot_cpy(zeroG_model);
   robot_cpy.setStateVariable(robot.getStateVariable());
-  robot_cpy.clearBaseAccel();
-  robot_cpy.clearJointAcceleration();
-  robot_cpy.clearAllLinkExternallyAppliedWrench();
-  robot_cpy.setStateVariable(Kinematics::computeForward(robot_cpy, true, true, true));
+  robot_cpy.clearBaseAccel();                      // q_ddot = 0
+  robot_cpy.clearJointAcceleration();              // q_ddot = 0
+  robot_cpy.clearAllLinkExternallyAppliedWrench(); // F_ext = 0
+  robot_cpy.updateKinematics(true, true, true);
   robot_cpy.setStateVariable(computeInverse(robot_cpy));
   Eigen::VectorXd generalized_force = robot_cpy.getGeneralizedForce();
   return generalized_force;
@@ -327,23 +337,68 @@ Eigen::VectorXd Dynamics::computeNonlinearVelocityTerm(const Robot &robot) {
 
 Eigen::VectorXd Dynamics::computeGeneralizedNonlinearVelocityTerm(const Robot &robot) {
   auto C = robot.computeNonlinearVelocityTerm();
-  auto Cb = C.head(6);
-  auto Cm = C.tail(robot.getJointNumber());
+  Eigen::Vector6d Cb = C.head(6);
+  Eigen::VectorXd Cm = C.tail(robot.getActuatorNumber());
   auto Hb = computeInertiaMatrixForBaseMotion(robot);
   auto Hbm = computeCouplingInertiaMatrix(robot);
 
   return Cm - Hbm.transpose() * Hb.inverse() * Cb;
 }
 
-Eigen::VectorXd Dynamics::computeRobotMomentumInWorldFrame(const Robot &robot) {
-  Eigen::VectorXd momentum = Eigen::VectorXd::Zero(6);
+Eigen::VectorXd Dynamics::computeGravityTerm(const Robot &robot) {
+  // Compute the gravity term using the inverse dynamics
+  // g(q) = F' (q_ddot = 0, F_ext = 0)
+  Robot robot_cpy = robot;
+  robot_cpy.clearBaseTwist();                      // q_dot = 0
+  robot_cpy.clearJointVelocity();                  // q_dot = 0
+  robot_cpy.clearBaseAccel();                      // q_ddot = 0
+  robot_cpy.clearJointAcceleration();              // q_ddot = 0
+  robot_cpy.clearAllLinkExternallyAppliedWrench(); // F_ext = 0
+  robot_cpy.updateKinematics(true, true, true);
+  robot_cpy.setStateVariable(computeInverse(robot_cpy));
+  Eigen::VectorXd generalized_force = robot_cpy.getGeneralizedForce();
+  return generalized_force;
+}
+
+Eigen::VectorXd Dynamics::computeGeneralizedGravityTerm(const Robot &robot) {
+  auto G = robot.computeGravityTerm();
+  Eigen::Vector6d Gb = G.head(6);
+  Eigen::VectorXd Gm = G.tail(robot.getActuatorNumber());
+  auto Hb = computeInertiaMatrixForBaseMotion(robot);
+  auto Hbm = computeCouplingInertiaMatrix(robot);
+
+  return Gm - Hbm.transpose() * Hb.inverse() * Gb;
+}
+
+Eigen::Vector6d Dynamics::computeRobotMomentumInWorldFrame(const Robot &robot) {
+  Eigen::Vector6d momentum = Eigen::Vector6d::Zero();
   for (int link_id = 0; link_id < robot.getLinkNumber(); link_id++) {
     Link link = robot.getLink(link_id);
     LinkState link_state = robot.getLinkState(link_id);
     Inertia inertia = link.computeInertiaInWorldFrame(link_state.getPoseInWorldFrame());
     Twist twist = link_state.getTwistInWorldFrame();
-    momentum.head(3) += inertia.getMass() * twist.getOriginLinierVelocity();
-    momentum.tail(3) += inertia.getOriginInertiaTensor() * twist.getOriginAngularVelocity();
+    Pose pose = link_state.getPoseInWorldFrame();
+    Eigen::Vector3d P = inertia.getMass() * twist.getLinearVelocity();
+    Eigen::Vector3d L = inertia.getInertiaTensor() * twist.getAngularVelocity();
+    momentum.head(3) += P;
+    momentum.tail(3) += L + pose.getPositionInWorldFrame().cross(P);
+  }
+  return momentum;
+}
+
+Eigen::Vector6d Dynamics::computeRobotMomentumAroundBaseInWorldFrame(const Robot &robot) {
+  Eigen::Vector6d momentum = Eigen::Vector6d::Zero();
+  Eigen::Vector3d r0 = robot.getBasePoseInWorldFrame().getPositionInWorldFrame();
+  for (int link_id = 0; link_id < robot.getLinkNumber(); link_id++) {
+    Link link = robot.getLink(link_id);
+    LinkState link_state = robot.getLinkState(link_id);
+    Inertia inertia = link.computeInertiaInWorldFrame(link_state.getPoseInWorldFrame());
+    Twist twist = link_state.getTwistInWorldFrame();
+    Eigen::Vector3d r0i = link_state.getPoseInWorldFrame().getPositionInWorldFrame() - r0;
+    Eigen::Vector3d P = inertia.getMass() * twist.getLinearVelocity();
+    Eigen::Vector3d L = inertia.getInertiaTensor() * twist.getAngularVelocity();
+    momentum.head(3) += P;
+    momentum.tail(3) += L + r0i.cross(P);
   }
   return momentum;
 }
@@ -351,14 +406,16 @@ Eigen::VectorXd Dynamics::computeRobotMomentumInWorldFrame(const Robot &robot) {
 double Dynamics::computeRobotKineticEnergy(const Robot &robot) {
   StateVariable state_variable = robot.getStateVariable();
   double kinetic_energy = 0;
+
+  // Compute kinetic energy for each link
   for (int link_id = 0; link_id < robot.getLinkNumber(); link_id++) {
     Link link = robot.getLink(link_id);
     LinkState link_state = state_variable.getLinkState(link_id);
     Inertia inertia = link.computeInertiaInWorldFrame(link_state.getPoseInWorldFrame());
     Twist twist = link_state.getTwistInWorldFrame();
-    kinetic_energy += 0.5 * inertia.getMass() * twist.getOriginLinierVelocity().squaredNorm() +
-                      0.5 * twist.getOriginAngularVelocity().dot(inertia.getOriginInertiaTensor() *
-                                                                 twist.getOriginAngularVelocity());
+    kinetic_energy += 0.5 * inertia.getMass() * twist.getLinearVelocity().squaredNorm() +
+                      0.5 * twist.getAngularVelocity().dot(inertia.getInertiaTensor() *
+                                                           twist.getAngularVelocity());
   }
   return kinetic_energy;
 }

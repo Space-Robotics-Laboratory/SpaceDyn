@@ -1,17 +1,14 @@
 #ifndef SPACEDYN_ROS_POSE_HPP_
 #define SPACEDYN_ROS_POSE_HPP_
 
-#include "eigen3/Eigen/Core"
-#include "eigen3/Eigen/Geometry"
-#include "geometry_msgs/msg/pose.hpp"
-#include "geometry_msgs/msg/transform_stamped.hpp"
 #include "spacedyn_ros/geometry/frame.hpp"
 #include "spacedyn_ros/geometry/transform.hpp"
-#include "spacedyn_ros/geometry/twist.hpp"
-#include "spacedyn_ros/geometry/wrench.hpp"
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Geometry>
+#include <geometry_msgs/msg/pose.hpp>
+#include <geometry_msgs/msg/transform_stamped.hpp>
 
 namespace spacedyn_ros {
-class Twist;
 class Pose {
 private:
   Eigen::Isometry3d pose_in_world_;
@@ -23,38 +20,32 @@ public:
   Pose(const Eigen::Isometry3d &pose = Eigen::Isometry3d::Identity());
   Pose(const Eigen::Vector3d &position, const Eigen::Matrix3d &attitude);
   Pose(const Eigen::Vector3d &position, const Eigen::Quaterniond &attitude);
-  // ROS Interface
-  Pose(const geometry_msgs::msg::Pose &pose_msg);
   ~Pose() = default;
 
   /**
-   * @fn getPose()
+   * @fn getPoseInWorldFrame()
    * @brief Get the pose of the link in World frame
    */
-  const Eigen::Isometry3d &getOriginPose() const;
+  const Eigen::Isometry3d &getPoseInWorldFrame() const;
 
   /**
-   * @fn getOriginPosition()
+   * @fn getPositionInWorldFrame()
    * @brief Get the position of the link in World frame
    */
-  Eigen::Vector3d getOriginPosition() const;
+  Eigen::Vector3d getPositionInWorldFrame() const;
 
   /**
-   * @fn getOriginAttitude()
+   * @fn getAttitudeInWorldFrame()
    * @brief Get the attitude of the link in World frame
    */
-  Eigen::MatrixXd getOriginAttitude() const;
-  Eigen::Quaterniond getOriginQuaternion() const;
+  Eigen::Matrix3d getAttitudeInWorldFrame() const;
+  Eigen::Quaterniond getQuaternionInWorldFrame() const;
 
   Eigen::Vector3d computeTranslationToPoint(const Pose &point_pose) const;
   Transform computeTransformToPoint(const Frame &frame, const Pose &point_pose) const;
   Pose computePointPose(const Transform &tf_to_point) const;
-  Pose computeOriginPoseFromPointPose(const Transform &tf_to_point, const Pose &point_pose) const;
+  Pose computePoseByInvertingPointPose(const Transform &tf_to_point, const Pose &point_pose) const;
 
-  Twist computeTwistInLocalFrame(const Twist &twist_in_world_frame) const;
-  Wrench computeWrenchInWorldFrame(const Wrench &wrench_in_local_frame) const;
-
-  Eigen::Quaterniond computeDerivativeAttitude(const Twist &twist) const;
   // ROS Interface
   geometry_msgs::msg::Pose toRosMessage() const;
   geometry_msgs::msg::TransformStamped toRosMessage(const std::string &frame_name,

@@ -1,10 +1,10 @@
 #ifndef SPACEDYN_ROS_KINEMATICS_HPP_
 #define SPACEDYN_ROS_KINEMATICS_HPP_
 
-#include "eigen3/Eigen/Core"
 #include "spacedyn_ros/linkage/link_state.hpp"
 #include "spacedyn_ros/robot/robot.hpp"
 #include "spacedyn_ros/robot/state_variable.hpp"
+#include <eigen3/Eigen/Core>
 
 namespace spacedyn_ros {
 class Kinematics {
@@ -105,13 +105,16 @@ public:
                                       const bool compute_twist, const bool compute_accel);
   static StateVariable computeInverse(const Robot &robot);
 
+  static Eigen::MatrixXd computeGeneralizedJacobianForLink(const Robot &robot, const int link_id);
   static Eigen::MatrixXd computeGeneralizedJacobianForEndEffector(const Robot &robot,
                                                                   const int end_effector_id);
+  static Eigen::MatrixXd computeGeneralizedJacobianForEndTip(const Robot &robot,
+                                                             const int end_effector_id);
 
   // TODO: Check if the name is suitable
   /**
-   * @brief Compute the Jacobian matrix of the end effector effected by joints with respect to the
-   * base frame. Call this function after calling computeForward() with compute_pose = true.
+   * @brief Compute the Jacobian matrix of the end effector effected by joints motion with respect
+   * to the base frame. Call this function after calling computeForward() with compute_pose = true.
    *
    * @param robot
    * @param link_id
@@ -120,9 +123,18 @@ public:
   static Eigen::MatrixXd computeJointToLinkJacobian(const Robot &robot, const int link_id);
 
   /**
+   * @fn computeJointToEndTipJacobian
+   * @brief Compute the Jacobian matrix of the tip point of the end effector effected by joints
+   * motion with respect to the base frame. End tip is set when the end-effector link was generated.
+   * Call this function after calling computeForward() with compute_pose = true.
+   */
+  static Eigen::MatrixXd computeJointToEndTipJacobian(const Robot &robot,
+                                                      const int end_effector_id);
+
+  /**
    * @fn computeJointToLinkJacobianDerivative
    * @brief Compute the derivative of the Jacobian matrix of the end effector effected by joints
-   * with respect to the base frame. Call this function after calling computeForward() with
+   * motion with respect to the base frame. Call this function after calling computeForward() with
    * compute_pose = true, compute_twist = true.
    *
    * @param robot
@@ -133,8 +145,8 @@ public:
                                                               const int link_id);
 
   /**
-   * @brief Compute the Jacobian matrix of the end effector effected by the base with respect to the
-   * base frame. Call this function after calling computeForward() with compute_pose = true.
+   * @brief Compute the Jacobian matrix of the end effector effected by the base motion with respect
+   * to the base frame. Call this function after calling computeForward() with compute_pose = true.
    *
    * @param robot
    * @param link_id
@@ -143,9 +155,17 @@ public:
   static Eigen::MatrixXd computeBaseToLinkJacobian(const Robot &robot, const int link_id);
 
   /**
+   * @fn computeBaseToEndTipJacobian
+   * @brief Compute the Jacobian matrix of the tip point of the end effector effected by the base
+   * motion with respect to the base frame. End tip is set when the end-effector link was generated.
+   * Call this function after calling computeForward() with compute_pose = true.
+   */
+  static Eigen::MatrixXd computeBaseToEndTipJacobian(const Robot &robot, const int end_effector_id);
+
+  /**
    * @fn computeBaseToLinkJacobianDerivative
    * @brief Compute the derivative of the Jacobian matrix of the end effector effected by the base
-   * with respect to the base frame. Call this function after calling computeForward() with
+   * motion with respect to the base frame. Call this function after calling computeForward() with
    * compute_pose = true, compute_twist = true.
    *
    * @param robot

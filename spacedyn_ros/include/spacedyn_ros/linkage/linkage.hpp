@@ -1,8 +1,9 @@
 #ifndef SPACEDYN_ROS_LINKAGE_HPP_
 #define SPACEDYN_ROS_LINKAGE_HPP_
 
-#include "eigen3/Eigen/Core"
+#include "spacedyn_ros/linkage/connection.hpp"
 #include "spacedyn_ros/linkage/link.hpp"
+#include <eigen3/Eigen/Core>
 #include <vector>
 
 namespace spacedyn_ros {
@@ -17,7 +18,9 @@ private:
 
   // ID for component
   std::vector<int> end_effectors_;
-  std::vector<std::vector<int>> link_id_jag_to_end_effector_;
+  std::vector<int> actuators_; // Joint id of actuators
+
+  Connection connection_;
 
   // ID checker
   void checkLinkIdToCall(const int link_id) const;
@@ -32,8 +35,6 @@ private:
   void addJoint(const int parent_link_id, const Joint &joint_input,
                 const Transform &tf_from_parent_link_com_to_joint);
   void replaceLink(const int id, const Link &link);
-
-  std::vector<int> computeLinkIdChainToEndEffector(const int end_effector_id) const;
 
   std::vector<int> replaceEndEffector(const Link parent, const Link child) const;
 
@@ -72,8 +73,10 @@ public:
    */
   const Joint &getJoint(const int id) const;
   const std::vector<int> &getEndEffectorIdArray() const;
-  const std::vector<int> &getLinkIdChainToEndEffector(const int end_effector_id) const;
 
+  std::vector<int> getLinkIdChain(const int start_link_id, const int end_link_id) const;
+
+  int getDof() const;
   /**
    * @fn int getLinkNumber() const
    * @brief Get the number of links in the linkage
@@ -84,6 +87,7 @@ public:
    */
   int getLinkNumber() const;
   int getJointNumber() const;
+  int getActuatorNumber() const;
   int getEndEffectorNumber() const;
   double getTotalMass() const;
 };

@@ -1,12 +1,10 @@
 #ifndef SPACEDYN_ROS_INERTIA_HPP_
 #define SPACEDYN_ROS_INERTIA_HPP_
 
-#include "eigen3/Eigen/Core"
 #include "spacedyn_ros/geometry/accel.hpp"
 #include "spacedyn_ros/geometry/frame.hpp"
-#include "spacedyn_ros/geometry/wrench.hpp"
-
-#include "geometry_msgs/msg/inertia.hpp"
+#include <eigen3/Eigen/Core>
+#include <geometry_msgs/msg/inertia.hpp>
 
 namespace spacedyn_ros {
 class Inertia {
@@ -22,9 +20,10 @@ public:
   Inertia(const Frame &frame = Frame::kLocal, const double mass = 1,
           const Eigen::Matrix3d &inertia = Eigen::Matrix3d::Identity(3, 3));
   ~Inertia() = default;
+  Inertia getInertiaInFrame(const Frame &frame, const Pose &pose) const;
 
   double getMass() const;
-  const Eigen::Matrix3d &getOriginInertiaTensor() const;
+  const Eigen::Matrix3d &getInertiaTensor() const;
   const Frame &getFrame() const;
 
   // ROS Interface

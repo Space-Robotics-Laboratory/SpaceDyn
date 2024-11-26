@@ -1,13 +1,12 @@
 #ifndef SPACEDYN_ROS_LINK_STATE_HPP_
 #define SPACEDYN_ROS_LINK_STATE_HPP_
 
-#include "eigen3/Eigen/Core"
 #include "spacedyn_ros/geometry/accel.hpp"
 #include "spacedyn_ros/geometry/pose.hpp"
 #include "spacedyn_ros/geometry/twist.hpp"
 #include "spacedyn_ros/geometry/wrench.hpp"
-
 #include "spacedyn_ros/linkage/joint_state.hpp"
+#include <eigen3/Eigen/Core>
 
 namespace spacedyn_ros {
 class LinkState {
@@ -24,9 +23,10 @@ public:
 
   const Pose &getPoseInWorldFrame() const;
   const Twist &getTwistInWorldFrame() const;
-  const Accel &getAccelInWorldFrame() const;
-  const Wrench &getTotalWrenchOnLinkInWorldFrame() const;
   Twist getTwistInLocalFrame() const;
+  const Accel &getAccelInWorldFrame() const;
+  Accel getAccelInLocalFrame() const;
+  const Wrench &getTotalWrenchOnLinkInWorldFrame() const;
   /**
    * @fn getExternallyAppliedWrenchInWorldFrame()
    * @brief Get the external wrench applied to the link in World frame except for the gravity

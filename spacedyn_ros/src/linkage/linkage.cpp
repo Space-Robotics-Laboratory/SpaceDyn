@@ -1,7 +1,6 @@
 #include "spacedyn_ros/linkage/linkage.hpp"
 #include "spacedyn_ros/linkage/joint.hpp"
 #include "spacedyn_ros/linkage/link.hpp"
-
 #include <iostream>
 
 namespace spacedyn_ros {
@@ -12,8 +11,8 @@ Linkage::Linkage() {
   this->total_mass_ = 0;
   this->joints_.resize(0);
   this->links_.resize(0);
+  this->actuators_.resize(0);
   this->end_effectors_.resize(0);
-  this->link_id_jag_to_end_effector_.resize(0);
 }
 
 void Linkage::checkLinkIdToCall(const int link_id) const {
@@ -64,6 +63,9 @@ void Linkage::addBase(const Link &link) {
   this->total_mass_ += base_link.getInertiaInLocalFrame().getMass();
 
   // Update connectivity to end effector
+
+  // Set link connection graph of base
+  connection_.addBase();
 }
 
 void Linkage::addLink(const int parent_link_id, const Link &child_input,
@@ -72,7 +74,8 @@ void Linkage::addLink(const int parent_link_id, const Link &child_input,
   auto child_link = child_input;
 
   // Set id
-  child_link.connect(parent_link_id, getLinkNumber(), tf_from_parent_joint_to_com);
+  const int child_link_id_to_set = getLinkNumber();
+  child_link.connect(parent_link_id, child_link_id_to_set, tf_from_parent_joint_to_com);
   // Set parent as non-end effector
   auto parent_link = getLink(parent_link_id);
 
@@ -88,6 +91,9 @@ void Linkage::addLink(const int parent_link_id, const Link &child_input,
   this->total_mass_ += child_link.getInertiaInLocalFrame().getMass();
 
   // Update connectivity to end effector
+
+  // Set link connection graph of link
+  connection_.addLink(parent_link_id, child_link_id_to_set);
 }
 
 void Linkage::replaceLink(const int id, const Link &link) {
@@ -105,10 +111,15 @@ void Linkage::addJoint(const int parent_link_id, const Joint &joint_input,
   auto child_joint = joint_input;
 
   // Set id
-  child_joint.connect(getJointNumber(), tf_from_parent_link_com_to_joint);
+  child_joint.connect(getJointNumber(), getActuatorNumber(), tf_from_parent_link_com_to_joint);
 
   // Add link to linkage
   joints_.push_back(child_joint);
+
+  // If it's actuator, add to actuator list
+  if (child_joint.isActuator()) {
+    actuators_.push_back(child_joint.getId());
+  }
 }
 
 void Linkage::addJointWithLink(const int parent_link_id, const Joint &child_joint,
@@ -178,28 +189,11 @@ const Joint &Linkage::getJoint(const int id) const {
   return joints_.at(id);
 }
 
-const std::vector<int> &Linkage::getLinkIdChainToEndEffector(const int end_effector_id) const {
-  try {
-    bool broken_link_id_array = getEndEffectorNumber() != this->link_id_jag_to_end_effector_.size();
-    if (broken_link_id_array) {
-      throw std::logic_error("Error: Stored Link id array to end effector is broken. End "
-                             "effector "
-                             "id=" +
-                             std::to_string(getEndEffectorNumber()) +
-                             " should be equal to link_id_array_to_end_effector_jag_.size()=" +
-                             std::to_string(this->link_id_jag_to_end_effector_.size()));
-    }
-
-    checkEndEffectorIdToCall(end_effector_id);
-  } catch (const std::exception &e) {
-    std::cerr << e.what() << '\n';
-    throw std::runtime_error("Error: Failed to get link id array.");
-  }
-
-  return this->link_id_jag_to_end_effector_.at(end_effector_id);
-}
-
 const std::vector<int> &Linkage::getEndEffectorIdArray() const { return end_effectors_; }
+
+std::vector<int> Linkage::getLinkIdChain(const int start_link_id, const int end_link_id) const {
+  return connection_.getLinkIdChain(start_link_id, end_link_id);
+}
 
 std::vector<int> Linkage::replaceEndEffector(const Link parent, const Link child) const {
   std::vector<int> end_effectors;
@@ -220,19 +214,10 @@ std::vector<int> Linkage::replaceEndEffector(const Link parent, const Link child
   return end_effectors;
 }
 
-std::vector<int> Linkage::computeLinkIdChainToEndEffector(const int end_effector_id) const {
-  try {
-    checkEndEffectorIdToCall(end_effector_id);
-  } catch (const std::exception &e) {
-    std::cerr << e.what() << '\n';
-    throw std::runtime_error("Error: Failed to compute link id array to end effector.");
-  }
-  // FIXME: This function is not implemented yet
-  return this->link_id_jag_to_end_effector_.at(end_effector_id);
-}
-
+int Linkage::getDof() const { return getActuatorNumber() + 6; }
 int Linkage::getLinkNumber() const { return links_.size(); }
 int Linkage::getJointNumber() const { return joints_.size(); }
+int Linkage::getActuatorNumber() const { return actuators_.size(); }
 int Linkage::getEndEffectorNumber() const { return end_effectors_.size(); }
 double Linkage::getTotalMass() const { return this->total_mass_; }
 } // namespace spacedyn_ros

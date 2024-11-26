@@ -1,12 +1,12 @@
 #ifndef SPACEDYN_ROS_LINK_HPP_
 #define SPACEDYN_ROS_LINK_HPP_
 
-#include "eigen3/Eigen/Core"
-#include "eigen3/Eigen/Geometry"
 #include "spacedyn_ros/geometry/inertia.hpp"
 #include "spacedyn_ros/geometry/transform.hpp"
 #include "spacedyn_ros/linkage/joint.hpp"
 #include "spacedyn_ros/linkage/link_state.hpp"
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Geometry>
 
 namespace spacedyn_ros {
 class Link {

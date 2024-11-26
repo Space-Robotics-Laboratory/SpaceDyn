@@ -1,7 +1,6 @@
 #include "spacedyn_ros/linkage/link.hpp"
-#include "eigen3/Eigen/Core"
-#include "eigen3/Eigen/Geometry"
-
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Geometry>
 #include <iostream>
 
 namespace spacedyn_ros {
@@ -95,20 +94,7 @@ double Link::getMass() const { return inertia_in_local_frame_.getMass(); }
 const Inertia &Link::getInertiaInLocalFrame() const { return inertia_in_local_frame_; }
 
 Inertia Link::computeInertiaInWorldFrame(const Pose &pose) const {
-  Eigen::Matrix3d rotation = pose.getOriginAttitude();
-
-  // Inertia in local frame
-  Eigen::Matrix3d inertia_local = inertia_in_local_frame_.getOriginInertiaTensor();
-  double mass = inertia_in_local_frame_.getMass();
-  Inertia inertia_w;
-  try {
-    inertia_w = Inertia(Frame::kWorld, mass, rotation * inertia_local * rotation.transpose());
-  } catch (const std::exception &e) {
-    std::cerr << e.what() << '\n';
-    throw std::runtime_error("Error: Failed to compute inertia in world frame.");
-  }
-
-  return inertia_w;
+  return inertia_in_local_frame_.getInertiaInFrame(Frame::kWorld, pose);
 }
 
 const Transform &Link::getTransformToParentJoint() const { return tf_from_com_to_parent_joint_; }

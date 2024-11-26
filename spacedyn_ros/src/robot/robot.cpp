@@ -1,12 +1,11 @@
 #include "spacedyn_ros/robot/robot.hpp"
-#include "eigen3/Eigen/Core"
 #include "spacedyn_ros/motion/dynamics.hpp"
 #include "spacedyn_ros/motion/integral.hpp"
 #include "spacedyn_ros/motion/kinematics.hpp"
 #include "spacedyn_ros/robot/model.hpp"
 #include "spacedyn_ros/robot/state_variable.hpp"
-
-#include "iostream"
+#include <eigen3/Eigen/Core>
+#include <iostream>
 
 namespace spacedyn_ros {
 
@@ -45,8 +44,16 @@ void Robot::operator=(const Robot &robot) {
   state_variable_ = robot.getStateVariable();
 }
 
+Eigen::MatrixXd Robot::computeGeneralizedJacobianForLink(const int link_id) const {
+  return Kinematics::computeGeneralizedJacobianForLink(*this, link_id);
+}
+
 Eigen::MatrixXd Robot::computeGeneralizedJacobianForEndEffector(const int end_effector_id) const {
   return Kinematics::computeGeneralizedJacobianForEndEffector(*this, end_effector_id);
+}
+
+Eigen::MatrixXd Robot::computeGeneralizedJacobianForEndTip(const int end_effector_id) const {
+  return Kinematics::computeGeneralizedJacobianForEndTip(*this, end_effector_id);
 }
 
 Eigen::MatrixXd Robot::computeJointToLinkJacobian(const int link_id) const {
@@ -54,8 +61,16 @@ Eigen::MatrixXd Robot::computeJointToLinkJacobian(const int link_id) const {
   return Kinematics::computeJointToLinkJacobian(*this, link_id);
 }
 
+Eigen::MatrixXd Robot::computeJointToEndTipJacobian(const int end_effector_id) const {
+  return Kinematics::computeJointToEndTipJacobian(*this, end_effector_id);
+}
+
 Eigen::MatrixXd Robot::computeBaseToLinkJacobian(const int link_id) const {
   return Kinematics::computeBaseToLinkJacobian(*this, link_id);
+}
+
+Eigen::MatrixXd Robot::computeBaseToEndTipJacobian(const int end_effector_id) const {
+  return Kinematics::computeBaseToEndTipJacobian(*this, end_effector_id);
 }
 
 Eigen::MatrixXd Robot::computeInertiaMatrix() const {
@@ -66,6 +81,18 @@ Eigen::MatrixXd Robot::computeGeneralizedInertiaMatrix() const {
   return Dynamics::computeRobotGeneralizedInertiaMatrix(*this);
 }
 
+Eigen::MatrixXd Robot::computeInertiaMatrixForBaseMotion() const {
+  return Dynamics::computeInertiaMatrixForBaseMotion(*this);
+}
+
+Eigen::MatrixXd Robot::computeCouplingInertiaMatrix() const {
+  return Dynamics::computeCouplingInertiaMatrix(*this);
+}
+
+Eigen::MatrixXd Robot::computeInertiaMatrixForJointMotion() const {
+  return Dynamics::computeInertiaMatrixForJointMotion(*this);
+}
+
 Eigen::VectorXd Robot::computeNonlinearVelocityTerm() const {
   return Dynamics::computeNonlinearVelocityTerm(*this);
 }
@@ -73,6 +100,8 @@ Eigen::VectorXd Robot::computeNonlinearVelocityTerm() const {
 Eigen::VectorXd Robot::computeGeneralizedNonlinearVelocityTerm() const {
   return Dynamics::computeGeneralizedNonlinearVelocityTerm(*this);
 }
+
+Eigen::VectorXd Robot::computeGravityTerm() const { return Dynamics::computeGravityTerm(*this); }
 
 Eigen::Vector3d Robot::computeCenterOfMassInWorldFrame() const {
   return Dynamics::computeCenterOfMassInWorldFrame(*this);
@@ -86,8 +115,12 @@ Eigen::Vector3d Robot::computeAccelerationOfCenterOfMassInWorldFrame() const {
   return Dynamics::computeAccelerationOfCenterOfMassInWorldFrame(*this);
 }
 
-Eigen::VectorXd Robot::computeMomentumInWorldFrame() const {
+Eigen::Vector6d Robot::computeMomentumInWorldFrame() const {
   return Dynamics::computeRobotMomentumInWorldFrame(*this);
+}
+
+Eigen::Vector6d Robot::computeMomentumAroundBaseInWorldFrame() const {
+  return Dynamics::computeRobotMomentumAroundBaseInWorldFrame(*this);
 }
 
 double Robot::computeKineticEnergy() const { return Dynamics::computeRobotKineticEnergy(*this); }
@@ -98,22 +131,38 @@ StateVariable Robot::computeForward() const {
   return Kinematics::computeForward(Robot(*this, sv_fd), false, false, true);
 }
 
-void Robot::step() {
-  // TODO: Add system to choose integration method
-  auto sv = Integral::rungeKutta4(*this);
-  // auto sv = Integral::euler(*this);
+Eigen::VectorXd
+Robot::computeInverseDynamics(const Eigen::Vector6d &desired_base_acceleration,
+                              const Eigen::VectorXd &desired_joint_acceleration) const {
+  auto robot_cpy = *this;
+  robot_cpy.overwriteBaseAccelInWorldFrame(desired_base_acceleration);
+  robot_cpy.overwriteJointAcceleration(desired_joint_acceleration);
+  robot_cpy.updateKinematics(true, true, true);
+  auto sv = Dynamics::computeInverse(robot_cpy);
+  auto base_ext_wrench = sv.getLinkState(Link::ID::kBase).getExternallyAppliedWrenchInWorldFrame();
+  auto joint_effort = sv.getJointEffort();
+  Eigen::VectorXd output(getDof());
+  output.head(6) = base_ext_wrench.getWrench();
+  output.tail(getActuatorNumber()) = joint_effort;
+  return output;
+};
 
-  setStateVariable(sv);
-  clearAllLinkExternallyAppliedWrench();
-  clearJointEffort();
+Eigen::VectorXd
+Robot::computeInverseDynamicsInJointSpace(const Eigen::VectorXd &desired_joint_acceleration) const {
+  auto robot_cpy = *this;
+  robot_cpy.overwriteJointAcceleration(desired_joint_acceleration);
+  return Dynamics::computeInverseInJointSpace(robot_cpy);
 }
 
 const Model &Robot::getModel() const { return model_; }
 double Robot::getTotalMass() const { return model_.getTotalMass(); }
 const StateVariable &Robot::getStateVariable() const { return state_variable_; }
 
+int Robot::getDof() const { return model_.getDof(); }
 int Robot::getLinkNumber() const { return model_.getLinkNumber(); }
 int Robot::getJointNumber() const { return model_.getJointNumber(); }
+int Robot::getActuatorNumber() const { return model_.getActuatorNumber(); }
+int Robot::getEndEffectorNumber() const { return model_.getEndEffectorNumber(); }
 const Link &Robot::getLink(const int link_id) const { return model_.getLinkage().getLink(link_id); }
 const Link &Robot::getEndEffector(const int end_effector_id) const {
   return model_.getLinkage().getEndEffector(end_effector_id);
@@ -124,6 +173,10 @@ const Joint &Robot::getJoint(const int joint_id) const {
 
 const LinkState &Robot::getLinkState(const int link_id) const {
   return state_variable_.getLinkState(link_id);
+}
+
+const LinkState &Robot::getEndEffectorState(const int end_effector_id) const {
+  return getLinkState(getEndEffector(end_effector_id).getId());
 }
 
 const JointState &Robot::getJointState(const int joint_id) const {
@@ -149,39 +202,125 @@ Eigen::VectorXd Robot::getGeneralizedAcceleration() const {
 }
 
 Eigen::VectorXd Robot::getGeneralizedForce() const {
-  const int DOF = 6;
-  const int joint_number = getJointNumber();
-  Eigen::VectorXd generalized_force(DOF + joint_number);
-  generalized_force.head(DOF) = state_variable_.getLinkState(Link::ID::kBase)
-                                    .getExternallyAppliedWrenchInWorldFrame()
-                                    .getOriginWrench();
-  generalized_force.tail(joint_number) = state_variable_.getJointEffort();
+  const int CARTESIAN_DIM = 6;
+  const int actuator_number = getActuatorNumber();
+  Eigen::VectorXd generalized_force(getDof());
+  generalized_force.head(CARTESIAN_DIM) =
+      getLinkState(Link::ID::kBase).getExternallyAppliedWrenchInWorldFrame().getWrench();
+  generalized_force.tail(actuator_number) = state_variable_.getJointEffort();
 
   for (int link_id = 1; link_id < getLinkNumber(); ++link_id) {
     auto jacob_bi = computeBaseToLinkJacobian(link_id);
     auto jacob_mi = computeJointToLinkJacobian(link_id);
-    Eigen::MatrixXd jacobian_trans(DOF + joint_number, DOF);
-    jacobian_trans.topRows(DOF) = jacob_bi.transpose();
-    jacobian_trans.bottomRows(joint_number) = jacob_mi.transpose();
-    Eigen::VectorXd link_ext_force = state_variable_.getLinkState(link_id)
-                                         .getExternallyAppliedWrenchInWorldFrame()
-                                         .getOriginWrench();
+    Eigen::MatrixXd jacobian_trans(getDof(), CARTESIAN_DIM);
+    jacobian_trans.topRows(CARTESIAN_DIM) = jacob_bi.transpose();
+    jacobian_trans.bottomRows(actuator_number) = jacob_mi.transpose();
+    Eigen::VectorXd link_ext_force =
+        getLinkState(link_id).getExternallyAppliedWrenchInWorldFrame().getWrench();
     generalized_force += jacobian_trans * link_ext_force;
   }
 
   return generalized_force;
 }
 
-const Pose &Robot::getBasePoseInWorldFrame() const {
-  return state_variable_.getLinkState(Link::ID::kBase).getPoseInWorldFrame();
+const Eigen::Isometry3d &Robot::getBasePose() const {
+  return getLinkState(Link::ID::kBase).getPoseInWorldFrame().getPoseInWorldFrame();
 }
 
-const Accel &Robot::getBaseAccelInWorldFrame() const {
-  return state_variable_.getLinkState(Link::ID::kBase).getAccelInWorldFrame();
+const Pose &Robot::getBasePoseInWorldFrame() const {
+  return getLinkState(Link::ID::kBase).getPoseInWorldFrame();
 }
 
 const Pose &Robot::getLinkPoseInWorldFrame(const int link_id) const {
-  return state_variable_.getLinkState(link_id).getPoseInWorldFrame();
+  return getLinkState(link_id).getPoseInWorldFrame();
+}
+
+const Pose &Robot::getEndEffectorPoseInWorldFrame(const int end_effector_id) const {
+  return getEndEffectorState(end_effector_id).getPoseInWorldFrame();
+}
+
+const Pose Robot::getEndTipPoseInWorldFrame(const int end_effector_id) const {
+  auto ee_pose = getEndEffectorPoseInWorldFrame(end_effector_id);
+  auto tf_to_end_tip = getEndEffector(end_effector_id).getTransformToEndTip();
+  return ee_pose.computePointPose(tf_to_end_tip);
+}
+
+const Twist &Robot::getBaseTwistInWorldFrame() const {
+  return getLinkState(Link::ID::kBase).getTwistInWorldFrame();
+}
+
+Twist Robot::getBaseTwistInLocalFrame() const {
+  return getLinkState(Link::ID::kBase).getTwistInLocalFrame();
+}
+
+const Twist &Robot::getLinkTwistInWorldFrame(const int link_id) const {
+  return getLinkState(link_id).getTwistInWorldFrame();
+}
+
+Twist Robot::getLinkTwistInLocalFrame(const int link_id) const {
+  return getLinkState(link_id).getTwistInLocalFrame();
+}
+
+const Twist &Robot::getEndEffectorTwistInWorldFrame(const int end_effector_id) const {
+  return getEndEffectorState(end_effector_id).getTwistInWorldFrame();
+}
+
+Twist Robot::getEndEffectorTwistInLocalFrame(const int end_effector_id) const {
+  return getEndEffectorState(end_effector_id).getTwistInLocalFrame();
+}
+
+Twist Robot::getEndTipTwistInWorldFrame(const int end_effector_id) const {
+  // TODO: make it more efficient
+  auto ee_twist = getEndEffectorTwistInWorldFrame(end_effector_id);
+  auto ee_pose = getEndEffectorPoseInWorldFrame(end_effector_id);
+  auto tip_pos = getEndTipPoseInWorldFrame(end_effector_id);
+  return ee_twist.computePointTwist(
+      ee_pose.computeTransformToPoint(Frame::kWorld, tip_pos).getTranslation());
+}
+
+const Accel &Robot::getBaseAccelInWorldFrame() const {
+  return getLinkState(Link::ID::kBase).getAccelInWorldFrame();
+}
+
+Accel Robot::getBaseAccelInLocalFrame() const {
+  return getLinkState(Link::ID::kBase).getAccelInLocalFrame();
+}
+
+const Accel &Robot::getLinkAccelInWorldFrame(const int link_id) const {
+  return getLinkState(link_id).getAccelInWorldFrame();
+}
+
+Accel Robot::getLinkAccelInLocalFrame(const int link_id) const {
+  return getLinkState(link_id).getAccelInLocalFrame();
+}
+
+const Accel &Robot::getEndEffectorAccelInWorldFrame(const int end_effector_id) const {
+  return getEndEffectorState(end_effector_id).getAccelInWorldFrame();
+}
+
+Accel Robot::getEndEffectorAccelInLocalFrame(const int end_effector_id) const {
+  return getEndEffectorState(end_effector_id).getAccelInLocalFrame();
+}
+
+Accel Robot::getEndTipAccelInWorldFrame(const int end_effector_id) const {
+  auto ee_accel = getEndEffectorAccelInWorldFrame(end_effector_id);
+  auto ee_twist = getEndEffectorTwistInWorldFrame(end_effector_id);
+  auto tf_to_end_tip = getEndEffector(end_effector_id).getTransformToEndTip();
+  return ee_accel.computePointAccel(ee_twist, tf_to_end_tip.getTransform().translation());
+}
+
+void Robot::step() {
+  // TODO: Add system to choose integration method
+  auto sv = Integral::rungeKutta4(*this);
+  // auto sv = Integral::euler(*this);
+
+  setStateVariable(sv);
+  clearAllLinkExternallyAppliedWrench();
+  clearJointEffort();
+}
+
+void Robot::updateKinematics(bool pose, bool twist, bool accel) {
+  state_variable_ = Kinematics::computeForward(*this, pose, twist, accel);
 }
 
 void Robot::setStateVariable(const StateVariable &state_variable) {
@@ -203,11 +342,18 @@ void Robot::overwriteBasePoseInWorldFrame(const Eigen::Isometry3d &base_pose) {
   state_variable_.setLinkPoseInWorldFrame(Link::ID::kBase, base_pose);
 }
 
-void Robot::overwriteBaseTwistInWorldFrame(const Eigen::VectorXd &base_twist) {
+void Robot::overwriteBasePoseInWorldFrame(const Eigen::Vector3d &base_position,
+                                          const Eigen::Matrix3d &base_attitude) {
+  state_variable_.setLinkPoseInWorldFrame(
+      Link::ID::kBase,
+      Eigen::Isometry3d(Eigen::Translation3d(base_position) * Eigen::Quaterniond(base_attitude)));
+}
+
+void Robot::overwriteBaseTwistInWorldFrame(const Eigen::Vector6d &base_twist) {
   state_variable_.setLinkTwistInWorldFrame(Link::ID::kBase, base_twist);
 }
 
-void Robot::overwriteBaseAccelInWorldFrame(const Eigen::VectorXd &base_accel) {
+void Robot::overwriteBaseAccelInWorldFrame(const Eigen::Vector6d &base_accel) {
   state_variable_.setLinkAccelInWorldFrame(Link::ID::kBase, base_accel);
 }
 
@@ -215,11 +361,11 @@ void Robot::overwriteLinkPoseInWorldFrame(const int link_id, const Eigen::Isomet
   state_variable_.setLinkPoseInWorldFrame(link_id, link_pose);
 }
 
-void Robot::overwriteLinkTwistInWorldFrame(const int link_id, const Eigen::VectorXd &link_twist) {
+void Robot::overwriteLinkTwistInWorldFrame(const int link_id, const Eigen::Vector6d &link_twist) {
   state_variable_.setLinkTwistInWorldFrame(link_id, link_twist);
 }
 
-void Robot::overwriteLinkAccelInWorldFrame(const int link_id, const Eigen::VectorXd &link_accel) {
+void Robot::overwriteLinkAccelInWorldFrame(const int link_id, const Eigen::Vector6d &link_accel) {
   state_variable_.setLinkAccelInWorldFrame(link_id, link_accel);
 }
 
@@ -250,15 +396,15 @@ void Robot::clearLinkState(const int link_id) {
 }
 
 void Robot::clearLinkTwist(const int link_id) {
-  state_variable_.setLinkTwistInWorldFrame(link_id, Eigen::VectorXd::Zero(6));
+  state_variable_.setLinkTwistInWorldFrame(link_id, Eigen::Vector6d::Zero());
 }
 
 void Robot::clearLinkAccel(const int link_id) {
-  state_variable_.setLinkAccelInWorldFrame(link_id, Eigen::VectorXd::Zero(6));
+  state_variable_.setLinkAccelInWorldFrame(link_id, Eigen::Vector6d::Zero());
 }
 
 void Robot::clearLinkExternallyAppliedWrench(const int link_id) {
-  state_variable_.setLinkExternallyAppliedWrenchInWorldFrame(link_id, Eigen::VectorXd::Zero(6));
+  state_variable_.setLinkExternallyAppliedWrenchInWorldFrame(link_id, Eigen::Vector6d::Zero());
 }
 
 void Robot::clearAllLinkAccel() {
@@ -274,23 +420,23 @@ void Robot::clearAllLinkExternallyAppliedWrench() {
 }
 
 void Robot::clearJointPosition() {
-  state_variable_.setJointPosition(Eigen::VectorXd::Zero(getJointNumber()));
+  state_variable_.setJointPosition(Eigen::VectorXd::Zero(getActuatorNumber()));
 }
 
 void Robot::clearJointVelocity() {
-  state_variable_.setJointVelocity(Eigen::VectorXd::Zero(getJointNumber()));
+  state_variable_.setJointVelocity(Eigen::VectorXd::Zero(getActuatorNumber()));
 }
 
 void Robot::clearJointAcceleration() {
-  state_variable_.setJointAcceleration(Eigen::VectorXd::Zero(getJointNumber()));
+  state_variable_.setJointAcceleration(Eigen::VectorXd::Zero(getActuatorNumber()));
 }
 
 void Robot::clearJointEffort() {
-  state_variable_.setJointEffort(Eigen::VectorXd::Zero(getJointNumber()));
+  state_variable_.setJointEffort(Eigen::VectorXd::Zero(getActuatorNumber()));
 }
 
 void Robot::applyExternalWrench(const int link_id, const Wrench &external_wrench) {
-  LinkState link_state = state_variable_.getLinkState(link_id);
+  LinkState link_state = getLinkState(link_id);
   link_state.setExternallyAppliedWrenchInWorldFrame(external_wrench);
   state_variable_.setLinkState(link_id, link_state);
 }

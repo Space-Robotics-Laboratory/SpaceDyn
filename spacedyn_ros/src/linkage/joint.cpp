@@ -1,13 +1,12 @@
 #include "spacedyn_ros/linkage/joint.hpp"
-#include "eigen3/Eigen/Core"
-#include "eigen3/Eigen/Geometry"
 #include "spacedyn_ros/linkage/joint_state.hpp"
-
-#include "iostream"
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Geometry>
+#include <iostream>
 
 namespace spacedyn_ros {
 
-Joint::Joint(const std::string name, Type type) {
+Joint::Joint(const std::string name, Type type, const Eigen::Vector3d &axis) {
   try {
     checkTypeToInput(type);
   } catch (const std::exception &e) {
@@ -19,10 +18,12 @@ Joint::Joint(const std::string name, Type type) {
   this->name_ = name;
   this->type_ = type;
   this->id_ = kUndefined;
+  this->actuator_id_ = kUndefined;
   this->tf_to_parent_link_com_ =
       Transform(Frame::kLocal, Eigen::Matrix3d::Identity(), Eigen::Vector3d::Zero());
   this->tf_from_parent_link_com_ =
       Transform(Frame::kLocal, Eigen::Matrix3d::Identity(), Eigen::Vector3d::Zero());
+  this->axis_ = axis.normalized();
 }
 
 void Joint::checkTypeToInput(const Type type) const {
@@ -32,10 +33,11 @@ void Joint::checkTypeToInput(const Type type) const {
   case Type::kPrismatic:
     break;
   case Type::kUndefined:
-    throw std::runtime_error("Error: Joint type is undefined");
+    break;
+  case Type::kFixed:
+    break;
   default:
-    throw std::invalid_argument("Error: Joint type is incorrect. Please select "
-                                "from kFloatingBase. kRevolute, kPrismatic");
+    throw std::invalid_argument("Error: Joint type is incorrect.");
   }
 }
 
@@ -43,14 +45,25 @@ void Joint::checkTypeToInput(const Type type) const {
 std::string Joint::getName() const { return name_; }
 Joint::Type Joint::getType() const { return type_; }
 int Joint::getId() const { return id_; }
+int Joint::getActuatorId() const { return actuator_id_; }
+bool Joint::isActuator() const {
+  bool is_actuator = (type_ == Joint::Type::kPrismatic) || (type_ == Joint::Type::kRevolute);
+  return is_actuator;
+}
 
 // Connect joint
-void Joint::connect(const int id, const Transform &tf_from_parent_link_com) {
+void Joint::connect(const int id, const int actuator_id, const Transform &tf_from_parent_link_com) {
   try { // Check if joint is already connected
-    if (id_ != kUndefined) {
+    if (id_ != ID::kUndefined) {
       throw std::runtime_error("Error: Joint is already "
                                "connected. Joint id=" +
                                std::to_string(id_));
+    }
+    if (actuator_id > id) {
+      throw std::runtime_error("Error: Actuator id should be lower than joint id.");
+    }
+    if (type_ == Type::kUndefined) {
+      throw std::runtime_error("Error: Joint type is undefined.");
     }
     if (tf_from_parent_link_com.getFrame() != Frame::kLocal) {
       throw std::runtime_error("Error: Transform only in local frame is supported.");
@@ -62,23 +75,41 @@ void Joint::connect(const int id, const Transform &tf_from_parent_link_com) {
   this->id_ = id;
   this->tf_from_parent_link_com_ = tf_from_parent_link_com;
   this->tf_to_parent_link_com_ = tf_from_parent_link_com.inverse();
+  if (isActuator()) {
+    this->actuator_id_ = actuator_id;
+  }
   return;
 }
 
 const Transform &Joint::getTransformToParentLinkCom() const { return tf_to_parent_link_com_; }
 const Transform &Joint::getTransformFromParentLinkCom() const { return tf_from_parent_link_com_; }
 
+const Eigen::Vector3d &Joint::getAxisInLocalFrame() const { return axis_; }
+
+Eigen::Vector3d Joint::getAxisInWorldFrame(const JointState &joint_state) const {
+  return joint_state.getPoseInWorldFrame().getAttitudeInWorldFrame() * getAxisInLocalFrame();
+}
+
+Eigen::Vector3d Joint::getAxisDerivativeInWorldFrame(const JointState &joint_state) const {
+  auto angular_velocity = joint_state.getTwistInWorldFrame().getAngularVelocity();
+  return angular_velocity.cross(getAxisInWorldFrame(joint_state));
+}
+
 Transform Joint::transformByActuation(const JointState &joint_state) const {
   switch (type_) {
   case Type::kRevolute: {
     Eigen::Matrix3d rot =
-        Eigen::AngleAxisd(joint_state.getPosition(), Eigen::Vector3d::UnitZ()).toRotationMatrix();
+        Eigen::AngleAxisd(joint_state.getPosition(), getAxisInLocalFrame()).toRotationMatrix();
     return Transform(Frame::kLocal, rot, Eigen::Vector3d::Zero());
   } break;
 
   case Type::kPrismatic: {
-    Eigen::Vector3d trs = Eigen::Vector3d::UnitZ() * joint_state.getPosition();
+    Eigen::Vector3d trs = getAxisInLocalFrame() * joint_state.getPosition();
     return Transform(Frame::kLocal, Eigen::Matrix3d::Identity(), trs);
+  } break;
+
+  case Type::kFixed: {
+    return Transform(Frame::kLocal, Eigen::Matrix3d::Identity(), Eigen::Vector3d::Zero());
   } break;
 
   case Type::kUndefined:
@@ -94,17 +125,21 @@ Transform Joint::transformByActuation(const JointState &joint_state) const {
 Twist Joint::twistByActuation(const JointState &joint_state) const {
   switch (type_) {
   case Type::kRevolute: {
-    Eigen::VectorXd twist(6);
+    Eigen::Vector6d twist;
     twist.block(0, 0, 3, 1) = Eigen::Vector3d::Zero();
-    twist.block(3, 0, 3, 1) = joint_state.getAxisInWorldFrame() * joint_state.getVelocity();
+    twist.block(3, 0, 3, 1) = getAxisInWorldFrame(joint_state) * joint_state.getVelocity();
     return Twist(Frame::kWorld, twist);
   } break;
 
   case Type::kPrismatic: {
-    Eigen::VectorXd twist(6);
-    twist.block(0, 0, 3, 1) = joint_state.getAxisInWorldFrame() * joint_state.getVelocity();
+    Eigen::Vector6d twist;
+    twist.block(0, 0, 3, 1) = getAxisInWorldFrame(joint_state) * joint_state.getVelocity();
     twist.block(3, 0, 3, 1) = Eigen::Vector3d::Zero();
     return Twist(Frame::kWorld, twist);
+  } break;
+
+  case Type::kFixed: {
+    return Twist(Frame::kWorld, Eigen::Vector6d::Zero());
   } break;
 
   case Type::kUndefined:
@@ -120,21 +155,25 @@ Twist Joint::twistByActuation(const JointState &joint_state) const {
 Accel Joint::accelByActuation(const JointState &joint_state) const {
   switch (type_) {
   case Type::kRevolute: {
-    Eigen::VectorXd accel(6);
+    Eigen::Vector6d accel;
     accel.block(0, 0, 3, 1) = Eigen::Vector3d::Zero();
     accel.block(3, 0, 3, 1) =
-        joint_state.getAxisInWorldFrame() * joint_state.getAcceleration() +
-        joint_state.getAxisDerivativeInWorldFrame() * joint_state.getVelocity();
+        getAxisInWorldFrame(joint_state) * joint_state.getAcceleration() +
+        getAxisDerivativeInWorldFrame(joint_state) * joint_state.getVelocity();
     return Accel(Frame::kWorld, accel);
   } break;
 
   case Type::kPrismatic: {
-    Eigen::VectorXd accel(6);
+    Eigen::Vector6d accel;
     accel.block(0, 0, 3, 1) =
-        joint_state.getAxisInWorldFrame() * joint_state.getAcceleration() +
-        joint_state.getAxisDerivativeInWorldFrame() * joint_state.getVelocity() * 2;
+        getAxisInWorldFrame(joint_state) * joint_state.getAcceleration() +
+        getAxisDerivativeInWorldFrame(joint_state) * joint_state.getVelocity() * 2;
     accel.block(3, 0, 3, 1) = Eigen::Vector3d::Zero();
     return Accel(Frame::kWorld, accel);
+  } break;
+
+  case Type::kFixed: {
+    return Accel(Frame::kWorld, Eigen::Vector6d::Zero());
   } break;
 
   case Type::kUndefined:
@@ -150,13 +189,17 @@ Accel Joint::accelByActuation(const JointState &joint_state) const {
 double Joint::computeEffortToAchieveWrench(const JointState &joint_state) const {
   switch (type_) {
   case Type::kRevolute: {
-    return joint_state.getAxisInWorldFrame().dot(
-        joint_state.getWrenchToChildInWorldFrame().getOriginTorque());
+    return getAxisInWorldFrame(joint_state)
+        .dot(joint_state.getWrenchToChildInWorldFrame().getTorque());
   } break;
 
   case Type::kPrismatic: {
-    return joint_state.getAxisInWorldFrame().dot(
-        joint_state.getWrenchToChildInWorldFrame().getOriginForce());
+    return getAxisInWorldFrame(joint_state)
+        .dot(joint_state.getWrenchToChildInWorldFrame().getForce());
+  } break;
+
+  case Type::kFixed: {
+    return 0.0;
   } break;
 
   case Type::kUndefined:
@@ -169,26 +212,29 @@ double Joint::computeEffortToAchieveWrench(const JointState &joint_state) const 
   }
 }
 
-Eigen::VectorXd Joint::computeVelocityContributionToLinkAccel(const JointState &joint_state,
+Eigen::Vector6d Joint::computeVelocityContributionToLinkAccel(const JointState &joint_state,
                                                               const LinkState &link_state) const {
-  Eigen::VectorXd jacob_col = Eigen::VectorXd::Zero(6);
+  Eigen::Vector6d jacob_col = Eigen::Vector6d::Zero();
   Eigen::Vector3d trans_joint_to_link =
       joint_state.getPoseInWorldFrame().computeTranslationToPoint(link_state.getPoseInWorldFrame());
   Eigen::Vector3d relative_velocity =
-      (link_state.getTwistInWorldFrame() - joint_state.getTwistInWorldFrame())
-          .getOriginLinierVelocity();
+      (link_state.getTwistInWorldFrame() - joint_state.getTwistInWorldFrame()).getLinearVelocity();
 
   switch (type_) {
   case Type::kRevolute:
-    jacob_col.head(3) = joint_state.getAxisDerivativeInWorldFrame().cross(trans_joint_to_link) +
-                        joint_state.getAxisInWorldFrame().cross(relative_velocity);
-    jacob_col.tail(3) = joint_state.getAxisDerivativeInWorldFrame();
+    jacob_col.head(3) = getAxisDerivativeInWorldFrame(joint_state).cross(trans_joint_to_link) +
+                        getAxisInWorldFrame(joint_state).cross(relative_velocity);
+    jacob_col.tail(3) = getAxisDerivativeInWorldFrame(joint_state);
     return jacob_col;
     break;
 
   case Joint::Type::kPrismatic:
-    jacob_col.head(3) = joint_state.getAxisDerivativeInWorldFrame();
+    jacob_col.head(3) = getAxisDerivativeInWorldFrame(joint_state);
     return jacob_col;
+    break;
+
+  case Joint::Type::kFixed:
+    return Eigen::Vector6d::Zero(6);
     break;
 
   case Type::kUndefined:

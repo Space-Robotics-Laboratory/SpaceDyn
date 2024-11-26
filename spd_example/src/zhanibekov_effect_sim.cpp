@@ -11,7 +11,7 @@ ZhanibekovEffectSimulation::ZhanibekovEffectSimulation(const std::string &name,
                                    std::bind(&ZhanibekovEffectSimulation::timer_callback, this));
   tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(this);
 
-  Model model(path_to_urdf); // FIXME: Can not parse articulated bodies yet
+  Model model(path_to_urdf);
   model.setGravity(Eigen::Vector3d(0, 0, 0));
   model.setDeltaTimeMicroSec(1000);
   this->robot_ = Robot(model);

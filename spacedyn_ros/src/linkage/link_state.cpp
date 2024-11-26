@@ -1,7 +1,6 @@
 #include "spacedyn_ros/linkage/link_state.hpp"
-#include "eigen3/Eigen/Core"
-
-#include "iostream"
+#include <eigen3/Eigen/Core>
+#include <iostream>
 
 namespace spacedyn_ros {
 
@@ -15,10 +14,14 @@ LinkState::LinkState() {
 const Pose &LinkState::getPoseInWorldFrame() const { return this->pose_in_world_frame_; }
 const Twist &LinkState::getTwistInWorldFrame() const { return this->twist_in_world_frame_; }
 Twist LinkState::getTwistInLocalFrame() const {
-  auto twist = getPoseInWorldFrame().computeTwistInLocalFrame(getTwistInWorldFrame());
+  auto twist = getTwistInWorldFrame().getTwistInFrame(Frame::kLocal, getPoseInWorldFrame());
   return twist;
 }
 const Accel &LinkState::getAccelInWorldFrame() const { return this->accel_in_world_frame_; }
+Accel LinkState::getAccelInLocalFrame() const {
+  auto accel = getAccelInWorldFrame().getAccelInFrame(Frame::kLocal, getPoseInWorldFrame());
+  return accel;
+}
 const Wrench &LinkState::getTotalWrenchOnLinkInWorldFrame() const {
   return this->total_wrench_on_link_in_world_frame_;
 }
@@ -49,7 +52,7 @@ void LinkState::setTotalWrenchOnLinkInWorldFrame(const Wrench &wrench) {
 void LinkState::setExternallyAppliedWrenchInWorldFrame(const Wrench &external_wrench) {
   if (external_wrench.getFrame() == Frame::kLocal) {
     this->externally_applied_wrench_in_world_frame_ =
-        pose_in_world_frame_.computeWrenchInWorldFrame(external_wrench);
+        external_wrench.getWrenchInFrame(Frame::kWorld, pose_in_world_frame_);
   } else if (external_wrench.getFrame() == Frame::kWorld) {
     this->externally_applied_wrench_in_world_frame_ = external_wrench;
   }

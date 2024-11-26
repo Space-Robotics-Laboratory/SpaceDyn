@@ -1,8 +1,8 @@
 #ifndef SPACEDYN_ROS_SPACEDYN_ROS_HPP_
 #define SPACEDYN_ROS_SPACEDYN_ROS_HPP_
 
-#include "eigen3/Eigen/Cholesky"
-#include "eigen3/Eigen/Core"
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/Cholesky>
 
 #include "spacedyn_ros/geometry/accel.hpp"
 #include "spacedyn_ros/geometry/inertia.hpp"

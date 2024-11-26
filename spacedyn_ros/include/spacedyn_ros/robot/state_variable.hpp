@@ -1,10 +1,10 @@
 #ifndef SPACEDYN_ROS_LINK_STATE_VARIABLE_HPP_
 #define SPACEDYN_ROS_LINK_STATE_VARIABLE_HPP_
 
-#include "eigen3/Eigen/Core"
 #include "spacedyn_ros/linkage/joint_state.hpp"
 #include "spacedyn_ros/linkage/link_state.hpp"
 #include "spacedyn_ros/robot/model.hpp"
+#include <eigen3/Eigen/Core>
 
 // TODO: Add variable to handle state update condition
 
@@ -13,7 +13,9 @@ class StateVariable {
 private:
   std::vector<LinkState> links_state_;
   std::vector<JointState> joints_state_;
+  std::vector<bool> joint_is_actuator_;
   int joint_number_;
+  int actuator_number_;
   int link_number_;
 
   void checkModelToSet(const Model &model) const;
@@ -24,13 +26,16 @@ private:
 
 public:
   StateVariable(Model const &model);
-  StateVariable(const int link_number);
+  StateVariable(const int link_number, const std::vector<bool> &joint_is_actuator);
   ~StateVariable() = default;
 
   StateVariable copyVacant() const;
 
   int getLinkNumber() const;
   int getJointNumber() const;
+  int getActuatorNumber() const;
+
+  int getDof() const;
 
   const LinkState &getLinkState(const int link_id) const;
   const LinkState &getLinkState(const Link &link) const;
@@ -48,8 +53,8 @@ public:
   Eigen::VectorXd getGeneralizedAcceleration() const;
 
   void setLinkPoseInWorldFrame(const int link_id, const Eigen::Isometry3d &pose);
-  void setLinkTwistInWorldFrame(const int link_id, const Eigen::VectorXd &twist);
-  void setLinkAccelInWorldFrame(const int link_id, const Eigen::VectorXd &accel);
+  void setLinkTwistInWorldFrame(const int link_id, const Eigen::Vector6d &twist);
+  void setLinkAccelInWorldFrame(const int link_id, const Eigen::Vector6d &accel);
   void setLinkExternallyAppliedWrenchInWorldFrame(const int link_id, const Eigen::VectorXd &wrench);
 
   void setJointPosition(const Eigen::VectorXd &joint_position);

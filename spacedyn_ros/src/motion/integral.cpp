@@ -24,10 +24,10 @@ StateVariable Integral::stepGeneralizedState(const StateVariable &sv, const Stat
   Twist base_twist = dsv.getLinkState(Link::ID::kBase).getTwistInWorldFrame();
 
   // Compute the next base pose and joint position
-  auto base_quat = base_pose.getOriginQuaternion();
-  auto base_quat_d = base_pose.computeDerivativeAttitude(base_twist);
+  auto base_quat = base_pose.getQuaternionInWorldFrame();
+  auto base_quat_d = base_twist.computeDerivativeAttitude(base_pose);
   Eigen::Vector3d base_pos_next =
-      base_pose.getOriginPosition() + base_twist.getOriginLinierVelocity() * dt;
+      base_pose.getPositionInWorldFrame() + base_twist.getLinearVelocity() * dt;
   Eigen::Quaterniond base_quat_next = addScaledQuaternion(1.0, base_quat, dt, base_quat_d);
   Eigen::Isometry3d base_pose_next = Eigen::Translation3d(base_pos_next) * base_quat_next;
   Eigen::VectorXd joint_pose_next = sv.getJointPosition() + dsv.getJointVelocity() * dt;

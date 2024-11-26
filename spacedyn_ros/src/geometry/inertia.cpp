@@ -17,6 +17,27 @@ Inertia::Inertia(const Frame &frame, const double mass, const Eigen::Matrix3d &i
   this->inertia_ = inertia;
 }
 
+Inertia Inertia::getInertiaInFrame(const Frame &frame, const Pose &pose) const {
+  Eigen::Matrix3d inertia_in_frame;
+  if (frame == frame_) {
+    // No need to change the frame
+    return Inertia(frame_, mass_, inertia_);
+  } else if (frame == Frame::kLocal) { // frame_ == Frame::kWorld
+    // Change the frame to local
+    // Ia = Rsa^T * Is * Rsa
+    Eigen::Matrix3d inertia_in_local =
+        pose.getAttitudeInWorldFrame().transpose() * inertia_ * pose.getAttitudeInWorldFrame();
+    return Inertia(Frame::kLocal, mass_, inertia_in_local);
+  } else if (frame == Frame::kWorld) { // frame_ == Frame::kLocal
+    // Change the frame to world
+    // Is = Rsa * Ia * Rsa^T
+    Eigen::Matrix3d inertia_in_world =
+        pose.getAttitudeInWorldFrame() * inertia_ * pose.getAttitudeInWorldFrame().transpose();
+    return Inertia(Frame::kWorld, mass_, inertia_in_world);
+  }
+  throw std::invalid_argument("Error: Unknown frame type. ");
+}
+
 void Inertia::checkMass(const double mass) const {
   if (mass <= 0) {
     throw std::invalid_argument("Error: Mass must be positive.");
@@ -33,7 +54,7 @@ void Inertia::checkInertia(const Eigen::Matrix3d &inertia) const {
 }
 
 double Inertia::getMass() const { return this->mass_; }
-const Eigen::Matrix3d &Inertia::getOriginInertiaTensor() const { return this->inertia_; }
+const Eigen::Matrix3d &Inertia::getInertiaTensor() const { return this->inertia_; }
 const Frame &Inertia::getFrame() const { return this->frame_; }
 
 geometry_msgs::msg::Inertia Inertia::toRosMessage() const {
