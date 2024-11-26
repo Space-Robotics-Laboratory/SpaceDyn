@@ -61,7 +61,7 @@ LinkState Kinematics::forwardLinkPose(const Link &link, const JointState &parent
   return output;
 }
 
-LinkState Kinematics::forwardLinkTwist(const Link &link, const JointState &parent_joint_state,
+LinkState Kinematics::forwardLinkTwist(const JointState &parent_joint_state,
                                        const LinkState &link_state) {
   Eigen::Vector3d trans_joint_to_link =
       parent_joint_state.getPoseInWorldFrame().computeTranslationToPoint(
@@ -74,7 +74,7 @@ LinkState Kinematics::forwardLinkTwist(const Link &link, const JointState &paren
   return output;
 }
 
-LinkState Kinematics::forwardLinkAccel(const Link &link, const JointState &parent_joint_state,
+LinkState Kinematics::forwardLinkAccel(const JointState &parent_joint_state,
                                        const LinkState &link_state) {
   Twist parent_twist = parent_joint_state.getTwistInWorldFrame();
   Accel parent_accel = parent_joint_state.getAccelInWorldFrame();
@@ -124,7 +124,7 @@ StateVariable Kinematics::computeForward(const Robot &robot, const bool compute_
     if (compute_twist) {
       joint_state_twist_done =
           forwardJointTwist(joint, parent_link_state_fk_done, joint_state_pos_done);
-      link_state_twist_done = forwardLinkTwist(link, joint_state_twist_done, link_state_pos_done);
+      link_state_twist_done = forwardLinkTwist(joint_state_twist_done, link_state_pos_done);
     } else {
       // Set state variable without the updated twist
       joint_state_twist_done = joint_state_pos_done;
@@ -136,7 +136,7 @@ StateVariable Kinematics::computeForward(const Robot &robot, const bool compute_
     if (compute_accel) {
       joint_state_accel_done =
           forwardJointAccel(joint, parent_link_state_fk_done, joint_state_twist_done);
-      link_state_accel_done = forwardLinkAccel(link, joint_state_accel_done, link_state_twist_done);
+      link_state_accel_done = forwardLinkAccel(joint_state_accel_done, link_state_twist_done);
     } else {
       // Set state variable without the updated accel
       joint_state_accel_done = joint_state_twist_done;

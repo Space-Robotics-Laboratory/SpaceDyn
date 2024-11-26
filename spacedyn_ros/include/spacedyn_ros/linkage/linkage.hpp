@@ -32,8 +32,7 @@ private:
   void addLink(const int parent_link_id, const Link &child_input,
                const Transform &tf_from_parent_joint_to_com);
 
-  void addJoint(const int parent_link_id, const Joint &joint_input,
-                const Transform &tf_from_parent_link_com_to_joint);
+  void addJoint(const Joint &joint_input, const Transform &tf_from_parent_link_com_to_joint);
   void replaceLink(const int id, const Link &link);
 
   std::vector<int> replaceEndEffector(const Link parent, const Link child) const;

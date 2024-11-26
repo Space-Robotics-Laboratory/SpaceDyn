@@ -39,11 +39,6 @@ void Robot::checkStateVariable(const StateVariable &state_variable) const {
   }
 }
 
-void Robot::operator=(const Robot &robot) {
-  model_ = robot.getModel();
-  state_variable_ = robot.getStateVariable();
-}
-
 Eigen::MatrixXd Robot::computeGeneralizedJacobianForLink(const int link_id) const {
   return Kinematics::computeGeneralizedJacobianForLink(*this, link_id);
 }
@@ -471,7 +466,7 @@ void Robot::overWriteJointState(const sensor_msgs::msg::JointState &joint_state_
   Eigen::VectorXd joint_position(joint_state_msg.position.size());
   Eigen::VectorXd joint_velocity(joint_state_msg.velocity.size());
   Eigen::VectorXd joint_acceleration(joint_state_msg.effort.size());
-  for (int i = 0; i < joint_state_msg.position.size(); i++) {
+  for (int i = 0; i < static_cast<int>(joint_state_msg.position.size()); i++) {
     joint_position(i) = joint_state_msg.position[i];
     joint_velocity(i) = joint_state_msg.velocity[i];
     joint_acceleration(i) = joint_state_msg.effort[i];

@@ -22,8 +22,6 @@ public:
   Robot(const std::string &path_to_urdf);
   ~Robot() = default;
 
-  void operator=(const Robot &robot);
-
   /**
    * @fn computeGeneralizedJacobianForLink()
    * @brief Return GJ (6, n) = J_mi - J_bi * H_b^-1 * H_bmi

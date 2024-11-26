@@ -105,7 +105,7 @@ void Linkage::replaceLink(const int id, const Link &link) {
   this->links_.at(id) = link;
 }
 
-void Linkage::addJoint(const int parent_link_id, const Joint &joint_input,
+void Linkage::addJoint(const Joint &joint_input,
                        const Transform &tf_from_parent_link_com_to_joint) {
   // Copy joint to be added
   auto child_joint = joint_input;
@@ -137,7 +137,7 @@ void Linkage::addJointWithLink(const int parent_link_id, const Joint &child_join
   }
 
   // Add joint
-  addJoint(parent_link_id, child_joint, tf_from_parent_link_com);
+  addJoint(child_joint, tf_from_parent_link_com);
 
   // Add link
   addLink(parent_link_id, child_link, tf_from_joint_to_com);
@@ -202,7 +202,7 @@ std::vector<int> Linkage::replaceEndEffector(const Link parent, const Link child
   // If the parent is end effector, replace its id in end_effectors vector
   // with child's id
   if (parent.isEndEffector()) {
-    for (int i = 0; i < end_effectors_.size(); i++) {
+    for (int i = 0; i < static_cast<int>(end_effectors_.size()); i++) {
       if (end_effectors.at(i) == parent.getId()) {
         end_effectors.at(i) = child.getId();
       }

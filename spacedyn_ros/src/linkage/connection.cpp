@@ -126,7 +126,8 @@ std::vector<int> Connection::getLinkIdChain(const int start_link_id, const int e
 
   // Create path from start to end link IDs.
   std::deque<int> path;
-  for (int i = v_desc.at(end_link_id); i != v_desc.at(start_link_id); i = predecessors.at(i)) {
+  for (int i = v_desc.at(end_link_id); i != static_cast<int>(v_desc.at(start_link_id));
+       i = predecessors.at(i)) {
     path.push_front(i);
   }
   path.push_front(v_desc.at(start_link_id));
@@ -135,7 +136,7 @@ std::vector<int> Connection::getLinkIdChain(const int start_link_id, const int e
   auto v_desc_reverse = getReverseMap(v_desc);
 
   std::vector<int> id_chain_from_start_to_end(path.size());
-  for (int i = 0; i < path.size(); i++) {
+  for (int i = 0; i < static_cast<int>(path.size()); i++) {
     // link ID and graph node ID are different.
     id_chain_from_start_to_end.at(i) = v_desc_reverse.at(path.at(i));
   }

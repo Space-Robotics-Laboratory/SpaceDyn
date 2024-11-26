@@ -64,25 +64,23 @@ private:
    * @fn LinkState forwardLinkTwist
    * @brief This function computes the forward kinematics about Twist of the
    * given link. Call forwardJointTwist() first.
-   * @param (link) Link model whose twist is computed
    * @param (parent_joint_state) Joint state of the parent joint
    * @param (link_state) Link state whose twist is computed
    * @return Returns link state with the updated twist. Pose and accel are not
    * updated.
    */
-  static LinkState forwardLinkTwist(const Link &link, const JointState &parent_joint_state,
+  static LinkState forwardLinkTwist(const JointState &parent_joint_state,
                                     const LinkState &link_state);
   /**
    * @fn LinkState forwardLinkAccel
    * @brief This function computes the forward kinematics about Accel of the
    * given link. Call forwardJointAccel() first.
-   * @param (link) Link model whose accel is computed
    * @param (parent_joint_state) Joint state of the parent joint
    * @param (link_state) Link state whose accel is computed
    * @return Returns link state with the updated accel. Pose and twist are not
    * updated.
    */
-  static LinkState forwardLinkAccel(const Link &link, const JointState &parent_joint_state,
+  static LinkState forwardLinkAccel(const JointState &parent_joint_state,
                                     const LinkState &link_state);
 
 public:
